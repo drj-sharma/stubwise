@@ -98,8 +98,8 @@ export function BusinessForm({
               <Text style={{ fontSize: 13, fontWeight: '600', color: c.primaryText }}>{logo ? 'Change' : 'Choose'}</Text>
             </Pressable>
           </View>
-          <Field label="Business name" value={name} onChangeText={setName} autoCapitalize="words" returnKeyType="next" />
-          <Field label="Address" value={address} onChangeText={setAddress} autoCapitalize="words" />
+          <Field label="Business name" value={name} onChangeText={setName} autoCapitalize="words" autoCorrect={false} returnKeyType="next" />
+          <Field label="Address" value={address} onChangeText={setAddress} autoCapitalize="words" autoCorrect={false} />
           <View style={{ flexDirection: 'row' }}>
             <Field label="Phone" value={phone} onChangeText={setPhone} keyboardType="phone-pad" last style={{ flex: 1, borderRightWidth: 1, borderRightColor: c.border }} />
             <Field label="Employer ID (optional)" value={employerId} onChangeText={setEmployerId} keyboardType="numbers-and-punctuation" last style={{ flex: 1 }} />

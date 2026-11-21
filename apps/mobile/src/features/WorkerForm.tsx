@@ -89,8 +89,8 @@ export function WorkerForm({ existing }: { existing: Worker | null }) {
         contentContainerStyle={{ padding: 12, gap: 12, alignSelf: 'center', width: '100%', maxWidth: 560 }}>
         <Sheet style={{ gap: 12 }}>
           <SubCard>
-            <Field label="Full name" value={name} onChangeText={setName} autoCapitalize="words" />
-            <Field label="Address" value={address} onChangeText={setAddress} autoCapitalize="words" last />
+            <Field label="Full name" value={name} onChangeText={setName} autoCapitalize="words" autoCorrect={false} />
+            <Field label="Address" value={address} onChangeText={setAddress} autoCapitalize="words" autoCorrect={false} last />
           </SubCard>
 
           <View style={{ gap: 6 }}>
