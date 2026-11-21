@@ -1,4 +1,5 @@
 import {
+  currentPeriod,
   defaultPayDate,
   formatPeriod,
   formatWeekdayDate,
@@ -104,6 +105,35 @@ describe('first period for a new worker', () => {
     expect(defaultPayDate({ start: '2026-11-09', end: '2026-11-22' })).toBe('2026-11-27');
     // A period ending on a Friday is paid the following Friday, not the same day.
     expect(defaultPayDate({ start: '2026-11-14', end: '2026-11-20' })).toBe('2026-11-27');
+  });
+});
+
+describe('current pay period', () => {
+  it('uses the calendar when there are no stubs yet', () => {
+    expect(currentPeriod(null, 'biweekly', '2026-11-21')).toEqual({ start: '2026-11-09', end: '2026-11-22' });
+  });
+
+  it('stays on the latest stub period until it ends', () => {
+    const latest = { start: '2026-11-09', end: '2026-11-22' };
+    expect(currentPeriod(latest, 'biweekly', '2026-11-22')).toEqual(latest);
+  });
+
+  it('moves on to the following period once the latest one has ended', () => {
+    const latest = { start: '2026-11-09', end: '2026-11-22' };
+    expect(currentPeriod(latest, 'biweekly', '2026-11-23')).toEqual({ start: '2026-11-23', end: '2026-12-06' });
+    expect(currentPeriod(latest, 'biweekly', '2026-12-20')).toEqual({ start: '2026-12-07', end: '2026-12-20' });
+  });
+
+  it('keeps a business on its own cycle rather than snapping to Mondays', () => {
+    const wednesdayCycle = { start: '2026-11-04', end: '2026-11-17' };
+    expect(currentPeriod(wednesdayCycle, 'biweekly', '2026-11-21')).toEqual({ start: '2026-11-18', end: '2026-12-01' });
+  });
+
+  it('realigns to the calendar after a very long gap', () => {
+    expect(currentPeriod({ start: '2020-01-06', end: '2020-01-12' }, 'weekly', '2026-11-21')).toEqual({
+      start: '2026-11-16',
+      end: '2026-11-22',
+    });
   });
 });
 

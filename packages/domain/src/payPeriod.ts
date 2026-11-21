@@ -107,6 +107,21 @@ export function periodContaining(today: IsoDate, schedule: PaySchedule): PayPeri
   }
 }
 
+/**
+ * The pay period the business is in right now. With stubs on record it follows
+ * on from the latest one, so a business whose two-week cycle starts on a
+ * Wednesday keeps that cycle; with none it falls back to the calendar.
+ */
+export function currentPeriod(latest: PayPeriod | null, schedule: PaySchedule, today: IsoDate): PayPeriod {
+  if (!latest) return periodContaining(today, schedule);
+  let period = latest;
+  // Bounded: after a long gap, stop walking and realign to the calendar.
+  for (let step = 0; step < 60 && period.end < today; step += 1) {
+    period = nextPeriod(period, schedule);
+  }
+  return period.end < today ? periodContaining(today, schedule) : period;
+}
+
 /** Default pay date for a first stub: the Friday after the period ends. */
 export function defaultPayDate(period: PayPeriod): IsoDate {
   const weekday = new Date(toTime(period.end)).getUTCDay(); // 0 = Sunday
