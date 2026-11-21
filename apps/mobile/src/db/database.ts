@@ -59,6 +59,8 @@ const MIGRATIONS: readonly string[] = [
   );
   CREATE INDEX stub_line_stub ON stub_line (stub_id, position);
   `,
+  // The state the business operates in: the default work state for its workers.
+  `ALTER TABLE business ADD COLUMN state TEXT;`,
 ];
 
 export async function migrateDatabase(db: SQLiteDatabase): Promise<void> {

@@ -1,7 +1,9 @@
 import { type StubDocument, TEMPLATES, type TemplateId, renderStubHtml } from '@stubwise/templates';
-import { Pressable, Text, View } from 'react-native';
+import { useState } from 'react';
+import { Modal, Pressable, Text, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { WebView } from 'react-native-webview';
-import { Icon, SectionLabel } from '@/ui/primitives';
+import { Button, CircleButton, Icon, SectionLabel } from '@/ui/primitives';
 import { useTheme } from '@/ui/theme';
 
 export const ACCENTS = ['#3F3D9E', '#0A6B57', '#1D4ED8', '#B4232C', '#7A4300', '#16171D'] as const;
@@ -56,7 +58,10 @@ export function TemplatePicker({
   onChange: (patch: { templateId?: TemplateId; accent?: string }) => void;
 }) {
   const c = useTheme();
+  const insets = useSafeAreaInsets();
+  const [viewing, setViewing] = useState<TemplateId | null>(null);
   const document = sample(business);
+  const viewed = TEMPLATES.find((template) => template.id === viewing);
   const selected = TEMPLATES.find((template) => template.id === templateId) ?? TEMPLATES[0];
 
   return (
@@ -93,6 +98,26 @@ export function TemplatePicker({
                   {on ? <Icon name="checkmark.circle.fill" size={18} color={c.primaryText} /> : null}
                 </View>
                 <Text style={{ fontSize: 12, lineHeight: 16, color: c.muted }}>{template.description}</Text>
+                <Pressable
+                  onPress={() => setViewing(template.id)}
+                  hitSlop={6}
+                  accessibilityRole="button"
+                  accessibilityLabel={`View a full sample of the ${template.name} design`}
+                  style={({ pressed }) => ({
+                    marginTop: 8,
+                    height: 36,
+                    borderRadius: 10,
+                    borderWidth: 1,
+                    borderColor: c.fieldBorder,
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: 6,
+                    opacity: pressed ? 0.6 : 1,
+                  })}>
+                  <Icon name="eye" size={15} color={c.primaryText} />
+                  <Text style={{ fontSize: 13, fontWeight: '600', color: c.primaryText }}>View sample</Text>
+                </Pressable>
               </View>
             </Pressable>
           );
@@ -129,6 +154,40 @@ export function TemplatePicker({
           </View>
         </View>
       ) : null}
+
+      {/* A full-page sample of one design, as it will look as a PDF. Pinch to zoom. */}
+      <Modal visible={viewed !== undefined} animationType="slide" presentationStyle="pageSheet" onRequestClose={() => setViewing(null)}>
+        <View style={{ flex: 1, backgroundColor: c.bg }}>
+          <View style={{ height: 60, paddingHorizontal: 14, flexDirection: 'row', alignItems: 'center', gap: 12 }}>
+            <CircleButton icon="xmark" label="Close sample" onPress={() => setViewing(null)} />
+            <View style={{ flex: 1 }}>
+              <Text accessibilityRole="header" style={{ fontSize: 16, fontWeight: '600', color: c.text }}>{viewed?.name} sample</Text>
+              <Text style={{ fontSize: 12, color: c.muted }}>Sample figures. Pinch to zoom.</Text>
+            </View>
+          </View>
+          <View style={{ flex: 1, marginHorizontal: 12, borderRadius: 14, overflow: 'hidden', borderWidth: 1, borderColor: c.border, backgroundColor: '#FFFFFF' }}>
+            {viewed ? (
+              <WebView
+                originWhitelist={['*']}
+                source={{ html: renderStubHtml(document, viewed.id, { accent }).replace('content="width=device-width, initial-scale=1"', 'content="width=816"') }}
+                javaScriptEnabled={false}
+                scalesPageToFit
+                style={{ flex: 1, backgroundColor: '#FFFFFF' }}
+              />
+            ) : null}
+          </View>
+          <View style={{ padding: 12, paddingBottom: Math.max(insets.bottom, 12) }}>
+            <Button
+              title={viewed?.id === templateId ? 'This is your design' : 'Use this design'}
+              disabled={viewed?.id === templateId}
+              onPress={() => {
+                if (viewed) onChange({ templateId: viewed.id });
+                setViewing(null);
+              }}
+            />
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 }

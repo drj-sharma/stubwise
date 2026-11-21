@@ -1,4 +1,4 @@
-import { PAY_SCHEDULES, PAY_SCHEDULE_LABELS, type PaySchedule, parseDollars } from '@stubwise/domain';
+import { PAY_SCHEDULES, PAY_SCHEDULE_LABELS, type PaySchedule, type UsStateCode, parseDollars, usStateName } from '@stubwise/domain';
 import { DEFAULT_ACCENT, DEFAULT_TEMPLATE_ID, type TemplateId } from '@stubwise/templates';
 import * as ImagePicker from 'expo-image-picker';
 import { router } from 'expo-router';
@@ -13,7 +13,8 @@ import type { Worker } from '@/db/types';
 import { TemplatePicker } from '@/features/TemplatePicker';
 import { useBusinessState } from '@/state/business';
 import { Animation, type AnimationName } from '@/ui/Animation';
-import { Button, CircleButton, Field, Icon, Screen, SectionLabel, Segmented, Sheet, SubCard, TABULAR } from '@/ui/primitives';
+import { Button, CircleButton, Field, Icon, Row, Screen, SectionLabel, Segmented, Sheet, SubCard, TABULAR } from '@/ui/primitives';
+import { StateSheet } from '@/ui/sheets';
 import { initials, useTheme } from '@/ui/theme';
 
 const STEPS = ['welcome', 'secure', 'name', 'contact', 'pay', 'template', 'worker', 'done'] as const;
@@ -46,6 +47,8 @@ export function Onboarding() {
   const [logo, setLogo] = useState<string | null>(null);
   const [address, setAddress] = useState('');
   const [phone, setPhone] = useState('');
+  const [state, setState] = useState<UsStateCode | null>(null);
+  const [pickingState, setPickingState] = useState(false);
   const [employerId, setEmployerId] = useState('');
   const [schedule, setSchedule] = useState<PaySchedule>('biweekly');
   const [overtimePct, setOvertimePct] = useState<'150' | '200'>('150');
@@ -87,7 +90,7 @@ export function Onboarding() {
         logoDataUri: logo,
         paySchedule: schedule,
       });
-      await updateBusinessSettings(db, { templateId, accent, overtimePct: Number(overtimePct) });
+      await updateBusinessSettings(db, { state, templateId, accent, overtimePct: Number(overtimePct) });
       if (withWorker && rateCents) {
         const id = await createWorker(db, {
           name: workerName.trim(),
@@ -183,10 +186,18 @@ export function Onboarding() {
 
     case 'contact':
       animation = 'business';
-      title = 'Where can workers reach you?';
-      subtitle = 'Shown under the business name on the stub. Add what you want printed.';
+      title = 'Where is your business?';
+      subtitle = 'The address and phone are printed under the business name on the stub.';
       body = (
         <SubCard>
+          <Row
+            title={state ? usStateName(state) : 'Choose your state'}
+            subtitle="State"
+            minHeight={56}
+            strong={state !== null}
+            right={<Icon name="chevron.down" size={14} color={c.muted} />}
+            onPress={() => setPickingState(true)}
+          />
           <Field label="Address" value={address} onChangeText={setAddress} autoCapitalize="words" autoCorrect={false} />
           <Field label="Phone" value={phone} onChangeText={setPhone} keyboardType="phone-pad" />
           <Field label="Employer ID (EIN), optional" value={employerId} onChangeText={setEmployerId} keyboardType="numbers-and-punctuation" last />
@@ -364,6 +375,15 @@ export function Onboarding() {
           {step === 'welcome' ? <Text style={{ fontSize: 12, color: c.muted, textAlign: 'center' }}>Takes about a minute. No account needed.</Text> : null}
         </View>
       </KeyboardAvoidingView>
+      <StateSheet
+        visible={pickingState}
+        selected={state}
+        onClose={() => setPickingState(false)}
+        onSelect={(code) => {
+          setState(code);
+          setPickingState(false);
+        }}
+      />
     </Screen>
   );
 }

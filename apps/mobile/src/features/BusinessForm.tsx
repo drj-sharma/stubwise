@@ -1,12 +1,13 @@
-import { PAY_SCHEDULES, PAY_SCHEDULE_LABELS, type PaySchedule } from '@stubwise/domain';
+import { PAY_SCHEDULES, PAY_SCHEDULE_LABELS, type PaySchedule, type UsStateCode, usStateName } from '@stubwise/domain';
 import * as ImagePicker from 'expo-image-picker';
 import { useSQLiteContext } from 'expo-sqlite';
 import { useState } from 'react';
 import { Alert, Image, Pressable, ScrollView, Text, View } from 'react-native';
-import { saveBusinessDetails } from '@/db/repo';
+import { saveBusinessDetails, updateBusinessSettings } from '@/db/repo';
 import type { Business } from '@/db/types';
 import { useBusinessState } from '@/state/business';
-import { Button, Field, Heading, SectionLabel, Sheet, SubCard } from '@/ui/primitives';
+import { Button, Field, Heading, Icon, Row, SectionLabel, Sheet, SubCard } from '@/ui/primitives';
+import { StateSheet } from '@/ui/sheets';
 import { initials, useTheme } from '@/ui/theme';
 
 /** Business details, used for first-run setup and for editing later from Settings. */
@@ -32,6 +33,8 @@ export function BusinessForm({
   const [employerId, setEmployerId] = useState(initial?.employerId ?? '');
   const [logo, setLogo] = useState<string | null>(initial?.logoDataUri ?? null);
   const [schedule, setSchedule] = useState<PaySchedule>(initial?.paySchedule ?? 'biweekly');
+  const [state, setState] = useState<UsStateCode | null>(initial?.state ?? null);
+  const [pickingState, setPickingState] = useState(false);
   const [saving, setSaving] = useState(false);
 
   const pickLogo = async (): Promise<void> => {
@@ -63,6 +66,7 @@ export function BusinessForm({
         logoDataUri: logo,
         paySchedule: schedule,
       });
+      await updateBusinessSettings(db, { state });
       await reload();
       onSaved();
     } finally {
@@ -71,6 +75,7 @@ export function BusinessForm({
   };
 
   return (
+    <>
     <ScrollView
       keyboardShouldPersistTaps="handled"
       contentContainerStyle={{ padding: 12, gap: 14, alignSelf: 'center', width: '100%', maxWidth: 560 }}>
@@ -99,6 +104,14 @@ export function BusinessForm({
             </Pressable>
           </View>
           <Field label="Business name" value={name} onChangeText={setName} autoCapitalize="words" autoCorrect={false} returnKeyType="next" />
+          <Row
+            title={state ? usStateName(state) : 'Choose your state'}
+            subtitle="State"
+            minHeight={56}
+            strong={state !== null}
+            right={<Icon name="chevron.down" size={14} color={c.muted} />}
+            onPress={() => setPickingState(true)}
+          />
           <Field label="Address" value={address} onChangeText={setAddress} autoCapitalize="words" autoCorrect={false} />
           <View style={{ flexDirection: 'row' }}>
             <Field label="Phone" value={phone} onChangeText={setPhone} keyboardType="phone-pad" last style={{ flex: 1, borderRightWidth: 1, borderRightColor: c.border }} />
@@ -139,5 +152,15 @@ export function BusinessForm({
       </Sheet>
       <Button title={submitLabel} onPress={() => void save()} disabled={saving} />
     </ScrollView>
+    <StateSheet
+      visible={pickingState}
+      selected={state}
+      onClose={() => setPickingState(false)}
+      onSelect={(code) => {
+        setState(code);
+        setPickingState(false);
+      }}
+    />
+    </>
   );
 }

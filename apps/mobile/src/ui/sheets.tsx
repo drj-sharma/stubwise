@@ -1,8 +1,8 @@
-import { type Cents, formatCents, fromMinutes, parseDollars, payForMinutes, toMinutes } from '@stubwise/domain';
+import { type Cents, US_STATES, type UsStateCode, formatCents, fromMinutes, parseDollars, payForMinutes, toMinutes } from '@stubwise/domain';
 import { useState, type ReactNode } from 'react';
-import { KeyboardAvoidingView, Modal, Platform, Pressable, Text, TextInput, View } from 'react-native';
+import { KeyboardAvoidingView, Modal, Platform, Pressable, ScrollView, Text, TextInput, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Button, TABULAR } from './primitives';
+import { Button, Icon, TABULAR } from './primitives';
 import { useTheme } from './theme';
 
 /**
@@ -260,5 +260,52 @@ function AddLineBody({ suggestions, onSave }: { suggestions: readonly string[]; 
       <BigInput initial="" onChangeText={setText} label="Amount" keyboardType="decimal-pad" prefix="$" />
       <Button title="Add" onPress={() => ready && onSave(label.trim(), cents)} disabled={!ready} />
     </>
+  );
+}
+
+/** Picks one of the 50 states or DC from a scrolling list. */
+export function StateSheet({
+  visible,
+  selected,
+  onSelect,
+  onClose,
+}: {
+  visible: boolean;
+  selected: UsStateCode | null;
+  onSelect: (code: UsStateCode) => void;
+  onClose: () => void;
+}) {
+  const c = useTheme();
+  return (
+    <BottomSheet visible={visible} title="Choose your state" onClose={onClose}>
+      {() => (
+        <ScrollView style={{ maxHeight: 420 }} contentContainerStyle={{ paddingBottom: 4 }}>
+          {US_STATES.map((state) => {
+            const on = state.code === selected;
+            return (
+              <Pressable
+                key={state.code}
+                onPress={() => onSelect(state.code)}
+                accessibilityRole="radio"
+                accessibilityState={{ selected: on }}
+                style={({ pressed }) => ({
+                  minHeight: 46,
+                  paddingHorizontal: 12,
+                  borderRadius: 12,
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  gap: 10,
+                  backgroundColor: on ? c.primarySoft : 'transparent',
+                  opacity: pressed ? 0.6 : 1,
+                })}>
+                <Text style={{ flex: 1, fontSize: 15, fontWeight: on ? '600' : '400', color: on ? c.primaryText : c.text }}>{state.name}</Text>
+                <Text style={[{ fontSize: 13, color: c.muted }, TABULAR]}>{state.code}</Text>
+                {on ? <Icon name="checkmark" size={15} color={c.primaryText} /> : null}
+              </Pressable>
+            );
+          })}
+        </ScrollView>
+      )}
+    </BottomSheet>
   );
 }

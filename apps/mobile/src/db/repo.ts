@@ -1,4 +1,4 @@
-import type { IsoDate, PayPeriod, PaySchedule, StartingYtd, StubLine } from '@stubwise/domain';
+import { type IsoDate, type PayPeriod, type PaySchedule, type StartingYtd, type StubLine, type UsStateCode, isUsStateCode } from '@stubwise/domain';
 import { DEFAULT_ACCENT, DEFAULT_TEMPLATE_ID, type TemplateId, isTemplateId } from '@stubwise/templates';
 import * as Crypto from 'expo-crypto';
 import type { SQLiteDatabase } from 'expo-sqlite';
@@ -14,6 +14,7 @@ interface BusinessRow {
   name: string;
   address: string;
   phone: string;
+  state: string | null;
   employer_id: string | null;
   logo_data_uri: string | null;
   pay_schedule: PaySchedule;
@@ -32,6 +33,7 @@ export async function getBusiness(db: SQLiteDatabase): Promise<Business | null> 
     name: row.name,
     address: row.address,
     phone: row.phone,
+    state: isUsStateCode(row.state) ? row.state : null,
     employerId: row.employer_id,
     logoDataUri: row.logo_data_uri,
     paySchedule: row.pay_schedule,
@@ -87,10 +89,11 @@ export async function saveBusinessDetails(db: SQLiteDatabase, details: BusinessD
 
 export async function updateBusinessSettings(
   db: SQLiteDatabase,
-  patch: Partial<{ showEmployerId: boolean; templateId: TemplateId; accent: string; overtimePct: number; appearance: Appearance }>,
+  patch: Partial<{ state: UsStateCode | null; showEmployerId: boolean; templateId: TemplateId; accent: string; overtimePct: number; appearance: Appearance }>,
 ): Promise<void> {
   const sets: string[] = [];
-  const values: (string | number)[] = [];
+  const values: (string | number | null)[] = [];
+  if (patch.state !== undefined) (sets.push('state = ?'), values.push(patch.state));
   if (patch.showEmployerId !== undefined) (sets.push('show_employer_id = ?'), values.push(patch.showEmployerId ? 1 : 0));
   if (patch.templateId !== undefined) (sets.push('template_id = ?'), values.push(patch.templateId));
   if (patch.accent !== undefined) (sets.push('accent = ?'), values.push(patch.accent));

@@ -1,4 +1,4 @@
-import type { Cents, IsoDate, PayPeriod, PaySchedule, StartingYtd, StubLine } from '@stubwise/domain';
+import type { Cents, IsoDate, PayPeriod, PaySchedule, StartingYtd, StubLine, UsStateCode } from '@stubwise/domain';
 import type { TemplateId } from '@stubwise/templates';
 import type { Appearance } from '@/ui/theme';
 
@@ -7,6 +7,8 @@ export interface Business {
   name: string;
   address: string;
   phone: string;
+  /** USPS code of the state the business operates in, or null when not chosen yet. */
+  state: UsStateCode | null;
   employerId: string | null;
   /** A data: URI of the chosen logo, small enough to embed in the stub HTML. */
   logoDataUri: string | null;
