@@ -1,0 +1,14 @@
+{
+  "name": "@stubwise/templates",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Pay stub document model and the library of printable HTML templates. Pure functions: data in, HTML string out.",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "scripts": {
+    "typecheck": "tsc --noEmit -p tsconfig.json"
+  },
+  "dependencies": {
+    "@stubwise/domain": "workspace:*"
+  }
+}

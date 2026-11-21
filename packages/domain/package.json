@@ -1,0 +1,11 @@
+{
+  "name": "@stubwise/domain",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Pure pay calculations shared by the mobile app and the API. No React, no I/O.",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "scripts": {
+    "typecheck": "tsc --noEmit -p tsconfig.json"
+  }
+}

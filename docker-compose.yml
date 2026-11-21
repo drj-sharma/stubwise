@@ -1,0 +1,24 @@
+# Optional local Postgres for the API. Without it the API uses an embedded
+# database in apps/api/.pgdata, which is enough for day-to-day development.
+#
+#   docker compose up -d db
+#   then set DATABASE_URL in apps/api/.env (see .env.example)
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: stubwise
+      POSTGRES_PASSWORD: stubwise # local development only
+      POSTGRES_DB: stubwise
+    ports:
+      - "127.0.0.1:5433:5432"
+    volumes:
+      - stubwise-pg:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U stubwise"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+volumes:
+  stubwise-pg:

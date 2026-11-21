@@ -1,0 +1,23 @@
+{
+  "name": "stubwise",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Stubwise: pay stubs and pay records for very small employers. Monorepo for the mobile app, the API and the shared pay calculations.",
+  "packageManager": "pnpm@11.28.8",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "test": "jest",
+    "typecheck": "pnpm -r run typecheck",
+    "mobile": "pnpm --filter @stubwise/mobile start",
+    "api": "pnpm --filter @stubwise/api dev"
+  },
+  "devDependencies": {
+    "@swc/core": "^1.15.0",
+    "@swc/jest": "^0.2.39",
+    "@types/jest": "^30.0.0",
+    "jest": "^30.5.2",
+    "typescript": "~6.0.3"
+  }
+}
