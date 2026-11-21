@@ -23,7 +23,18 @@ export function Icon({ name, size = 18, color }: { name: SFSymbol; size?: number
 }
 
 /** Full-screen ground with the soft tinted wash behind the header. */
-export function Screen({ children, footer, padBottom = true }: { children: ReactNode; footer?: ReactNode; padBottom?: boolean }) {
+export function Screen({
+  children,
+  footer,
+  padBottom = true,
+  modal = false,
+}: {
+  children: ReactNode;
+  footer?: ReactNode;
+  padBottom?: boolean;
+  /** Modal screens start below the status bar already, so they need no top inset. */
+  modal?: boolean;
+}) {
   const c = useTheme();
   const insets = useSafeAreaInsets();
   return (
@@ -33,7 +44,7 @@ export function Screen({ children, footer, padBottom = true }: { children: React
         style={{ position: 'absolute', left: 0, right: 0, top: 0, height: 260 }}
         pointerEvents="none"
       />
-      <View style={{ flex: 1, paddingTop: insets.top + 6, paddingBottom: footer || !padBottom ? 0 : Math.max(insets.bottom, 16) }}>
+      <View style={{ flex: 1, paddingTop: (modal ? 10 : insets.top) + 6, paddingBottom: footer || !padBottom ? 0 : Math.max(insets.bottom, 16) }}>
         {children}
       </View>
       {footer}
@@ -254,8 +265,12 @@ export function Segmented<Value extends string>({
   );
 }
 
-/** A labelled text field drawn as a row inside a bordered card. */
-export function Field({ label, last, style, ...input }: TextInputProps & { label: string; last?: boolean }) {
+/**
+ * A labelled text field drawn as a row inside a bordered card.
+ * Uncontrolled on purpose: `value` only seeds the field, and the native input
+ * reports each change. See the note on BigInput in sheets.tsx for why.
+ */
+export function Field({ label, last, style, value, ...input }: TextInputProps & { label: string; last?: boolean }) {
   const c = useTheme();
   return (
     <View
@@ -267,6 +282,7 @@ export function Field({ label, last, style, ...input }: TextInputProps & { label
       <TextInput
         accessibilityLabel={label}
         placeholderTextColor={c.faint}
+        defaultValue={value}
         style={{ height: 26, padding: 0, fontSize: 15, fontWeight: '500', color: c.text }}
         {...input}
       />

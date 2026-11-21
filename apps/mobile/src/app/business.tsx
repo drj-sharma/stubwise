@@ -7,7 +7,7 @@ import { CircleButton, Screen, TopBar } from '@/ui/primitives';
 export default function EditBusiness() {
   const business = useBusiness();
   return (
-    <Screen>
+    <Screen modal>
       <TopBar title="Business" left={<CircleButton icon="xmark" label="Close" onPress={() => router.back()} />} />
       <BusinessForm
         initial={business}

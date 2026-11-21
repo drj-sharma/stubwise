@@ -82,6 +82,18 @@ describe('stub document', () => {
     expect(bonus?.minutes).toBeNull();
   });
 
+  it('leaves out a line with no hours, no pay and nothing year to date', () => {
+    const base = input();
+    const stub = { ...base.stub, lines: [hourly('Regular', 40, 0, 2400), hourly('Overtime', 0, 0, 3600)] };
+    const unused = buildStubDocument({ ...base, stub, workerStubs: [stub] });
+    expect(unused.earnings.map((row) => row.label)).toEqual(['Regular']);
+
+    // Overtime earlier in the year keeps the row, so its year-to-date still prints.
+    const before = { ...earlier, lines: [hourly('Overtime', 2, 0, 3600)] };
+    const used = buildStubDocument({ ...base, stub, workerStubs: [before, stub] });
+    expect(used.earnings.map((row) => row.label)).toEqual(['Regular', 'Overtime']);
+  });
+
   it('hides the employer ID when the business turned it off', () => {
     expect(buildStubDocument(input({ showEmployerId: false })).business.employerId).toBeNull();
   });

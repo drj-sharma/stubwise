@@ -8,7 +8,7 @@ export default function EditWorker() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const { data } = useQuery((db) => getWorker(db, id), [id]);
   return (
-    <Screen>
+    <Screen modal>
       <TopBar title="Edit worker" left={<CircleButton icon="xmark" label="Close" onPress={() => router.back()} />} />
       {data ? <WorkerForm key={data.id} existing={data} /> : null}
     </Screen>

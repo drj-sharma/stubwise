@@ -95,6 +95,9 @@ export function buildStubDocument(input: BuildStubDocumentInput): StubDocument {
     ytdCents: ytd.byLine.get(lineKey(line)) ?? lineAmount(line),
   });
 
+  // A line with nothing now and nothing so far this year (unused overtime, say) only adds noise.
+  const hasValue = (r: StubDocumentRow): boolean => r.currentCents !== 0 || r.ytdCents !== 0 || (r.minutes ?? 0) !== 0;
+
   const rateLabel =
     worker.payType === 'hourly'
       ? `${dollars(worker.rateCents)} per hour`
@@ -117,8 +120,8 @@ export function buildStubDocument(input: BuildStubDocumentInput): StubDocument {
     period: stub.period,
     payDate: stub.payDate,
     scheduleLabel: PAY_SCHEDULE_LABELS[business.paySchedule],
-    earnings: stub.lines.filter((line) => line.kind === 'earning').map(row),
-    deductions: stub.lines.filter((line) => line.kind === 'deduction').map(row),
+    earnings: stub.lines.filter((line) => line.kind === 'earning').map(row).filter(hasValue),
+    deductions: stub.lines.filter((line) => line.kind === 'deduction').map(row).filter(hasValue),
     totals: {
       current,
       ytd: { grossCents: ytd.grossCents, deductionsCents: ytd.deductionsCents, netCents: ytd.netCents },

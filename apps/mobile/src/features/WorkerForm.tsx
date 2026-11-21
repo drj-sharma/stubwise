@@ -132,7 +132,7 @@ export function WorkerForm({ existing }: { existing: Worker | null }) {
                 }}>
                 <Text style={{ fontSize: 14, color: c.muted }}>$</Text>
                 <TextInput
-                  value={rate}
+                  defaultValue={rate}
                   onChangeText={setRate}
                   keyboardType="decimal-pad"
                   placeholder="0.00"

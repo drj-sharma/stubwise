@@ -1,12 +1,16 @@
 import { type Cents, formatCents, fromMinutes, parseDollars, payForMinutes, toMinutes } from '@stubwise/domain';
-import { useEffect, useState, type ReactNode } from 'react';
+import { useState, type ReactNode } from 'react';
 import { KeyboardAvoidingView, Modal, Platform, Pressable, Text, TextInput, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Button, TABULAR } from './primitives';
 import { useTheme } from './theme';
 
-/** A card that slides up from the bottom and sits above the keyboard. */
-function BottomSheet({ visible, title, onClose, children }: { visible: boolean; title: string; onClose: () => void; children: ReactNode }) {
+/**
+ * A card that slides up from the bottom and sits above the keyboard.
+ * The body is mounted only while the sheet is open, so every opening starts
+ * from fresh state taken from the current values.
+ */
+function BottomSheet({ visible, title, onClose, children }: { visible: boolean; title: string; onClose: () => void; children: () => ReactNode }) {
   const c = useTheme();
   const insets = useSafeAreaInsets();
   return (
@@ -26,33 +30,40 @@ function BottomSheet({ visible, title, onClose, children }: { visible: boolean; 
             maxWidth: 520,
           }}>
           <Text style={{ fontSize: 17, fontWeight: '600', color: c.text }}>{title}</Text>
-          {children}
+          {visible ? children() : null}
         </View>
       </KeyboardAvoidingView>
     </Modal>
   );
 }
 
+/**
+ * Money and time inputs are deliberately uncontrolled: the native field owns
+ * its text and reports every change. A controlled field can fall out of step
+ * with its state when keystrokes arrive faster than React re-renders, and on
+ * a pay stub the number on screen must be the number that is saved.
+ */
 function BigInput({
-  value,
+  initial,
   onChangeText,
   label,
   keyboardType,
-  width,
+  grow,
   autoFocus,
   prefix,
 }: {
-  value: string;
+  initial: string;
   onChangeText: (text: string) => void;
   label: string;
   keyboardType: 'number-pad' | 'decimal-pad' | 'default';
-  width?: number;
+  /** Set when the input shares a row with another one. */
+  grow?: boolean;
   autoFocus?: boolean;
   prefix?: string;
 }) {
   const c = useTheme();
   return (
-    <View style={{ gap: 6, flex: width ? undefined : 1, width }}>
+    <View style={{ gap: 6, flex: grow ? 1 : undefined }}>
       <Text style={{ fontSize: 12, color: c.muted }}>{label}</Text>
       <View
         style={{
@@ -67,7 +78,7 @@ function BigInput({
         }}>
         {prefix ? <Text style={{ fontSize: 22, color: c.muted }}>{prefix}</Text> : null}
         <TextInput
-          value={value}
+          defaultValue={initial}
           onChangeText={onChangeText}
           keyboardType={keyboardType}
           autoFocus={autoFocus}
@@ -78,6 +89,10 @@ function BigInput({
       </View>
     </View>
   );
+}
+
+function centsToText(cents: Cents): string {
+  return cents === 0 ? '' : (cents / 100).toFixed(2);
 }
 
 /** Edits a flat amount. With `onDelete`, also offers removing the line. */
@@ -96,20 +111,24 @@ export function AmountSheet({
   onDelete?: () => void;
   onClose: () => void;
 }) {
-  const [text, setText] = useState('');
-  useEffect(() => {
-    if (visible) setText(initialCents === 0 ? '' : (initialCents / 100).toFixed(2));
-  }, [visible, initialCents]);
-  const cents = text.trim() === '' ? 0 : parseDollars(text);
-
   return (
     <BottomSheet visible={visible} title={title} onClose={onClose}>
-      <BigInput value={text} onChangeText={setText} label="Amount" keyboardType="decimal-pad" autoFocus prefix="$" />
+      {() => <AmountBody initialCents={initialCents} onSave={onSave} onDelete={onDelete} />}
+    </BottomSheet>
+  );
+}
+
+function AmountBody({ initialCents, onSave, onDelete }: { initialCents: Cents; onSave: (cents: Cents) => void; onDelete?: () => void }) {
+  const [text, setText] = useState(() => centsToText(initialCents));
+  const cents = text.trim() === '' ? 0 : parseDollars(text);
+  return (
+    <>
+      <BigInput initial={centsToText(initialCents)} onChangeText={setText} label="Amount" keyboardType="decimal-pad" autoFocus prefix="$" />
       <View style={{ flexDirection: 'row', gap: 8 }}>
         {onDelete ? <Button title="Remove" variant="danger" onPress={onDelete} style={{ flex: 1 }} /> : null}
         <Button title="Save" onPress={() => cents !== null && onSave(cents)} disabled={cents === null} style={{ flex: 2 }} />
       </View>
-    </BottomSheet>
+    </>
   );
 }
 
@@ -132,37 +151,50 @@ export function TimeSheet({
   onSave: (minutes: number) => void;
   onClose: () => void;
 }) {
-  const c = useTheme();
-  const [hours, setHours] = useState('');
-  const [minutes, setMinutes] = useState('');
-  useEffect(() => {
-    if (!visible) return;
-    const split = fromMinutes(initialMinutes);
-    setHours(split.hours === 0 && split.minutes === 0 ? '' : String(split.hours));
-    setMinutes(split.minutes === 0 ? '' : String(split.minutes));
-  }, [visible, initialMinutes]);
-
-  const h = hours.trim() === '' ? 0 : Number(hours);
-  const m = minutes.trim() === '' ? 0 : Number(minutes);
-  const valid = Number.isInteger(h) && Number.isInteger(m) && h >= 0 && h <= 999 && m >= 0 && m <= 59;
-  const total = valid ? toMinutes(h, m) : null;
-
   return (
     <BottomSheet visible={visible} title={title} onClose={onClose}>
+      {() => <TimeBody initialMinutes={initialMinutes} rateCents={rateCents} onSave={onSave} />}
+    </BottomSheet>
+  );
+}
+
+/** Whole number from typed text, or null when it is not one. Empty counts as zero. */
+function wholeNumber(text: string, max: number): number | null {
+  const trimmed = text.trim();
+  if (trimmed === '') return 0;
+  if (!/^\d{1,3}$/.test(trimmed)) return null;
+  const value = Number(trimmed);
+  return value <= max ? value : null;
+}
+
+function TimeBody({ initialMinutes, rateCents, onSave }: { initialMinutes: number; rateCents: Cents; onSave: (minutes: number) => void }) {
+  const c = useTheme();
+  const split = fromMinutes(initialMinutes);
+  const initialHours = initialMinutes === 0 ? '' : String(split.hours);
+  const initialMins = split.minutes === 0 ? '' : String(split.minutes);
+  const [hours, setHours] = useState(initialHours);
+  const [minutes, setMinutes] = useState(initialMins);
+
+  const h = wholeNumber(hours, 999);
+  const m = wholeNumber(minutes, 59);
+  const total = h !== null && m !== null ? toMinutes(h, m) : null;
+
+  return (
+    <>
       <View style={{ flexDirection: 'row', gap: 10 }}>
-        <BigInput value={hours} onChangeText={(text) => setHours(text.replace(/\D/g, ''))} label="Hours" keyboardType="number-pad" autoFocus />
-        <BigInput value={minutes} onChangeText={(text) => setMinutes(text.replace(/\D/g, ''))} label="Minutes (0–59)" keyboardType="number-pad" />
+        <BigInput initial={initialHours} onChangeText={setHours} label="Hours" keyboardType="number-pad" autoFocus grow />
+        <BigInput initial={initialMins} onChangeText={setMinutes} label="Minutes (0–59)" keyboardType="number-pad" grow />
       </View>
       <View style={{ padding: 12, borderRadius: 14, backgroundColor: c.innerStrong, flexDirection: 'row', justifyContent: 'space-between' }}>
         <Text style={{ fontSize: 13, color: c.muted }}>
-          {total === null ? 'Minutes must be between 0 and 59' : `at ${formatCents(rateCents)} per hour`}
+          {total === null ? 'Use whole hours, and minutes from 0 to 59' : `at ${formatCents(rateCents)} per hour`}
         </Text>
         <Text style={[{ fontSize: 15, fontWeight: '700', color: c.text }, TABULAR]}>
           {total === null ? '—' : formatCents(payForMinutes(total, rateCents))}
         </Text>
       </View>
       <Button title="Save" onPress={() => total !== null && onSave(total)} disabled={total === null} />
-    </BottomSheet>
+    </>
   );
 }
 
@@ -180,27 +212,34 @@ export function AddLineSheet({
   onSave: (label: string, cents: Cents) => void;
   onClose: () => void;
 }) {
+  return (
+    <BottomSheet visible={visible} title={title} onClose={onClose}>
+      {() => <AddLineBody suggestions={suggestions} onSave={onSave} />}
+    </BottomSheet>
+  );
+}
+
+function AddLineBody({ suggestions, onSave }: { suggestions: readonly string[]; onSave: (label: string, cents: Cents) => void }) {
   const c = useTheme();
   const [label, setLabel] = useState('');
+  // Bumped when a suggestion is tapped, to remount the name field with the suggested text.
+  const [labelSeed, setLabelSeed] = useState(0);
   const [text, setText] = useState('');
-  useEffect(() => {
-    if (visible) {
-      setLabel('');
-      setText('');
-    }
-  }, [visible]);
   const cents = text.trim() === '' ? null : parseDollars(text);
   const ready = label.trim().length > 0 && cents !== null;
 
   return (
-    <BottomSheet visible={visible} title={title} onClose={onClose}>
+    <>
       <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
         {suggestions.map((suggestion) => {
           const on = suggestion === label;
           return (
             <Pressable
               key={suggestion}
-              onPress={() => setLabel(suggestion)}
+              onPress={() => {
+                setLabel(suggestion);
+                setLabelSeed((seed) => seed + 1);
+              }}
               accessibilityRole="button"
               accessibilityState={{ selected: on }}
               style={{
@@ -217,9 +256,9 @@ export function AddLineSheet({
           );
         })}
       </View>
-      <BigInput value={label} onChangeText={setLabel} label="Name on the stub" keyboardType="default" />
-      <BigInput value={text} onChangeText={setText} label="Amount" keyboardType="decimal-pad" prefix="$" />
+      <BigInput key={labelSeed} initial={label} onChangeText={setLabel} label="Name on the stub" keyboardType="default" />
+      <BigInput initial="" onChangeText={setText} label="Amount" keyboardType="decimal-pad" prefix="$" />
       <Button title="Add" onPress={() => ready && onSave(label.trim(), cents)} disabled={!ready} />
-    </BottomSheet>
+    </>
   );
 }
