@@ -12,6 +12,11 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 
 WORKDIR /srv
 
+# curl is what Coolify's health check calls inside the container.
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends curl \
+    && rm -rf /var/lib/apt/lists/*
+
 # Dependencies first, from the lockfile, so code changes do not reinstall them.
 RUN pip install --no-cache-dir uv
 COPY pyproject.toml uv.lock ./
@@ -30,6 +35,6 @@ EXPOSE 4000
 
 # Liveness only: the process answers. /ready also checks the database.
 HEALTHCHECK --interval=30s --timeout=5s --start-period=20s --retries=3 \
-    CMD python -c "import os,urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://127.0.0.1:%s/health' % os.environ.get('PORT','4000'), timeout=4).status == 200 else 1)"
+    CMD curl -fsS "http://127.0.0.1:${PORT:-4000}/health" || exit 1
 
 ENTRYPOINT ["./docker-entrypoint.sh"]
