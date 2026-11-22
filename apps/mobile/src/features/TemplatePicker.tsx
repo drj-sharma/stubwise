@@ -16,7 +16,7 @@ export interface TemplateSampleBusiness {
 }
 
 /** A fixed example stub, so templates can be compared before any real stub exists. */
-function sample(business: TemplateSampleBusiness): StubDocument {
+export function sample(business: TemplateSampleBusiness): StubDocument {
   return {
     business: { ...business, name: business.name || 'Your business', logoDataUri: null },
     worker: { name: 'Sample Worker', address: '100 Main St', typeLabel: 'Hourly employee', rateLabel: '$24.00 per hour' },
@@ -42,20 +42,58 @@ function sample(business: TemplateSampleBusiness): StubDocument {
   };
 }
 
+/** The sample stub as a fixed-width page, for the full-size view (pinch to zoom). */
+export function sampleHtml(document: StubDocument, templateId: TemplateId, accent: string): string {
+  return renderStubHtml(document, templateId, { accent }).replace('content="width=device-width, initial-scale=1"', 'content="width=816"');
+}
+
+/** The Letter page's width in CSS pixels. */
+const PAGE_WIDTH = 816;
+
+/**
+ * A sample stub drawn to fit a small view, such as a thumbnail. iOS will not
+ * zoom a page out below a quarter of its size, which cuts off the right of
+ * the page in anything narrower than about 200 points, so the page is shrunk
+ * with a CSS transform to the measured width instead (CSS zoom would re-flow the text).
+ */
+function StubPicture({ document, templateId, accent }: { document: StubDocument; templateId: TemplateId; accent: string }) {
+  const [width, setWidth] = useState(0);
+  const html =
+    width > 0
+      ? renderStubHtml(document, templateId, { accent }).replace(
+          '</style>',
+          `html, body { overflow: hidden; -webkit-text-size-adjust: none; } body { width: ${PAGE_WIDTH}px; transform: scale(${(width / PAGE_WIDTH).toFixed(4)}); transform-origin: 0 0; }\n</style>`,
+        )
+      : null;
+  return (
+    <View style={{ flex: 1, backgroundColor: '#FFFFFF' }} onLayout={(event) => setWidth(Math.floor(event.nativeEvent.layout.width))}>
+      {html ? <WebView originWhitelist={['*']} source={{ html }} javaScriptEnabled={false} scrollEnabled={false} style={{ flex: 1, backgroundColor: '#FFFFFF' }} /> : null}
+    </View>
+  );
+}
+
 /**
  * The template library: every layout shown with sample figures, plus the
  * accent colour for layouts that use one. Used in onboarding and in Settings.
+ *
+ * `compact` is for onboarding, where nothing may scroll: shorter thumbnails,
+ * no descriptions, View sample as an icon, and the accent colours left to
+ * their own step (`showAccents={false}`).
  */
 export function TemplatePicker({
   business,
   templateId,
   accent,
   onChange,
+  compact,
+  showAccents = true,
 }: {
   business: TemplateSampleBusiness;
   templateId: TemplateId;
   accent: string;
   onChange: (patch: { templateId?: TemplateId; accent?: string }) => void;
+  compact?: { thumbHeight: number };
+  showAccents?: boolean;
 }) {
   const c = useTheme();
   const insets = useSafeAreaInsets();
@@ -69,10 +107,6 @@ export function TemplatePicker({
       <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 10 }}>
         {TEMPLATES.map((template) => {
           const on = template.id === templateId;
-          const html = renderStubHtml(document, template.id, { accent }).replace(
-            'content="width=device-width, initial-scale=1"',
-            'content="width=816"',
-          );
           return (
             <Pressable
               key={template.id}
@@ -81,7 +115,7 @@ export function TemplatePicker({
               accessibilityState={{ selected: on }}
               accessibilityLabel={`${template.name} template. ${template.description}`}
               style={{
-                flexBasis: 150,
+                flexBasis: compact ? '45%' : 150,
                 flexGrow: 1,
                 borderRadius: 14,
                 borderWidth: 2,
@@ -89,69 +123,73 @@ export function TemplatePicker({
                 backgroundColor: c.inner,
                 overflow: 'hidden',
               }}>
-              <View style={{ height: 200, padding: 8 }} pointerEvents="none">
-                <WebView originWhitelist={['*']} source={{ html }} javaScriptEnabled={false} scalesPageToFit scrollEnabled={false} style={{ flex: 1, backgroundColor: '#FFFFFF' }} />
+              <View style={{ height: compact?.thumbHeight ?? 200, padding: compact ? 6 : 8 }} pointerEvents="none">
+                <StubPicture document={document} templateId={template.id} accent={accent} />
               </View>
-              <View style={{ padding: 10, gap: 2, borderTopWidth: 1, borderTopColor: c.border, backgroundColor: c.sheet }}>
-                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-                  <Text style={{ fontSize: 14, fontWeight: '600', color: c.text }}>{template.name}</Text>
-                  {on ? <Icon name="checkmark.circle.fill" size={18} color={c.primaryText} /> : null}
-                </View>
-                <Text style={{ fontSize: 12, lineHeight: 16, color: c.muted }}>{template.description}</Text>
-                <Pressable
-                  onPress={() => setViewing(template.id)}
-                  hitSlop={6}
-                  accessibilityRole="button"
-                  accessibilityLabel={`View a full sample of the ${template.name} design`}
-                  style={({ pressed }) => ({
-                    marginTop: 8,
-                    height: 36,
-                    borderRadius: 10,
-                    borderWidth: 1,
-                    borderColor: c.fieldBorder,
+              {compact ? (
+                <View
+                  style={{
+                    height: 44,
+                    paddingLeft: 10,
+                    paddingRight: 4,
                     flexDirection: 'row',
                     alignItems: 'center',
-                    justifyContent: 'center',
-                    gap: 6,
-                    opacity: pressed ? 0.6 : 1,
-                  })}>
-                  <Icon name="eye" size={15} color={c.primaryText} />
-                  <Text style={{ fontSize: 13, fontWeight: '600', color: c.primaryText }}>View sample</Text>
-                </Pressable>
-              </View>
+                    gap: 4,
+                    borderTopWidth: 1,
+                    borderTopColor: c.border,
+                    backgroundColor: c.sheet,
+                  }}>
+                  {on ? <Icon name="checkmark.circle.fill" size={16} color={c.primaryText} /> : null}
+                  <Text style={{ flex: 1, fontSize: 14, fontWeight: '600', color: c.text }} numberOfLines={1}>
+                    {template.name}
+                  </Text>
+                  <Pressable
+                    onPress={() => setViewing(template.id)}
+                    hitSlop={6}
+                    accessibilityRole="button"
+                    accessibilityLabel={`View a full sample of the ${template.name} design`}
+                    style={({ pressed }) => ({ width: 40, height: 40, alignItems: 'center', justifyContent: 'center', opacity: pressed ? 0.5 : 1 })}>
+                    <Icon name="eye" size={17} color={c.primaryText} />
+                  </Pressable>
+                </View>
+              ) : (
+                <View style={{ padding: 10, gap: 2, borderTopWidth: 1, borderTopColor: c.border, backgroundColor: c.sheet }}>
+                  <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+                    <Text style={{ fontSize: 14, fontWeight: '600', color: c.text }}>{template.name}</Text>
+                    {on ? <Icon name="checkmark.circle.fill" size={18} color={c.primaryText} /> : null}
+                  </View>
+                  <Text style={{ fontSize: 12, lineHeight: 16, color: c.muted }}>{template.description}</Text>
+                  <Pressable
+                    onPress={() => setViewing(template.id)}
+                    hitSlop={6}
+                    accessibilityRole="button"
+                    accessibilityLabel={`View a full sample of the ${template.name} design`}
+                    style={({ pressed }) => ({
+                      marginTop: 8,
+                      height: 36,
+                      borderRadius: 10,
+                      borderWidth: 1,
+                      borderColor: c.fieldBorder,
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: 6,
+                      opacity: pressed ? 0.6 : 1,
+                    })}>
+                    <Icon name="eye" size={15} color={c.primaryText} />
+                    <Text style={{ fontSize: 13, fontWeight: '600', color: c.primaryText }}>View sample</Text>
+                  </Pressable>
+                </View>
+              )}
             </Pressable>
           );
         })}
       </View>
 
-      {selected?.usesAccent ? (
+      {showAccents && selected?.usesAccent ? (
         <View style={{ gap: 8 }}>
           <SectionLabel>Accent colour</SectionLabel>
-          <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 10 }}>
-            {ACCENTS.map((option) => {
-              const on = option.toLowerCase() === accent.toLowerCase();
-              return (
-                <Pressable
-                  key={option}
-                  onPress={() => onChange({ accent: option })}
-                  accessibilityRole="button"
-                  accessibilityState={{ selected: on }}
-                  accessibilityLabel={`Accent colour ${option}`}
-                  style={{
-                    width: 44,
-                    height: 44,
-                    borderRadius: 22,
-                    backgroundColor: option,
-                    borderWidth: 3,
-                    borderColor: on ? c.text : c.sheet,
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  }}>
-                  {on ? <Icon name="checkmark" size={16} color="#FFFFFF" /> : null}
-                </Pressable>
-              );
-            })}
-          </View>
+          <AccentSwatches accent={accent} onChange={(next) => onChange({ accent: next })} />
         </View>
       ) : null}
 
@@ -161,7 +199,9 @@ export function TemplatePicker({
           <View style={{ height: 60, paddingHorizontal: 14, flexDirection: 'row', alignItems: 'center', gap: 12 }}>
             <CircleButton icon="xmark" label="Close sample" onPress={() => setViewing(null)} />
             <View style={{ flex: 1 }}>
-              <Text accessibilityRole="header" style={{ fontSize: 16, fontWeight: '600', color: c.text }}>{viewed?.name} sample</Text>
+              <Text accessibilityRole="header" style={{ fontSize: 16, fontWeight: '600', color: c.text }}>
+                {viewed?.name} sample
+              </Text>
               <Text style={{ fontSize: 12, color: c.muted }}>Sample figures. Pinch to zoom.</Text>
             </View>
           </View>
@@ -169,7 +209,7 @@ export function TemplatePicker({
             {viewed ? (
               <WebView
                 originWhitelist={['*']}
-                source={{ html: renderStubHtml(document, viewed.id, { accent }).replace('content="width=device-width, initial-scale=1"', 'content="width=816"') }}
+                source={{ html: sampleHtml(document, viewed.id, accent) }}
                 javaScriptEnabled={false}
                 scalesPageToFit
                 style={{ flex: 1, backgroundColor: '#FFFFFF' }}
@@ -188,6 +228,50 @@ export function TemplatePicker({
           </View>
         </View>
       </Modal>
+    </View>
+  );
+}
+
+/** The accent colour choices, as round swatches. Wraps onto a second row on narrow screens. */
+export function AccentSwatches({ accent, onChange, size = 44, gap = 10 }: { accent: string; onChange: (accent: string) => void; size?: number; gap?: number }) {
+  const c = useTheme();
+  return (
+    <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap }}>
+      {ACCENTS.map((option) => {
+        const on = option.toLowerCase() === accent.toLowerCase();
+        return (
+          <Pressable
+            key={option}
+            onPress={() => onChange(option)}
+            accessibilityRole="button"
+            accessibilityState={{ selected: on }}
+            accessibilityLabel={`Accent colour ${option}`}
+            style={{
+              width: size,
+              height: size,
+              borderRadius: size / 2,
+              backgroundColor: option,
+              borderWidth: 3,
+              borderColor: on ? c.text : c.sheet,
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}>
+            {on ? <Icon name="checkmark" size={16} color="#FFFFFF" /> : null}
+          </Pressable>
+        );
+      })}
+    </View>
+  );
+}
+
+/** A non-interactive picture of one design with the sample figures, for showing a choice in place. */
+export function DesignPreview({ business, templateId, accent, height }: { business: TemplateSampleBusiness; templateId: TemplateId; accent: string; height: number }) {
+  const c = useTheme();
+  return (
+    <View style={{ height, padding: 14, borderRadius: 28, backgroundColor: c.primarySoft }} pointerEvents="none">
+      <View style={{ flex: 1, borderRadius: 12, overflow: 'hidden' }}>
+        <StubPicture document={sample(business)} templateId={templateId} accent={accent} />
+      </View>
     </View>
   );
 }

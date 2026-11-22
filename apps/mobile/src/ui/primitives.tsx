@@ -1,6 +1,6 @@
 import { LinearGradient } from 'expo-linear-gradient';
 import { SymbolView, type SFSymbol } from 'expo-symbols';
-import type { ReactNode } from 'react';
+import { type ComponentProps, type ReactNode, useState } from 'react';
 import {
   Pressable,
   type StyleProp,
@@ -288,6 +288,18 @@ export function Field({ label, last, style, value, ...input }: TextInputProps & 
       />
     </View>
   );
+}
+
+/**
+ * A Field given only its starting text, for screens that keep what is typed in
+ * state. React Native writes a changed `defaultValue` back into the text box,
+ * so handing a Field the live state can drop keystrokes typed while the screen
+ * redraws. A Field mounted again (coming back to a step) starts from the
+ * current state.
+ */
+export function SteadyField({ value, ...props }: ComponentProps<typeof Field>) {
+  const [initial] = useState(value);
+  return <Field {...props} value={initial} />;
 }
 
 export function Row({
