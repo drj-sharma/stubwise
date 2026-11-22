@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import os
 import time
 import uuid
 from collections.abc import Iterator
@@ -13,7 +14,7 @@ import pytest
 from cryptography.hazmat.primitives.asymmetric import rsa
 from fastapi.testclient import TestClient
 
-from app.config import Settings, TaxBanditsCredentials
+from app.config import Settings, TaxBanditsCredentials, _database_url
 from app.main import create_app
 from app.models import Base
 
@@ -166,6 +167,10 @@ class FakeTaxBandits:
         return httpx.Response(200, json={key: {"SuccessRecords": [], "ErrorRecords": None}, "Errors": None})
 
 
+# In-memory SQLite by default. Set TEST_DATABASE_URL to run the same suite against Postgres
+# (a database used for nothing else: every test drops and recreates all tables).
+TEST_DATABASE_URL = _database_url(os.environ.get("TEST_DATABASE_URL", "").strip() or "sqlite://")
+
 GOOGLE_CLIENT_ID = "1234-test.apps.googleusercontent.com"
 APPLE_BUNDLE_ID = "com.stubwise.app"
 JWT_SECRET = "test-secret-test-secret-test-secret-0123"
@@ -255,7 +260,7 @@ class Outbound:
 def settings(**overrides: Any) -> Settings:
     values: dict[str, Any] = {
         "app_env": "test",
-        "database_url": "sqlite://",
+        "database_url": TEST_DATABASE_URL,
         "auth_jwt_secret": JWT_SECRET,
         "google_client_ids": (GOOGLE_CLIENT_ID,),
         "apple_client_ids": (APPLE_BUNDLE_ID,),
@@ -269,6 +274,8 @@ def settings(**overrides: Any) -> Settings:
 
 def make_client(outbound: Outbound, **overrides: Any) -> TestClient:
     app = create_app(settings(**overrides), outbound_transport=httpx.MockTransport(outbound))
+    if not TEST_DATABASE_URL.startswith("sqlite"):
+        Base.metadata.drop_all(app.state.sessions.kw["bind"])  # a real database keeps the last test's rows
     # Tests build the schema straight from the models; test_migrations checks Alembic produces the same one.
     Base.metadata.create_all(app.state.sessions.kw["bind"])
     return TestClient(app)

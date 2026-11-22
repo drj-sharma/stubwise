@@ -1,0 +1,42 @@
+# The API and its own Postgres, for running the backend the way production does.
+#
+#   cd apps/backend
+#   docker compose -f docker-compose.backend.yml up --build
+#   curl http://127.0.0.1:4000/health
+#
+# The container applies migrations before it starts (docker-entrypoint.sh).
+# Passwords here are for local use only; production settings come from the host's environment.
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: stubwise
+      POSTGRES_PASSWORD: stubwise # local development only
+      POSTGRES_DB: stubwise
+    volumes:
+      - stubwise-backend-pg:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U stubwise"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+
+  api:
+    build: .
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      # "development" so the stack starts with nothing else set: a throwaway signing secret is generated
+      # and the docs are served at /docs. Set APP_ENV=production to try the production checks.
+      APP_ENV: ${APP_ENV:-development}
+      DATABASE_URL: postgresql://stubwise:stubwise@db:5432/stubwise
+      AUTH_JWT_SECRET: ${AUTH_JWT_SECRET:-}
+      GOOGLE_CLIENT_IDS: ${GOOGLE_CLIENT_IDS:-}
+      APPLE_CLIENT_IDS: ${APPLE_CLIENT_IDS:-}
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+    ports:
+      - "127.0.0.1:4000:4000"
+
+volumes:
+  stubwise-backend-pg:
