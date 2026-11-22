@@ -13,15 +13,17 @@ import {
   todayIso,
   usStateName,
 } from '@stubwise/domain';
+import * as Crypto from 'expo-crypto';
 import { router } from 'expo-router';
-import { useSQLiteContext } from 'expo-sqlite';
 import { useState } from 'react';
 import { Alert, Pressable, ScrollView, Switch, Text, TextInput, View } from 'react-native';
-import { createWorker, deleteWorker, updateWorker } from '@/db/repo';
+import { isConflict } from '@/api';
+import { createWorker, deleteWorker, updateWorker } from '@/api/records';
 import type { NewWorker, Worker } from '@/db/types';
 import { Amount, Button, CardHeader, Field, Row, SectionLabel, Segmented, Sheet, StatTile, SubCard, TABULAR } from '@/ui/primitives';
 import { useBusiness } from '@/state/business';
 import { AddLineSheet, AmountSheet, StateSheet } from '@/ui/sheets';
+import { alertError } from '@/ui/states';
 import { useTheme } from '@/ui/theme';
 
 type Deduction = { label: string; amountCents: Cents };
@@ -40,10 +42,11 @@ const W4_AMOUNTS: { key: 'dependentsCents' | 'otherIncomeCents' | 'deductionsCen
 ];
 
 /** Add or edit a worker: who they are, how they are paid, what comes off every stub, and what they were paid before the app. */
-export function WorkerForm({ existing }: { existing: Worker | null }) {
+export function WorkerForm({ existing, onConflict }: { existing: Worker | null; onConflict?: () => void }) {
   const c = useTheme();
-  const db = useSQLiteContext();
   const business = useBusiness();
+  // One key per form, so a retry after a lost reply cannot add the same worker twice.
+  const [createKey] = useState(() => Crypto.randomUUID());
   const year = Number(todayIso().slice(0, 4));
 
   const [tax, setTax] = useState<TaxProfile>(existing?.taxProfile ?? DEFAULT_TAX_PROFILE);
@@ -94,9 +97,13 @@ export function WorkerForm({ existing }: { existing: Worker | null }) {
     };
     setSaving(true);
     try {
-      if (existing) await updateWorker(db, existing.id, worker);
-      else await createWorker(db, worker);
+      if (existing) await updateWorker(existing.id, existing.version, worker);
+      else await createWorker(worker, createKey);
       router.back();
+    } catch (error) {
+      alertError('Could not save the worker', error);
+      // Changed on another device since this form opened: load the current copy to edit again.
+      if (isConflict(error)) onConflict?.();
     } finally {
       setSaving(false);
     }
@@ -110,7 +117,10 @@ export function WorkerForm({ existing }: { existing: Worker | null }) {
         text: 'Delete worker and stubs',
         style: 'destructive',
         onPress: () => {
-          void deleteWorker(db, existing.id).then(() => router.dismissTo('/workers'));
+          deleteWorker(existing.id).then(
+            () => router.dismissTo('/workers'),
+            (error: unknown) => alertError('Could not delete the worker', error),
+          );
         },
       },
     ]);

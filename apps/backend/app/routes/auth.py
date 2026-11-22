@@ -6,7 +6,7 @@ from fastapi import APIRouter, Depends, Request, Response
 from pydantic import ConfigDict, Field, StringConstraints
 from sqlalchemy.orm import Session
 
-from ..auth import sessions
+from ..auth import passwords, sessions
 from ..auth.deps import current_principal
 from ..auth.providers import Provider
 from ..auth.sessions import Principal
@@ -156,6 +156,61 @@ def revoke_session(
     """Signs another device out."""
     sessions.revoke_session(db, principal.user.id, session_id, "auth.session_revoked")
     return Response(status_code=204)
+
+
+# ---- Email and password ------------------------------------------------------
+
+password_router = APIRouter(prefix="/v1/auth/password", tags=["Sign-in and sessions"])
+"""Mounted only when PASSWORD_LOGIN_ENABLED=true (see app/main.py)."""
+
+Email = Annotated[
+    str, StringConstraints(strip_whitespace=True, to_lower=True, max_length=320, pattern=r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
+]
+Password = Annotated[str, StringConstraints(min_length=passwords.MIN_LENGTH, max_length=passwords.MAX_LENGTH)]
+
+
+class PasswordSignUp(Model):
+    model_config = ConfigDict(
+        strict=True,
+        extra="ignore",
+        json_schema_extra={
+            "examples": [{"email": "renee@example.com", "password": "correct horse battery", "name": ""}]
+        },
+    )
+
+    email: Email
+    password: Password = Field(repr=False, description="10 to 128 characters.")
+    name: Annotated[str, StringConstraints(strip_whitespace=True, max_length=120)] = ""
+
+
+class PasswordSignIn(Model):
+    model_config = ConfigDict(
+        strict=True,
+        extra="ignore",
+        json_schema_extra={"examples": [{"email": "renee@example.com", "password": "correct horse battery"}]},
+    )
+
+    email: Email
+    # Only the upper bound is checked here, so a too-short password gets the same answer as a wrong one.
+    password: Annotated[str, StringConstraints(min_length=1, max_length=passwords.MAX_LENGTH)] = Field(repr=False)
+
+
+@password_router.post("/signup", response_model=TokenPair, status_code=200, dependencies=[Depends(auth_rate_limit)])
+def sign_up_with_password(body: PasswordSignUp, request: Request, db: Session = Depends(get_session)) -> Any:
+    """Creates an account that signs in with this email address and password, and signs it in.
+
+    There is no email verification and no password reset: the address is not
+    checked to belong to the person, and a forgotten password cannot be recovered.
+    """
+    user = account.sign_up_with_password(db, body.email, body.password, body.name)
+    return sessions.start_session(db, request.app.state.settings, user, request.headers.get("user-agent", ""))
+
+
+@password_router.post("/login", response_model=TokenPair, dependencies=[Depends(auth_rate_limit)])
+def sign_in_with_password(body: PasswordSignIn, request: Request, db: Session = Depends(get_session)) -> Any:
+    """Signs in to an email-and-password account. Any failure is the same 401."""
+    user = account.sign_in_with_password(db, body.email, body.password)
+    return sessions.start_session(db, request.app.state.settings, user, request.headers.get("user-agent", ""))
 
 
 me_router = APIRouter(prefix="/v1/me", tags=["Account"])

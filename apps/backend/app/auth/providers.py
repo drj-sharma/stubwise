@@ -36,6 +36,8 @@ from ..errors import ApiError
 log = logging.getLogger(__name__)
 
 Provider = Literal["google", "apple"]
+AccountProvider = Literal["google", "apple", "password"]
+"""How an account signs in: through Google or Apple, or with an email address and password."""
 
 GOOGLE_ISSUERS = ("accounts.google.com", "https://accounts.google.com")
 GOOGLE_JWKS_URL = "https://www.googleapis.com/oauth2/v3/certs"
@@ -56,7 +58,7 @@ _REFETCH_INTERVAL = 60
 
 @dataclass(frozen=True, slots=True)
 class VerifiedIdentity:
-    provider: Provider
+    provider: AccountProvider
     subject: str
     email: str | None
     name: str | None

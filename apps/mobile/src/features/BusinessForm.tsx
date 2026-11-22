@@ -1,16 +1,16 @@
 import { PAY_SCHEDULES, PAY_SCHEDULE_LABELS, type PaySchedule, type UsStateCode, usStateName } from '@stubwise/domain';
-import * as ImagePicker from 'expo-image-picker';
-import { useSQLiteContext } from 'expo-sqlite';
 import { useState } from 'react';
 import { Alert, Image, Pressable, ScrollView, Text, View } from 'react-native';
-import { saveBusinessDetails, updateBusinessSettings } from '@/db/repo';
+import { isConflict } from '@/api';
 import type { Business } from '@/db/types';
+import { pickLogoDataUri } from '@/features/Onboarding';
 import { useBusinessState } from '@/state/business';
 import { Button, Field, Heading, Icon, Row, SectionLabel, Sheet, SubCard } from '@/ui/primitives';
 import { StateSheet } from '@/ui/sheets';
+import { alertError } from '@/ui/states';
 import { initials, useTheme } from '@/ui/theme';
 
-/** Business details, used for first-run setup and for editing later from Settings. */
+/** Business details, edited from Settings. (First-run setup asks the same questions one screen at a time.) */
 export function BusinessForm({
   initial,
   title,
@@ -18,37 +18,27 @@ export function BusinessForm({
   submitLabel,
   onSaved,
 }: {
-  initial: Business | null;
+  initial: Business;
   title: string;
   subtitle: string;
   submitLabel: string;
   onSaved: () => void;
 }) {
   const c = useTheme();
-  const db = useSQLiteContext();
-  const { reload } = useBusinessState();
-  const [name, setName] = useState(initial?.name ?? '');
-  const [address, setAddress] = useState(initial?.address ?? '');
-  const [phone, setPhone] = useState(initial?.phone ?? '');
-  const [employerId, setEmployerId] = useState(initial?.employerId ?? '');
-  const [logo, setLogo] = useState<string | null>(initial?.logoDataUri ?? null);
-  const [schedule, setSchedule] = useState<PaySchedule>(initial?.paySchedule ?? 'biweekly');
-  const [state, setState] = useState<UsStateCode | null>(initial?.state ?? null);
+  const { update } = useBusinessState();
+  const [name, setName] = useState(initial.name);
+  const [address, setAddress] = useState(initial.address);
+  const [phone, setPhone] = useState(initial.phone);
+  const [employerId, setEmployerId] = useState(initial.employerId ?? '');
+  const [logo, setLogo] = useState<string | null>(initial.logoDataUri);
+  const [schedule, setSchedule] = useState<PaySchedule>(initial.paySchedule);
+  const [state, setState] = useState<UsStateCode | null>(initial.state);
   const [pickingState, setPickingState] = useState(false);
   const [saving, setSaving] = useState(false);
 
   const pickLogo = async (): Promise<void> => {
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ['images'],
-      allowsEditing: true,
-      aspect: [1, 1],
-      quality: 0.4,
-      base64: true,
-    });
-    const asset = result.canceled ? null : result.assets[0];
-    if (!asset?.base64) return;
-    const mime = asset.mimeType === 'image/png' ? 'image/png' : 'image/jpeg';
-    setLogo(`data:${mime};base64,${asset.base64}`);
+    const picked = await pickLogoDataUri();
+    if (picked) setLogo(picked);
   };
 
   const save = async (): Promise<void> => {
@@ -58,17 +48,20 @@ export function BusinessForm({
     }
     setSaving(true);
     try {
-      await saveBusinessDetails(db, {
+      await update({
         name: name.trim(),
         address: address.trim(),
         phone: phone.trim(),
+        state,
         employerId: employerId.trim() === '' ? null : employerId.trim(),
         logoDataUri: logo,
         paySchedule: schedule,
       });
-      await updateBusinessSettings(db, { state });
-      await reload();
       onSaved();
+    } catch (error) {
+      // After a conflict the provider has reloaded the business; close so the form reopens with it.
+      alertError('Could not save the business', error);
+      if (isConflict(error)) onSaved();
     } finally {
       setSaving(false);
     }

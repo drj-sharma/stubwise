@@ -30,15 +30,11 @@ Signing in needs a real Google or Apple ID token, so for local work there is a s
 uv run python scripts/seed.py
 ```
 
-Checks:
+To sign in from the app on a simulator without Apple or Google, turn on email-and-password accounts (see [Accounts](#accounts)):
 
 ```sh
-uv run pytest            # in-memory SQLite
-uv run ruff check
-TEST_DATABASE_URL=postgresql://user:pass@127.0.0.1:5432/some_empty_db uv run pytest   # same suite on Postgres
+PASSWORD_LOGIN_ENABLED=true uv run uvicorn --factory app.main:create_app --port 4000
 ```
-
-`TEST_DATABASE_URL` must name a database used for nothing else: every test drops and recreates all tables.
 
 ## Deploy
 
@@ -57,8 +53,9 @@ The image is built from this folder alone (`Dockerfile`, build context `apps/bac
 | `DOCS_ENABLED` | no | `true` serves `/docs` and `/openapi.json` in production. |
 | `RATE_LIMIT_PER_MINUTE`, `AUTH_RATE_LIMIT_PER_MINUTE`, `WRITE_RATE_LIMIT_PER_MINUTE` | no | 300 per client address, 20 per address on sign-in routes, 120 changes per user. |
 | `REFRESH_TOKEN_DAYS` | no | 60. |
+| `PASSWORD_LOGIN_ENABLED` | no | `true` adds email-and-password accounts (`/v1/auth/password/...`). Off (404) by default. Allowed in production. |
 
-With `APP_ENV=production` the process refuses to start, naming the variable, if `DATABASE_URL` or `AUTH_JWT_SECRET` is missing, the secret is too short, or neither sign-in provider is configured.
+With `APP_ENV=production` the process refuses to start, naming the variable, if `DATABASE_URL` or `AUTH_JWT_SECRET` is missing, the secret is too short, or no sign-in method is on (Google, Apple, or `PASSWORD_LOGIN_ENABLED=true`).
 
 **Health checks.** `GET /health` is liveness: no authentication, no database, answers at once. Point the platform's health check at it. `GET /ready` also runs `SELECT 1` and returns 503 when the database does not answer.
 
@@ -79,6 +76,8 @@ A test fails if the models and the migrations disagree. `python -m app.migrate` 
 ## Accounts
 
 `POST /v1/auth/google` takes `{ idToken }`; `POST /v1/auth/apple` takes `{ identityToken, fullName? }` (Apple gives the app the name only on the first sign-in). The server verifies the token against the provider's published keys — signature (RS256), `iss`, `aud` against the configured client IDs, `exp`, and for Google `email_verified` — and caches the keys for as long as the provider's `Cache-Control` allows. If the token carries a `nonce`, the request must carry the same value.
+
+**Email and password** (only when `PASSWORD_LOGIN_ENABLED=true`): `POST /v1/auth/password/signup` takes `{ email, password, name? }`, `POST /v1/auth/password/login` takes `{ email, password }`; both return the same session as the provider routes. The account's provider is `password` and its subject the trimmed, lower-cased address. Passwords are 10–128 characters and stored only as a salted scrypt hash (`hashlib.scrypt`, n=2^15, r=8, p=1) in `password_credentials`, in a self-describing string so the parameters can be raised later. Every login failure is the same `401 "Email or password is incorrect."`, and an unknown address costs the same hashing work as a known one. Signing up with an address that already has a password account is a 409. **There is no email verification and no password reset** (the server sends no email): the address is not proven to belong to the person, and a forgotten password cannot be recovered. Both routes share the sign-in rate limit.
 
 It then issues its own session:
 

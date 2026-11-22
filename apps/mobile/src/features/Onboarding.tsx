@@ -1,26 +1,30 @@
 import { PAY_SCHEDULES, PAY_SCHEDULE_LABELS, type PaySchedule, type UsStateCode, DEFAULT_TAX_PROFILE, parseDollars, usStateName } from '@stubwise/domain';
 import { DEFAULT_ACCENT, DEFAULT_TEMPLATE_ID, type TemplateId } from '@stubwise/templates';
+import * as Crypto from 'expo-crypto';
 import * as ImagePicker from 'expo-image-picker';
 import { router } from 'expo-router';
-import { useSQLiteContext } from 'expo-sqlite';
 import type { SFSymbol } from 'expo-symbols';
 import { type ReactNode, useState } from 'react';
 import { Alert, Image, KeyboardAvoidingView, Platform, Pressable, ScrollView, Text, TextInput, View } from 'react-native';
 import Animated, { FadeInRight } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { createWorker, saveBusinessDetails, updateBusinessSettings } from '@/db/repo';
-import type { Worker } from '@/db/types';
+import { ApiError } from '@/api';
+import { createBusiness, createWorker } from '@/api/records';
+import type { NewWorker, Worker } from '@/db/types';
 import { TemplatePicker } from '@/features/TemplatePicker';
+import { useAuth } from '@/state/auth';
 import { useBusinessState } from '@/state/business';
 import { Animation, type AnimationName } from '@/ui/Animation';
 import { Button, CircleButton, Field, Icon, Row, Screen, SectionLabel, Segmented, Sheet, SubCard, TABULAR } from '@/ui/primitives';
 import { StateSheet } from '@/ui/sheets';
+import { alertError } from '@/ui/states';
 import { initials, useTheme } from '@/ui/theme';
 
 /** The app icon, shown beside the name on the first and last screens. */
 const APP_ICON = require('../../assets/images/icon.png');
 
-const STEPS = ['welcome', 'secure', 'name', 'contact', 'pay', 'template', 'worker', 'done'] as const;
+/** The welcome is on the sign-in screen, which comes first; setup starts once signed in. */
+const STEPS = ['secure', 'name', 'contact', 'pay', 'template', 'worker', 'done'] as const;
 type Step = (typeof STEPS)[number];
 
 /** Steps that count towards the progress bar: the ones that ask something. */
@@ -33,19 +37,35 @@ const SCHEDULE_HINTS: Record<PaySchedule, string> = {
   monthly: '12 stubs a year',
 };
 
+/** The server's limit on a logo (a data: URI), so a too-large photo is caught before it is sent. */
+export const MAX_LOGO_CHARS = 400_000;
+
+/** A logo from the photo library as a data: URI, or null if cancelled or too large (the person is told). */
+export async function pickLogoDataUri(): Promise<string | null> {
+  const result = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ['images'], allowsEditing: true, aspect: [1, 1], quality: 0.4, base64: true });
+  const asset = result.canceled ? null : result.assets[0];
+  if (!asset?.base64) return null;
+  const uri = `data:${asset.mimeType === 'image/png' ? 'image/png' : 'image/jpeg'};base64,${asset.base64}`;
+  if (uri.length > MAX_LOGO_CHARS) {
+    Alert.alert('That picture is too large', 'Choose a smaller image for the logo, or crop it closer.');
+    return null;
+  }
+  return uri;
+}
+
 /**
- * First run. One question per screen, in the order a stub is built: who the
- * employer is, how often they pay, what the stub looks like, who gets one.
- * Nothing is saved until the last question, so going back never leaves a
- * half-made business behind.
+ * First run, once signed in. One question per screen, in the order a stub is
+ * built: who the employer is, how often they pay, what the stub looks like,
+ * who gets one. Nothing is sent to the server until the last question, so
+ * going back never leaves a half-made business behind.
  */
 export function Onboarding() {
   const c = useTheme();
-  const db = useSQLiteContext();
   const insets = useSafeAreaInsets();
-  const { reload } = useBusinessState();
+  const { setBusiness } = useBusinessState();
+  const { signOut } = useAuth();
 
-  const [step, setStep] = useState<Step>('welcome');
+  const [step, setStep] = useState<Step>('secure');
   const [name, setName] = useState('');
   const [logo, setLogo] = useState<string | null>(null);
   const [address, setAddress] = useState('');
@@ -63,17 +83,18 @@ export function Onboarding() {
   const [rate, setRate] = useState('');
   const [saving, setSaving] = useState(false);
   const [firstWorkerId, setFirstWorkerId] = useState<string | null>(null);
+  // One key per worker, so a retry after a lost reply cannot create the worker twice.
+  const [workerKey, setWorkerKey] = useState(() => Crypto.randomUUID());
 
   const index = STEPS.indexOf(step);
   const go = (to: Step): void => setStep(to);
   const next = (): void => go(STEPS[index + 1] ?? 'done');
-  const back = (): void => go(STEPS[index - 1] ?? 'welcome');
+  // Back from the first question returns to the sign-in screen; nothing has been saved yet.
+  const back = (): void => (index === 0 ? void signOut() : go(STEPS[index - 1] ?? 'secure'));
 
   const pickLogo = async (): Promise<void> => {
-    const result = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ['images'], allowsEditing: true, aspect: [1, 1], quality: 0.4, base64: true });
-    const asset = result.canceled ? null : result.assets[0];
-    if (!asset?.base64) return;
-    setLogo(`data:${asset.mimeType === 'image/png' ? 'image/png' : 'image/jpeg'};base64,${asset.base64}`);
+    const picked = await pickLogoDataUri();
+    if (picked) setLogo(picked);
   };
 
   /** Saves everything in one go. `withWorker` is false when the worker step was skipped. */
@@ -85,17 +106,23 @@ export function Onboarding() {
     }
     setSaving(true);
     try {
-      await saveBusinessDetails(db, {
+      // Creates the business, or updates it if an earlier attempt got that far.
+      const business = await createBusiness({
         name: name.trim(),
         address: address.trim(),
         phone: phone.trim(),
+        state,
         employerId: employerId.trim() === '' ? null : employerId.trim(),
         logoDataUri: logo,
         paySchedule: schedule,
+        templateId,
+        accent,
+        overtimePct: Number(overtimePct),
       });
-      await updateBusinessSettings(db, { state, templateId, accent, overtimePct: Number(overtimePct) });
+      // This opens the rest of the app; the setup screen stays to show the last step.
+      setBusiness(business);
       if (withWorker && rateCents) {
-        const id = await createWorker(db, {
+        const worker: NewWorker = {
           name: workerName.trim(),
           address: '',
           type: workerType,
@@ -104,13 +131,22 @@ export function Onboarding() {
           defaultDeductions: [],
           startingYtd: null,
           taxProfile: DEFAULT_TAX_PROFILE,
-        });
-        setFirstWorkerId(id);
+        };
+        let created: Worker;
+        try {
+          created = await createWorker(worker, workerKey);
+        } catch (error) {
+          // The key was used for different details (they were changed after a failed attempt): this is a new worker.
+          if (!(error instanceof ApiError && error.code === 'idempotency_key_reused')) throw error;
+          const fresh = Crypto.randomUUID();
+          setWorkerKey(fresh);
+          created = await createWorker(worker, fresh);
+        }
+        setFirstWorkerId(created.id);
       }
-      await reload();
       go('done');
-    } catch {
-      Alert.alert('Could not save', 'Nothing was lost. Please try again.');
+    } catch (error) {
+      alertError('Could not finish setup', error);
     } finally {
       setSaving(false);
     }
@@ -131,30 +167,22 @@ export function Onboarding() {
   let skip: { title: string; onPress: () => void } | null = null;
 
   switch (step) {
-    case 'welcome':
-      animation = 'welcome';
-      title = 'Pay stubs, done in a minute';
-      subtitle = 'Set up once. After that, each pay day is a couple of taps.';
-      body = (
-        <View style={{ gap: 4 }}>
-          <Point icon="person.2" title="Add your workers" text="Employees and 1099 contractors, hourly or salaried." />
-          <Point icon="arrow.right.circle" title="Tap “Next pay period”" text="Hours, pay and deductions carry over. Year-to-date adds itself up." />
-          <Point icon="square.and.arrow.up" title="Share or print a clean PDF" text="Pick the stub design you like once and it is used every time." />
-        </View>
-      );
-      primary = { title: 'Get started', onPress: next };
-      break;
-
     case 'secure':
       animation = 'secure';
       title = 'Your records stay private';
       subtitle = 'Pay records are sensitive. Here is exactly how CrewStub handles them.';
       body = (
         <View style={{ gap: 4 }}>
-          <Point tone="success" icon="iphone" title="Kept on this device" text="Workers, pay and stubs are saved here, not on our servers. There is no account to create." />
-          <Point tone="success" icon="lock.fill" title="Encrypted when your device is locked" text="iOS encrypts CrewStub’s data with your passcode. Keep a passcode set to stay protected." />
-          <Point tone="success" icon="icloud.slash" title="Nothing is uploaded" text="A stub leaves this device only when you share or print it yourself." />
+          <Point
+            tone="success"
+            icon="person.crop.circle"
+            title="Stored under your account"
+            text="Workers, pay and stubs are kept on CrewStub’s servers under the account you just signed in with."
+          />
+          <Point tone="success" icon="lock.fill" title="Sent over an encrypted connection" text="Everything travels between the app and CrewStub over HTTPS." />
+          <Point tone="success" icon="eye.slash.fill" title="Only you can see them" text="Your records are tied to your sign-in. No other account can open them." />
           <Point tone="success" icon="hand.raised.fill" title="We never ask for bank details" text="CrewStub makes stubs and keeps records. It does not move money or file taxes." />
+          <Point tone="success" icon="trash.fill" title="Delete everything any time" text="Settings › Delete account removes your account and all its records." />
         </View>
       );
       primary = { title: 'Sounds good', onPress: next };
@@ -321,7 +349,7 @@ export function Onboarding() {
   }
 
   const asking = QUESTION_STEPS.indexOf(step);
-  const hero = step === 'welcome' || step === 'done';
+  const hero = step === 'done';
 
   return (
     <Screen padBottom={false}>
@@ -329,7 +357,7 @@ export function Onboarding() {
         <View style={{ height: 48, paddingHorizontal: 14, flexDirection: 'row', alignItems: 'center', gap: 12 }}>
           {asking >= 0 ? (
             <>
-              <CircleButton icon="arrow.left" label="Back" onPress={back} />
+              <CircleButton icon="arrow.left" label={index === 0 ? 'Back to sign in' : 'Back'} onPress={back} />
               <View
                 style={{ flex: 1, flexDirection: 'row', gap: 5 }}
                 accessible
@@ -374,7 +402,7 @@ export function Onboarding() {
 
         <View style={{ paddingHorizontal: 12, paddingTop: 8, paddingBottom: Math.max(insets.bottom, 12), alignSelf: 'center', width: '100%', maxWidth: 560, gap: 8 }}>
           <Button title={primary.title} onPress={primary.onPress} disabled={primary.disabled} />
-          {step === 'welcome' ? <Text style={{ fontSize: 12, color: c.muted, textAlign: 'center' }}>Takes about a minute. No account needed.</Text> : null}
+          {step === 'secure' ? <Text style={{ fontSize: 12, color: c.muted, textAlign: 'center' }}>Setup takes about a minute.</Text> : null}
         </View>
       </KeyboardAvoidingView>
       <StateSheet
@@ -391,7 +419,7 @@ export function Onboarding() {
 }
 
 /** One plain promise or explanation: an icon, a short title, one sentence. */
-function Point({ icon, title, text, tone = 'primary' }: { icon: SFSymbol; title: string; text: string; tone?: 'primary' | 'success' }) {
+export function Point({ icon, title, text, tone = 'primary' }: { icon: SFSymbol; title: string; text: string; tone?: 'primary' | 'success' }) {
   const c = useTheme();
   const success = tone === 'success';
   return (

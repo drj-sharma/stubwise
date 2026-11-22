@@ -3,6 +3,7 @@ import { WebView } from 'react-native-webview';
 import { renderStub } from '@/services/pdf';
 import { useBusiness } from '@/state/business';
 import { useQuery } from '@/state/useQuery';
+import { ErrorState } from '@/ui/states';
 import { useTheme } from '@/ui/theme';
 
 /** Lays the Letter page out at its real width (816 px) and lets the web view scale it to fit. */
@@ -17,7 +18,9 @@ function forPreview(html: string): string {
 export function StubPreview({ stubId, version = 0 }: { stubId: string; version?: number }) {
   const c = useTheme();
   const business = useBusiness();
-  const { data } = useQuery((db) => renderStub(db, business, stubId), [stubId, version, business.templateId, business.accent]);
+  const { data, error, reload } = useQuery(() => renderStub(business, stubId), [stubId, version, business.templateId, business.accent]);
+
+  if (error && !data) return <ErrorState title="Could not load the preview" error={error} onRetry={() => void reload()} />;
 
   return (
     <View
@@ -33,7 +36,7 @@ export function StubPreview({ stubId, version = 0 }: { stubId: string; version?:
           style={{ flex: 1, backgroundColor: '#FFFFFF', borderRadius: 3 }}
         />
       ) : (
-        <Text style={{ color: c.muted, fontSize: 13, padding: 12 }}>Preparing preview…</Text>
+        <Text style={{ color: c.muted, fontSize: 13, padding: 12 }}>{data === null ? 'This stub no longer exists.' : 'Preparing preview…'}</Text>
       )}
     </View>
   );

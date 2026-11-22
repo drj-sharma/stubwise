@@ -1,6 +1,14 @@
 import type { Cents, IsoDate, PayPeriod, PaySchedule, StartingYtd, StubLine, TaxProfile, UsStateCode } from '@stubwise/domain';
 import type { TemplateId } from '@stubwise/templates';
+import type { TaxStatus, Totals, YtdOut } from '@/api/types';
 import type { Appearance } from '@/ui/theme';
+
+/**
+ * The app's record shapes. The server (apps/backend) is the system of record;
+ * src/api/records.ts maps its JSON onto these. `version` is the server's
+ * record version, sent back as If-Match so a change made from a stale copy is
+ * refused instead of silently overwriting a newer one.
+ */
 
 export interface Business {
   id: string;
@@ -18,6 +26,7 @@ export interface Business {
   accent: string;
   overtimePct: number;
   appearance: Appearance;
+  version: number;
 }
 
 export interface Worker {
@@ -33,10 +42,13 @@ export interface Worker {
   /** W-4 answers and work state. Ignored for contractors, who have nothing withheld. */
   taxProfile: TaxProfile;
   createdAt: string;
+  version: number;
 }
 
 export interface StubLineRow extends StubLine {
   id: string;
+  /** The server's verdict: a tax figure typed over the calculated one. */
+  taxOverride: boolean;
 }
 
 export interface Stub {
@@ -46,6 +58,11 @@ export interface Stub {
   payDate: IsoDate;
   createdAt: string;
   lines: StubLineRow[];
+  version: number;
+  /** Worked out by the server from the saved lines and the worker's history. */
+  totals: Totals;
+  ytd: YtdOut;
+  taxStatus: TaxStatus;
 }
 
-export type NewWorker = Omit<Worker, 'id' | 'createdAt'>;
+export type NewWorker = Omit<Worker, 'id' | 'createdAt' | 'version'>;

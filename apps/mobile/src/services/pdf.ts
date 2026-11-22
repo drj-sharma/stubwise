@@ -2,8 +2,7 @@ import { type StubDocument, buildStubDocument, renderStubHtml, stubFileName } fr
 import { File, Paths } from 'expo-file-system';
 import * as Print from 'expo-print';
 import * as Sharing from 'expo-sharing';
-import type { SQLiteDatabase } from 'expo-sqlite';
-import { getStub, getWorker, listStubsForWorker } from '@/db/repo';
+import { getStub, getWorker, listStubs } from '@/api/records';
 import type { Business, Stub, Worker } from '@/db/types';
 
 export interface RenderedStub {
@@ -14,16 +13,17 @@ export interface RenderedStub {
 }
 
 /**
- * Builds the printable stub for one saved stub. The figures come from the same
- * shared calculation code the editor shows, and the layout from the business's
- * chosen template, so the PDF always matches the screen.
+ * Builds the printable stub for one saved stub, from the server's copy of the
+ * stub and the worker's history. The figures come from the same shared
+ * calculation code the editor shows (and the server runs), and the layout
+ * from the business's chosen template, so the PDF always matches the screen.
+ * The PDF itself is made on the phone; it is never uploaded.
  */
-export async function renderStub(db: SQLiteDatabase, business: Business, stubId: string): Promise<RenderedStub | null> {
-  const stub = await getStub(db, stubId);
+export async function renderStub(business: Business, stubId: string): Promise<RenderedStub | null> {
+  const stub = await getStub(stubId);
   if (!stub) return null;
-  const worker = await getWorker(db, stub.workerId);
+  const [worker, workerStubs] = await Promise.all([getWorker(stub.workerId), listStubs(stub.workerId)]);
   if (!worker) return null;
-  const workerStubs = await listStubsForWorker(db, worker.id);
   const document = buildStubDocument({ business, worker, stub, workerStubs });
   const html = renderStubHtml(document, business.templateId, { accent: business.accent });
   return { stub, worker, document, html };

@@ -1,12 +1,13 @@
-import { calcStub, formatCents, formatDuration, formatPeriod, formatShortDate } from '@stubwise/domain';
+import { formatCents, formatDuration, formatPeriod, formatShortDate } from '@stubwise/domain';
 import { router } from 'expo-router';
 import { useState } from 'react';
 import { ScrollView, Text, TextInput, View } from 'react-native';
-import { listAllStubs, listWorkers } from '@/db/repo';
+import { listStubs, listWorkers } from '@/api/records';
 import { useQuery } from '@/state/useQuery';
 import { useIsWide } from '@/ui/layout';
 import { Avatar, Heading, Icon, Pill, Row, Screen, Sheet, SubCard, TABULAR } from '@/ui/primitives';
 import { BusinessHeader, SideRail, TabBar } from '@/ui/TabBar';
+import { ErrorState, Loading, Refresher, StaleBanner } from '@/ui/states';
 import { useTheme } from '@/ui/theme';
 
 /** Every stub ever made, newest first, searchable by worker name or date. */
@@ -14,7 +15,10 @@ export default function Stubs() {
   const c = useTheme();
   const wide = useIsWide();
   const [query, setQuery] = useState('');
-  const { data } = useQuery(async (db) => ({ stubs: await listAllStubs(db), workers: await listWorkers(db) }));
+  const { data, error, reload, refresh, refreshing } = useQuery(async () => {
+    const [stubs, workers] = await Promise.all([listStubs(), listWorkers()]);
+    return { stubs, workers };
+  });
 
   const workers = new Map((data?.workers ?? []).map((worker) => [worker.id, worker]));
   const needle = query.trim().toLowerCase();
@@ -27,6 +31,7 @@ export default function Stubs() {
   const body = (
     <Sheet style={{ paddingTop: 18, gap: 10 }}>
       <Heading title="Stubs" subtitle="Every pay stub you have made, newest first" />
+      {error && data ? <StaleBanner error={error} /> : null}
       <View
         style={{ height: 44, paddingHorizontal: 12, borderWidth: 1, borderColor: c.border, borderRadius: 12, flexDirection: 'row', alignItems: 'center', gap: 8 }}>
         <Icon name="magnifyingglass" size={16} color={c.muted} />
@@ -41,6 +46,7 @@ export default function Stubs() {
           style={{ flex: 1, padding: 0, fontSize: 14, color: c.text }}
         />
       </View>
+      {data === undefined ? error ? <ErrorState title="Could not load your stubs" error={error} onRetry={() => void reload()} /> : <Loading label="Loading stubs…" /> : null}
       {data && stubs.length === 0 ? (
         <Text style={{ fontSize: 13, lineHeight: 20, color: c.muted, textAlign: 'center', paddingVertical: 24 }}>
           {needle === '' ? 'No stubs yet. Open a worker and make their first one.' : 'No stubs match that search.'}
@@ -48,7 +54,7 @@ export default function Stubs() {
       ) : null}
       {stubs.map((stub) => {
         const worker = workers.get(stub.workerId);
-        const totals = calcStub(stub.lines);
+        const totals = stub.totals;
         return (
           <SubCard key={stub.id}>
             <Row
@@ -84,7 +90,11 @@ export default function Stubs() {
       <Screen>
         <View style={{ flex: 1, flexDirection: 'row', gap: 12, paddingHorizontal: 16, paddingTop: 8 }}>
           <SideRail active="stubs" />
-          <ScrollView style={{ flex: 1 }} contentContainerStyle={{ maxWidth: 720 }} keyboardShouldPersistTaps="handled">
+          <ScrollView
+            style={{ flex: 1 }}
+            contentContainerStyle={{ maxWidth: 720 }}
+            keyboardShouldPersistTaps="handled"
+            refreshControl={<Refresher refreshing={refreshing} onRefresh={() => void refresh()} />}>
             {body}
           </ScrollView>
         </View>
@@ -94,7 +104,10 @@ export default function Stubs() {
   return (
     <Screen footer={<TabBar active="stubs" />}>
       <BusinessHeader />
-      <ScrollView contentContainerStyle={{ padding: 12, paddingTop: 14 }} keyboardShouldPersistTaps="handled">
+      <ScrollView
+        contentContainerStyle={{ padding: 12, paddingTop: 14 }}
+        keyboardShouldPersistTaps="handled"
+        refreshControl={<Refresher refreshing={refreshing} onRefresh={() => void refresh()} />}>
         {body}
       </ScrollView>
     </Screen>

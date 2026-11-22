@@ -1,4 +1,4 @@
-/** Root Jest config: `npx jest` runs the shared packages' tests and the API tests. */
+/** Root Jest config: `npx jest` runs the shared packages' tests, the API tests and the mobile app's plain-TypeScript tests. */
 const swcTransform = {
   '^.+\\.ts$': [
     '@swc/jest',
@@ -28,6 +28,8 @@ module.exports = {
   projects: [
     project('domain', 'packages/domain'),
     project('templates', 'packages/templates'),
+    // Only modules with no React Native imports (the HTTP client) are tested here.
+    project('mobile', 'apps/mobile'),
     {
       ...project('api', 'apps/api'),
       // Starts an in-process Postgres for the API tests; see the file for why.

@@ -76,6 +76,17 @@ class User(Base):
     updated_at: Mapped[datetime] = mapped_column(Timestamp, default=utcnow, onupdate=utcnow)
 
 
+class PasswordCredential(Base):
+    """The password of an account with provider ``password``: a self-describing scrypt hash, never the password."""
+
+    __tablename__ = "password_credentials"
+
+    user_id: Mapped[str] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), primary_key=True)
+    password_hash: Mapped[str] = mapped_column(String(255))
+    created_at: Mapped[datetime] = mapped_column(Timestamp, default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(Timestamp, default=utcnow, onupdate=utcnow)
+
+
 class AuthSession(Base):
     """One signed-in device. Its refresh tokens form a family: reuse of a spent one revokes it."""
 

@@ -1,21 +1,23 @@
 import type { TemplateId } from '@stubwise/templates';
 import { router } from 'expo-router';
-import { useSQLiteContext } from 'expo-sqlite';
 import { ScrollView } from 'react-native';
-import { updateBusinessSettings } from '@/db/repo';
 import { TemplatePicker } from '@/features/TemplatePicker';
 import { useBusiness, useBusinessState } from '@/state/business';
 import { CircleButton, Heading, Screen, Sheet, TopBar } from '@/ui/primitives';
+import { alertError } from '@/ui/states';
 
 /** The template library: pick the layout and accent colour used for every stub. */
 export default function Templates() {
-  const db = useSQLiteContext();
   const business = useBusiness();
-  const { reload } = useBusinessState();
+  const { update } = useBusinessState();
 
+  // Shown at once; the server's copy replaces it, or the old choice comes back with a message.
   const choose = async (patch: { templateId?: TemplateId; accent?: string }): Promise<void> => {
-    await updateBusinessSettings(db, patch);
-    await reload();
+    try {
+      await update(patch);
+    } catch (error) {
+      alertError('Could not change the template', error);
+    }
   };
 
   return (

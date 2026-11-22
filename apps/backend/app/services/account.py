@@ -5,13 +5,19 @@ from __future__ import annotations
 from typing import Any
 
 from sqlalchemy import delete, select
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
+from ..auth import passwords
 from ..auth.providers import VerifiedIdentity
 from ..auth.sessions import Principal, list_sessions, user_json
+from ..errors import ApiError
 from ..filing import serialize as filing_json
-from ..models import Filing, User, iso_z, utcnow
+from ..models import Filing, PasswordCredential, User, iso_z, utcnow
 from . import audit, backup
+
+PASSWORD = "password"  # noqa: S105 - the provider name, not a secret
+_WRONG = "Email or password is incorrect."
 
 
 def sign_in(db: Session, identity: VerifiedIdentity, *, fallback_name: str | None) -> User:
@@ -39,6 +45,51 @@ def sign_in(db: Session, identity: VerifiedIdentity, *, fallback_name: str | Non
         audit.record(db, user.id, "auth.sign_in", {"provider": identity.provider})
     db.commit()
     return user
+
+
+def sign_up_with_password(db: Session, email: str, password: str, name: str) -> User:
+    """Creates an email-and-password account. The email is the account's subject, already trimmed and lower-cased.
+
+    Like Google and Apple accounts, it is a separate account from any other sign-in with the same address.
+    """
+    taken = db.scalar(select(User.id).where(User.provider == PASSWORD, User.provider_subject == email))
+    if taken is not None:
+        raise _email_taken()
+    password_hash = passwords.hash_password(password)
+    user = User(provider=PASSWORD, provider_subject=email, email=email, name=name[:120])
+    db.add(user)
+    try:
+        db.flush()
+    except IntegrityError:
+        # Two sign-ups with the same address at once: the other one won.
+        db.rollback()
+        raise _email_taken() from None
+    db.add(PasswordCredential(user_id=user.id, password_hash=password_hash))
+    audit.record(db, user.id, "auth.sign_up", {"provider": PASSWORD})
+    db.commit()
+    return user
+
+
+def sign_in_with_password(db: Session, email: str, password: str) -> User:
+    """The account for this email and password, or a 401 that does not say which one was wrong."""
+    row = db.execute(
+        select(User, PasswordCredential)
+        .join(PasswordCredential, PasswordCredential.user_id == User.id)
+        .where(User.provider == PASSWORD, User.provider_subject == email)
+    ).first()
+    if row is None:
+        passwords.burn_time(password)  # same work as a real check, so timing does not reveal the address
+        raise ApiError(401, "invalid_credentials", _WRONG)
+    user, credential = row
+    if not passwords.verify_password(password, credential.password_hash):
+        raise ApiError(401, "invalid_credentials", _WRONG)
+    audit.record(db, user.id, "auth.sign_in", {"provider": PASSWORD})
+    db.commit()
+    return user
+
+
+def _email_taken() -> ApiError:
+    return ApiError(409, "email_taken", "An account with this email already exists. Sign in instead.")
 
 
 def rename(db: Session, user: User, name: str) -> User:

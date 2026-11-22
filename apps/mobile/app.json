@@ -50,10 +50,14 @@
           "microphonePermission": false
         }
       ],
-      "@react-native-community/datetimepicker"
+      "@react-native-community/datetimepicker",
+      "expo-secure-store"
     ],
     "experiments": {
       "reactCompiler": true
+    },
+    "extra": {
+      "apiUrl": "https://jnmxfbddllmxvwcljkrdxc6r.187.127.166.249.sslip.io"
     }
   }
 }

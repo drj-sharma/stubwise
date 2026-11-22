@@ -18,14 +18,15 @@ import {
   yearOf,
 } from '@stubwise/domain';
 import { router } from 'expo-router';
-import { useSQLiteContext } from 'expo-sqlite';
 import { useState } from 'react';
-import { Alert, Modal, Pressable, ScrollView, Text, View } from 'react-native';
-import { deleteStub, getStub, getWorker, listStubsForWorker, replaceStubLines, updateStubDates } from '@/db/repo';
+import { ActivityIndicator, Alert, Modal, Pressable, ScrollView, Text, View } from 'react-native';
+import { isConflict } from '@/api';
+import { deleteStub, getStub, getWorker, listStubs, replaceStubLines, updateStubDates } from '@/api/records';
 import type { Stub } from '@/db/types';
 import { taxContextFor } from '@/services/taxes';
 import { useBusiness } from '@/state/business';
 import { useQuery } from '@/state/useQuery';
+import { ErrorState, Loading, Refresher, alertError } from '@/ui/states';
 import { Amount, Avatar, Button, CardHeader, Pill, Row, Sheet, SubCard, TABULAR } from '@/ui/primitives';
 import { AddLineSheet, AmountSheet, TimeSheet } from '@/ui/sheets';
 import { useTheme } from '@/ui/theme';
@@ -36,26 +37,28 @@ const DEDUCTION_SUGGESTIONS = ['Health insurance', 'Retirement', 'Garnishment', 
 type OpenSheet = { kind: 'time'; index: number } | { kind: 'amount'; index: number } | { kind: 'add'; lineKind: LineKind } | { kind: 'dates' } | null;
 
 /**
- * Edits one saved stub. Every change is written to the database straight
- * away, so there is no Save button to forget, and gross, net and year to date
- * are recalculated from the lines on every render.
+ * Edits one saved stub. Every change is sent to the server straight away, so
+ * there is no Save button to forget. While a change is on its way the screen
+ * shows it at once, worked out on the phone with the same shared calculations
+ * (taxes, gross, net, year to date); when the server answers, its copy (with
+ * its own tax lines and totals) replaces the phone's. If the server refuses,
+ * the stub goes back to the saved version and the person is told why.
  */
 export function StubEditor({ stubId, onChanged, footer }: { stubId: string; onChanged?: () => void; footer?: React.ReactNode }) {
   const c = useTheme();
-  const db = useSQLiteContext();
   const business = useBusiness();
-  const [sheet, setSheet] = useState<OpenSheet>(null);
-  const { data, reload } = useQuery(
-    async (database) => {
-      const stub = await getStub(database, stubId);
-      if (!stub) return null;
-      const worker = await getWorker(database, stub.workerId);
-      return worker ? { stub, worker, workerStubs: await listStubsForWorker(database, worker.id) } : null;
-    },
-    [stubId],
-  );
+  const [sheet, setSheetState] = useState<OpenSheet>(null);
+  /** Lines shown while a change is being saved; null when the screen shows the server's copy. */
+  const [pending, setPending] = useState<StubLine[] | null>(null);
+  const [saving, setSaving] = useState(false);
+  const { data, error, reload, refresh, refreshing, setData } = useQuery(async () => {
+    const stub = await getStub(stubId);
+    if (!stub) return null;
+    const [worker, workerStubs] = await Promise.all([getWorker(stub.workerId), listStubs(stub.workerId)]);
+    return worker ? { stub, worker, workerStubs } : null;
+  }, [stubId]);
 
-  if (data === undefined) return null;
+  if (data === undefined) return error ? <ErrorState title="Could not load this stub" error={error} onRetry={() => void reload()} /> : <Loading />;
   if (data === null) {
     return (
       <Sheet style={{ margin: 12 }}>
@@ -65,32 +68,62 @@ export function StubEditor({ stubId, onChanged, footer }: { stubId: string; onCh
   }
 
   const { stub, worker, workerStubs } = data;
-  const totals = calcStub(stub.lines);
-  const ytd = computeYtd(stub, workerStubs, worker.startingYtd);
-  const earnings = stub.lines.map((line, index) => ({ line, index })).filter((entry) => entry.line.kind === 'earning');
-  const deductions = stub.lines.map((line, index) => ({ line, index })).filter((entry) => entry.line.kind === 'deduction');
-
+  const lines: readonly StubLine[] = pending ?? stub.lines;
   const taxContext = taxContextFor(business, worker, stub, workerStubs);
-  const taxStatus = applyTaxes(stub.lines, taxContext).status;
+  // The server's figures, or the phone's own while a change is on its way.
+  const shownStub = { ...stub, lines };
+  const totals = pending ? calcStub(lines) : stub.totals;
+  const ytd = pending ? computeYtd(shownStub, workerStubs.map((other) => (other.id === stub.id ? shownStub : other)), worker.startingYtd) : stub.ytd;
+  const taxStatus = pending ? applyTaxes(lines, taxContext).status : stub.taxStatus;
+  const edited = (line: StubLine, index: number): boolean => (pending ? isTaxOverride(line, taxContext) : (stub.lines[index]?.taxOverride ?? false));
+  const earnings = lines.map((line, index) => ({ line, index })).filter((entry) => entry.line.kind === 'earning');
+  const deductions = lines.map((line, index) => ({ line, index })).filter((entry) => entry.line.kind === 'deduction');
 
-  // Every change to the lines brings the calculated taxes back in step with the pay.
-  const saveLines = async (lines: StubLine[]): Promise<void> => {
-    await replaceStubLines(db, stub.id, applyTaxes(lines.map(withComputedAmount), taxContext).lines);
-    setSheet(null);
-    await reload();
+  // One change at a time: each is sent with the version the last one produced.
+  const setSheet = (next: OpenSheet): void => {
+    if (!saving || next === null) setSheetState(next);
+  };
+
+  const adopt = (saved: Stub): void => {
+    setData({ stub: saved, worker, workerStubs: workerStubs.map((other) => (other.id === saved.id ? saved : other)) });
     onChanged?.();
   };
+
+  const failed = async (title: string, caught: unknown): Promise<void> => {
+    alertError(title, caught);
+    if (isConflict(caught)) await reload();
+  };
+
+  // Every change to the lines brings the calculated taxes back in step with the pay.
+  const saveLines = async (changed: StubLine[]): Promise<void> => {
+    const next = applyTaxes(changed.map(withComputedAmount), taxContext).lines;
+    setSheetState(null);
+    if (next.length === 0) {
+      Alert.alert('A stub needs at least one line', 'Add another line before removing this one, or delete the stub from Change dates.');
+      return;
+    }
+    setPending(next);
+    setSaving(true);
+    try {
+      adopt(await replaceStubLines(stub.id, stub.version, next));
+    } catch (caught) {
+      await failed('Could not save the change', caught);
+    } finally {
+      setPending(null);
+      setSaving(false);
+    }
+  };
   const patchLine = (index: number, patch: Partial<StubLine>): Promise<void> =>
-    saveLines(stub.lines.map((line, i) => (i === index ? { ...line, ...patch } : line)));
-  const removeLine = (index: number): Promise<void> => saveLines(stub.lines.filter((_, i) => i !== index));
+    saveLines(lines.map((line, i) => (i === index ? { ...line, ...patch } : line)));
+  const removeLine = (index: number): Promise<void> => saveLines(lines.filter((_, i) => i !== index));
   const addLine = (kind: LineKind, label: string, amountCents: number): Promise<void> => {
     const line: StubLine = { kind, label, minutes: null, rateCents: null, amountCents, source: 'manual' };
     // Keep earnings above deductions regardless of the order they were added in.
-    const next = kind === 'earning' ? [...stub.lines.filter((l) => l.kind === 'earning'), line, ...stub.lines.filter((l) => l.kind === 'deduction')] : [...stub.lines, line];
+    const next = kind === 'earning' ? [...lines.filter((l) => l.kind === 'earning'), line, ...lines.filter((l) => l.kind === 'deduction')] : [...lines, line];
     return saveLines(next);
   };
 
-  const active = sheet?.kind === 'time' || sheet?.kind === 'amount' ? stub.lines[sheet.index] : undefined;
+  const active = sheet?.kind === 'time' || sheet?.kind === 'amount' ? lines[sheet.index] : undefined;
 
   const lineRow = ({ line, index }: { line: StubLine; index: number }, last: boolean) =>
     isHourlyLine(line) ? (
@@ -124,7 +157,7 @@ export function StubEditor({ stubId, onChanged, footer }: { stubId: string; onCh
             ? undefined
             : line.source === 'calculated'
               ? 'Calculated'
-              : isTaxOverride(line, taxContext)
+              : edited(line, index)
                 ? 'Typed by hand'
                 : 'Enter by hand'
         }
@@ -132,7 +165,7 @@ export function StubEditor({ stubId, onChanged, footer }: { stubId: string; onCh
         onPress={() => setSheet({ kind: 'amount', index })}
         right={
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-            {isTaxOverride(line, taxContext) ? <Pill tone="warn" label="Edited" /> : null}
+            {edited(line, index) ? <Pill tone="warn" label="Edited" /> : null}
             <Amount value={formatCents(line.amountCents)} />
           </View>
         }
@@ -141,7 +174,7 @@ export function StubEditor({ stubId, onChanged, footer }: { stubId: string; onCh
 
   return (
     <>
-      <ScrollView contentContainerStyle={{ padding: 12, gap: 10 }}>
+      <ScrollView contentContainerStyle={{ padding: 12, gap: 10 }} refreshControl={<Refresher refreshing={refreshing} onRefresh={() => void refresh()} />}>
         <Sheet>
           <Pressable
             onPress={() => setSheet({ kind: 'dates' })}
@@ -157,7 +190,7 @@ export function StubEditor({ stubId, onChanged, footer }: { stubId: string; onCh
                 {formatPeriod(stub.period)} · paid {formatShortDate(stub.payDate)}
               </Text>
             </View>
-            <Pill tone="primary" label="Change dates" />
+            {saving ? <ActivityIndicator color={c.primary} accessibilityLabel="Saving" /> : <Pill tone="primary" label="Change dates" />}
           </Pressable>
 
           <SubCard>
@@ -221,7 +254,7 @@ export function StubEditor({ stubId, onChanged, footer }: { stubId: string; onCh
           void patchLine(sheet.index, active?.taxCode ? { amountCents, source: 'manual' } : { amountCents });
         }}
         onDelete={active?.taxCode && active.source === 'calculated' ? undefined : () => sheet?.kind === 'amount' && void removeLine(sheet.index)}
-        deleteLabel={active && isTaxOverride(active, taxContext) ? 'Use calculated' : undefined}
+        deleteLabel={active && sheet?.kind === 'amount' && edited(active, sheet.index) ? 'Use calculated' : undefined}
       />
       <AddLineSheet
         visible={sheet?.kind === 'add'}
@@ -235,13 +268,16 @@ export function StubEditor({ stubId, onChanged, footer }: { stubId: string; onCh
         stub={stub}
         onClose={() => setSheet(null)}
         onSave={async (period, payDate) => {
-          await updateStubDates(db, stub.id, period, payDate);
-          // A different pay date can change the tax year and the pay counted before this stub.
-          const moved = { ...stub, payDate };
-          await replaceStubLines(db, stub.id, applyTaxes(stub.lines, taxContextFor(business, worker, moved, workerStubs)).lines);
-          setSheet(null);
-          await reload();
-          onChanged?.();
+          // The server recalculates the taxes: a different pay date can change the tax year and the pay counted before this stub.
+          setSheetState(null);
+          setSaving(true);
+          try {
+            adopt(await updateStubDates(stub.id, stub.version, period, payDate));
+          } catch (caught) {
+            await failed('Could not change the dates', caught);
+          } finally {
+            setSaving(false);
+          }
         }}
         onDelete={() =>
           Alert.alert('Delete this stub?', 'Year-to-date on later stubs will no longer include it. This cannot be undone.', [
@@ -250,8 +286,11 @@ export function StubEditor({ stubId, onChanged, footer }: { stubId: string; onCh
               text: 'Delete stub',
               style: 'destructive',
               onPress: () => {
-                setSheet(null);
-                void deleteStub(db, stub.id).then(() => router.back());
+                setSheetState(null);
+                deleteStub(stub.id).then(
+                  () => router.back(),
+                  (caught: unknown) => alertError('Could not delete the stub', caught),
+                );
               },
             },
           ])

@@ -183,7 +183,7 @@ def test_sign_in_when_the_provider_keys_cannot_be_fetched(client: TestClient, id
 
 def test_a_provider_without_client_ids_is_off(outbound: Outbound, identity: FakeIdentityProviders) -> None:
     with make_client(outbound, apple_client_ids=()) as client:
-        assert client.get("/v1/meta").json()["signIn"] == {"google": True, "apple": False}
+        assert client.get("/v1/meta").json()["signIn"] == {"google": True, "apple": False, "password": False}
         response = client.post("/v1/auth/apple", json={"identityToken": identity.token("apple", "a-1")})
         assert response.status_code == 503
         assert response.json()["error"]["code"] == "provider_not_configured"

@@ -1,17 +1,18 @@
-import { calcStub, formatCents, formatPeriod, formatWeekdayDate, sumCents } from '@stubwise/domain';
+import { formatCents, formatPeriod, formatWeekdayDate, sumCents } from '@stubwise/domain';
+import * as Crypto from 'expo-crypto';
 import { router } from 'expo-router';
-import { useSQLiteContext } from 'expo-sqlite';
 import { useState } from 'react';
 import { Alert, Pressable, ScrollView, Text, View } from 'react-native';
-import { listAllStubs, listWorkers } from '@/db/repo';
+import { listStubs, listWorkers, makeAllStubs } from '@/api/records';
 import type { Stub, Worker } from '@/db/types';
 import { WorkerDetail, workerSummary } from '@/features/WorkerDetail';
-import { businessCurrentPeriod, makeAllStubs, stubForPeriod } from '@/services/stubs';
+import { businessCurrentPeriod, stubForPeriod } from '@/services/stubs';
 import { useBusiness } from '@/state/business';
 import { useQuery } from '@/state/useQuery';
 import { useIsWide } from '@/ui/layout';
 import { Avatar, Button, CircleButton, Heading, Icon, Pill, Screen, Segmented, Sheet, StatTile } from '@/ui/primitives';
 import { BusinessHeader, SideRail, TabBar } from '@/ui/TabBar';
+import { ErrorState, Loading, Refresher, StaleBanner, alertError } from '@/ui/states';
 import { useTheme } from '@/ui/theme';
 
 type Filter = 'all' | 'due' | 'done';
@@ -19,16 +20,15 @@ type Filter = 'all' | 'due' | 'done';
 /** Home: everyone you pay, and who still needs a stub this pay period. */
 export default function Workers() {
   const c = useTheme();
-  const db = useSQLiteContext();
   const business = useBusiness();
   const wide = useIsWide();
   const [filter, setFilter] = useState<Filter>('all');
   const [selected, setSelected] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
-  const { data, reload } = useQuery(async (database) => ({
-    workers: await listWorkers(database),
-    stubs: await listAllStubs(database),
-  }));
+  const { data, error, reload, refresh, refreshing } = useQuery(async () => {
+    const [workers, stubs] = await Promise.all([listWorkers(), listStubs()]);
+    return { workers, stubs };
+  });
 
   const workers = data?.workers ?? [];
   const stubs = data?.stubs ?? [];
@@ -37,19 +37,22 @@ export default function Workers() {
   const done = workers.filter((worker) => current.get(worker.id));
   const due = workers.filter((worker) => !current.get(worker.id));
   const shown = filter === 'due' ? due : filter === 'done' ? done : workers;
-  const netSoFar = sumCents(done.map((worker) => calcStub(current.get(worker.id)?.lines ?? []).netCents));
+  const netSoFar = sumCents(done.map((worker) => current.get(worker.id)?.totals.netCents ?? 0));
   const payDate = done.map((worker) => current.get(worker.id)?.payDate).find(Boolean);
   const selectedId = wide ? (selected && workers.some((w) => w.id === selected) ? selected : (workers[0]?.id ?? null)) : null;
 
   const makeAll = async (): Promise<void> => {
     setBusy(true);
     try {
-      const made = await makeAllStubs(db, business);
+      // The server makes and saves them all, or none. One key per tap, so a retry cannot make them twice.
+      const made = (await makeAllStubs(Crypto.randomUUID())).created.length;
       await reload();
       Alert.alert(
         made === 1 ? '1 stub made' : `${made} stubs made`,
         'Each one starts from that worker\'s last stub. Open a stub to check the hours before you share it.',
       );
+    } catch (caught) {
+      alertError('Could not make the stubs', caught);
     } finally {
       setBusy(false);
     }
@@ -61,7 +64,15 @@ export default function Workers() {
   };
 
   const list =
-    data === undefined ? null : workers.length === 0 ? (
+    data === undefined ? (
+      error ? (
+        <ErrorState title="Could not load your workers" error={error} onRetry={() => void reload()} />
+      ) : (
+        <Sheet style={{ flex: 1 }}>
+          <Loading label="Loading workers…" />
+        </Sheet>
+      )
+    ) : workers.length === 0 ? (
       <Sheet style={{ flex: 1, paddingTop: 18 }}>
         <Heading title="Workers" subtitle="Nobody added yet" />
         <View
@@ -90,6 +101,7 @@ export default function Workers() {
       </Sheet>
     ) : (
       <Sheet style={{ paddingTop: 18, gap: 12 }}>
+        {error ? <StaleBanner error={error} /> : null}
         <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
           <Heading
             title="Workers"
@@ -151,7 +163,7 @@ export default function Workers() {
                     {workerSummary(worker)}
                   </Text>
                 </View>
-                {stub ? <Pill tone="success" label={formatCents(calcStub(stub.lines).netCents)} /> : <Pill tone="warn" label="Stub due" />}
+                {stub ? <Pill tone="success" label={formatCents(stub.totals.netCents)} /> : <Pill tone="warn" label="Stub due" />}
               </Pressable>
             );
           })}
@@ -169,7 +181,10 @@ export default function Workers() {
       <Screen>
         <View style={{ flex: 1, flexDirection: 'row', gap: 12, paddingHorizontal: 16, paddingTop: 8 }}>
           <SideRail active="workers" />
-          <ScrollView style={{ flex: 0, width: 372 }} contentContainerStyle={{ flexGrow: 1 }}>
+          <ScrollView
+            style={{ flex: 0, width: 372 }}
+            contentContainerStyle={{ flexGrow: 1 }}
+            refreshControl={<Refresher refreshing={refreshing} onRefresh={() => void refresh()} />}>
             {list}
           </ScrollView>
           <View style={{ flex: 1 }}>{selectedId ? <WorkerDetail key={selectedId} workerId={selectedId} /> : null}</View>
@@ -181,7 +196,11 @@ export default function Workers() {
   return (
     <Screen footer={<TabBar active="workers" />}>
       <BusinessHeader right={<CircleButton icon="plus" label="Add worker" onPress={() => router.push('/worker/new')} />} />
-      <ScrollView contentContainerStyle={{ padding: 12, paddingTop: 14, flexGrow: 1 }}>{list}</ScrollView>
+      <ScrollView
+        contentContainerStyle={{ padding: 12, paddingTop: 14, flexGrow: 1 }}
+        refreshControl={<Refresher refreshing={refreshing} onRefresh={() => void refresh()} />}>
+        {list}
+      </ScrollView>
     </Screen>
   );
 }

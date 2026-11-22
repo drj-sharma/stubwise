@@ -34,7 +34,7 @@ def test_health_ready_and_meta(client: TestClient) -> None:
     meta = client.get("/v1/meta").json()
     assert [template["id"] for template in meta["templates"]] == ["classic", "modern", "compact", "ledger"]
     assert meta["minAppVersion"] == "1.0.0"
-    assert meta["signIn"] == {"google": True, "apple": True}
+    assert meta["signIn"] == {"google": True, "apple": True, "password": False}
     assert meta["filing"]["available"] is False
 
 

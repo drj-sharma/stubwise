@@ -67,6 +67,8 @@ class Settings:
     filing_rate_limit_per_minute: int = 10
     filing_enabled: bool = False
     taxbandits: TaxBanditsCredentials = TaxBanditsCredentials()
+    # Email + password accounts (POST /v1/auth/password/...). Off unless switched on.
+    password_login_enabled: bool = False
 
     @property
     def filing_active(self) -> bool:
@@ -140,8 +142,12 @@ def load_settings(env: Mapping[str, str] | None = None) -> Settings:
 
     google_client_ids = _list(env, "GOOGLE_CLIENT_IDS")
     apple_client_ids = _list(env, "APPLE_CLIENT_IDS")
-    if production and not (google_client_ids or apple_client_ids):
-        raise ConfigError("Set GOOGLE_CLIENT_IDS and/or APPLE_CLIENT_IDS: without one nobody can sign in")
+    password_login_enabled = _bool(env, "PASSWORD_LOGIN_ENABLED", False)
+    if production and not (google_client_ids or apple_client_ids or password_login_enabled):
+        raise ConfigError(
+            "Set GOOGLE_CLIENT_IDS and/or APPLE_CLIENT_IDS, or PASSWORD_LOGIN_ENABLED=true: "
+            "without one nobody can sign in"
+        )
 
     origins = _list(env, "CORS_ALLOWED_ORIGINS")
     if "*" in origins:
@@ -178,4 +184,5 @@ def load_settings(env: Mapping[str, str] | None = None) -> Settings:
         filing_rate_limit_per_minute=_int(env, "FILING_RATE_LIMIT_PER_MINUTE", 10, 1, 1_000_000),
         filing_enabled=filing_enabled,
         taxbandits=taxbandits,
+        password_login_enabled=password_login_enabled,
     )

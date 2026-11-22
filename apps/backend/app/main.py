@@ -112,6 +112,9 @@ def create_app(settings: Settings | None = None, *, outbound_transport: httpx.Ba
         calc.router,
     ):
         app.include_router(router)
+    if settings.password_login_enabled:
+        # Off by default: without the switch these routes do not exist (404).
+        app.include_router(auth.password_router)
     if settings.filing_active:
         # Parked feature: without the switch and credentials these routes do not exist (404).
         app.include_router(filing.router)

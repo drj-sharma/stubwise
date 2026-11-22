@@ -24,6 +24,10 @@ _PATTERNS = [
     re.compile(r"eyJ[A-Za-z0-9_-]{5,}\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]*"),
     re.compile(r"(?i)\bbearer\s+[A-Za-z0-9._~+/=-]{8,}"),
     re.compile(r"[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}"),
+    # Stored password hashes (app/auth/passwords.py), and the value of any "password" field or
+    # parameter, quoted or not, JSON-escaped or not: "password": "...", password=..., newPassword: ...
+    re.compile(r"scrypt\$[^\s\"']+"),
+    re.compile(r"(?i)(?<=password)(?:\\?[\"'])?\s*[:=]\s*(?:\\?[\"'])?(?:[^\"'\\,&}\n]|\\.)+"),
     # SSN/ITIN (123-45-6789), EIN (12-3456789), or a bare run of nine digits. The run must stand
     # alone: nine digits inside a longer id (a request id, a UUID) are not a taxpayer number.
     re.compile(r"(?<![A-Za-z0-9-])(?:\d{3}-\d{2}-\d{4}|\d{2}-\d{7}|\d{9})(?![A-Za-z0-9-])"),

@@ -41,7 +41,11 @@ def meta(request: Request) -> dict[str, Any]:
         "version": API_VERSION,
         "minAppVersion": MIN_APP_VERSION,
         "templates": TEMPLATES,
-        "signIn": {"google": verifier.enabled("google"), "apple": verifier.enabled("apple")},
+        "signIn": {
+            "google": verifier.enabled("google"),
+            "apple": verifier.enabled("apple"),
+            "password": settings.password_login_enabled,
+        },
         "filing": {
             "available": settings.filing_active,
             "consentVersion": CONSENT_VERSION,
