@@ -4,17 +4,91 @@
   "rules": [
     {
       "tax": "income",
-      "method": "manual",
-      "params": {},
+      "method": "state",
+      "revision": 3,
       "source": "https://www.mass.gov/doc/massachusetts-circular-m-income-tax-withholding-tables-at-50-effective-january-1-2026/download",
-      "revision": 2
+      "params": {
+        "ratePercent": "5",
+        "surtaxPercent": "9",
+        "surtaxThresholdCents": 110775000,
+        "ficaCapCents": 200000,
+        "ficaRatePercent": "7.65",
+        "byPeriods": {
+          "52": {
+            "one": 8500,
+            "per": 1900,
+            "plus": 6600,
+            "hoh": 231,
+            "blind": 212,
+            "minWagesCents": 15400
+          },
+          "26": {
+            "one": 16900,
+            "per": 3800,
+            "plus": 13100,
+            "hoh": 462,
+            "blind": 423,
+            "minWagesCents": 30800
+          },
+          "24": {
+            "one": 18300,
+            "per": 4200,
+            "plus": 14100,
+            "hoh": 500,
+            "blind": 458,
+            "minWagesCents": 33300
+          },
+          "12": {
+            "one": 36700,
+            "per": 8300,
+            "plus": 28400,
+            "hoh": 1000,
+            "blind": 917,
+            "minWagesCents": 66700
+          },
+          "1": {
+            "one": 440000,
+            "per": 100000,
+            "plus": 340000,
+            "hoh": 12000,
+            "blind": 11000,
+            "minWagesCents": 800000
+          }
+        },
+        "round": "cent",
+        "certificate": {
+          "form": "M-4",
+          "fields": [
+            {
+              "key": "allowances",
+              "label": "Exemptions claimed",
+              "kind": "count"
+            },
+            {
+              "key": "options.headOfHousehold",
+              "label": "Will file as head of household",
+              "kind": "switch"
+            },
+            {
+              "key": "options.blind",
+              "label": "Worker or spouse is blind",
+              "kind": "switch"
+            }
+          ]
+        }
+      }
     },
     {
       "tax": "pfml",
-      "method": "manual",
-      "params": { "label": "{state} PFML" },
-      "source": "https://www.mass.gov/info-details/paid-family-and-medical-leave-pfml-contribution-rates-and-calculator",
-      "revision": 1
+      "method": "capped_rate",
+      "revision": 2,
+      "source": "https://www.mass.gov/info-details/paid-family-and-medical-leave-employer-contribution-rates-and-calculator",
+      "params": {
+        "label": "{state} paid family and medical leave",
+        "ratePercent": "0.46",
+        "wageBaseCents": 18450000,
+        "optional": true
+      }
     }
   ]
 }
