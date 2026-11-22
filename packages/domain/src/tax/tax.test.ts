@@ -109,6 +109,13 @@ describe('state income tax', () => {
     }
   });
 
+  it('withholds Pennsylvania’s flat 3.07% of pay', () => {
+    // $1,842.00 × 3.07% = $56.5494 → $56.55.
+    expect(stateIncomeTax({ state: 'PA', year: 2026, wagesCents: 1_842_00, periodsPerYear: 26, w4: w4() })).toEqual({ kind: 'amount', cents: 56_55 });
+    // No Pennsylvania figures for a year that has not been added.
+    expect(stateIncomeTax({ state: 'PA', year: 2027, wagesCents: 1_842_00, periodsPerYear: 26, w4: w4() })).toEqual({ kind: 'manual' });
+  });
+
   it('reports a state it cannot calculate yet instead of guessing', () => {
     expect(stateIncomeTax({ state: 'CA', year: 2026, wagesCents: 2_000_00, periodsPerYear: 26, w4: w4() })).toEqual({ kind: 'manual' });
   });
@@ -155,6 +162,11 @@ describe('tax lines on a stub', () => {
     const sit = lines.find((line) => line.taxCode === 'sit');
     expect(sit).toMatchObject({ label: 'California income tax', amountCents: 0, source: 'manual' });
     expect(sit && isTaxOverride(sit, { ...context, businessState: 'CA' })).toBe(false);
+  });
+
+  it('calculates state tax where the state is built, as its own line', () => {
+    const { lines } = applyTaxes([hourly], { ...context, businessState: 'PA' });
+    expect(lines.find((line) => line.taxCode === 'sit')).toMatchObject({ label: 'Pennsylvania income tax', amountCents: 56_55, source: 'calculated' });
   });
 
   it('uses the worker’s own state over the business’s', () => {

@@ -243,9 +243,11 @@ export function WorkerForm({ existing }: { existing: Worker | null }) {
                     subtitle={
                       !workState
                         ? 'Work state'
-                        : stateTaxSupport(workState) === 'none'
+                        : stateTaxSupport(workState, year) === 'none'
                           ? 'Work state · no state income tax on wages'
-                          : 'Work state · state tax is typed in by hand for now'
+                          : stateTaxSupport(workState, year) === 'calculated'
+                            ? 'Work state · state income tax is calculated'
+                            : 'Work state · state tax is typed in by hand for now'
                     }
                     minHeight={56}
                     strong

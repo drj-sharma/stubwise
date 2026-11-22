@@ -1,6 +1,9 @@
-import type { Cents } from '../money';
+import { type Cents, divRoundHalfUp } from '../money';
 import { type UsStateCode } from '../usStates';
+import { STATE_RULES_2026, type StateRule } from './data/states-2026';
 import type { W4 } from './types';
+
+const STATE_RULES: Readonly<Record<number, Partial<Record<UsStateCode, StateRule>>>> = { 2026: STATE_RULES_2026 };
 
 /**
  * States with no tax on wages. Nothing is withheld for state income tax.
@@ -30,10 +33,13 @@ export function stateIncomeTax(input: {
   w4: W4;
 }): StateTaxResult {
   if (NO_WAGE_INCOME_TAX.has(input.state)) return { kind: 'none' };
-  return { kind: 'manual' };
+  const rule = STATE_RULES[input.year]?.[input.state];
+  if (!rule) return { kind: 'manual' };
+  return { kind: 'amount', cents: divRoundHalfUp(Math.max(0, input.wagesCents) * rule.rateBasisPoints, 10_000) };
 }
 
 /** How the app handles each state today, for showing people what to expect. */
-export function stateTaxSupport(state: UsStateCode): 'none' | 'manual' | 'calculated' {
-  return NO_WAGE_INCOME_TAX.has(state) ? 'none' : 'manual';
+export function stateTaxSupport(state: UsStateCode, year: number): 'none' | 'manual' | 'calculated' {
+  if (NO_WAGE_INCOME_TAX.has(state)) return 'none';
+  return STATE_RULES[year]?.[state] ? 'calculated' : 'manual';
 }

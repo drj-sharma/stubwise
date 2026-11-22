@@ -72,3 +72,26 @@ Errors are always `{ "error": { "code", "message", "details"? } }`.
 - Money is an integer number of cents everywhere. Time worked is whole minutes. Dates are `YYYY-MM-DD` strings.
 - New database changes are new entries in `apps/api/src/db/migrations.ts`; shipped migrations are never edited.
 - Anything typed by a user is escaped before it reaches stub HTML (`packages/templates/src/html.ts`).
+
+## Tax calculation
+
+Taxes are calculated on the device, in `packages/domain/src/tax`. Rates and
+brackets live in dated data files under `tax/data`, one per tax year, copied
+from the official publications named at the top of each file.
+
+| What | Status |
+| --- | --- |
+| Federal income tax | IRS Pub. 15-T (2026) percentage method, 2020-or-later Form W-4. Tested against the IRS wage bracket table. |
+| Social Security, Medicare | 2026 rates, the $184,500 wage base, and Additional Medicare Tax past $200,000. |
+| States with no wage income tax | AK, FL, NV, NH, SD, TN, TX, WA, WY: no state line. |
+| States calculated | PA (flat rate). |
+| All other states and DC | Not built yet. The stub gets a state tax line to fill in by hand. |
+
+Not handled: tax years other than 2026, Forms W-4 from 2019 or earlier,
+pre-tax deductions (taxable wages are gross pay), local taxes, other
+worker-paid state payroll taxes, and employer-side taxes.
+
+To add a state: read its employer withholding guide, add its rule to
+`tax/data/states-<year>.ts` with the source and the date read, and write a test
+from the guide's own worked examples.
+
