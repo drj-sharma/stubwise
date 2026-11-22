@@ -4,8 +4,10 @@ import {
   type PaySchedule,
   type UsStateCode,
   DEFAULT_TAX_PROFILE,
+  US_PHONE_EXAMPLE,
   daysInMonth,
   nextPeriod,
+  normalizeUsPhone,
   parseDollars,
   periodContaining,
   todayIso,
@@ -15,8 +17,8 @@ import { DEFAULT_ACCENT, DEFAULT_TEMPLATE_ID, TEMPLATES, type TemplateId } from 
 import * as Crypto from 'expo-crypto';
 import * as ImagePicker from 'expo-image-picker';
 import { router } from 'expo-router';
-import { type ReactNode, useState } from 'react';
-import { Alert, Image, KeyboardAvoidingView, Platform, Pressable, Text, TextInput, type TextInputProps, useWindowDimensions, View } from 'react-native';
+import { type ComponentRef, type ReactNode, type RefObject, useRef, useState } from 'react';
+import { ActivityIndicator, Alert, Image, KeyboardAvoidingView, Platform, Pressable, Text, TextInput, type TextInputProps, useWindowDimensions, View } from 'react-native';
 import Animated, { FadeInRight } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { ApiError } from '@/api';
@@ -115,9 +117,29 @@ export function Onboarding() {
   // Back from the first question returns to the sign-in screen; nothing has been saved yet.
   const back = (): void => (index === 0 ? void signOut() : go(steps[index - 1] ?? 'secure'));
 
+  // The photo picker takes a moment to open and to hand back the picture: show that it is working.
+  const [pickingLogo, setPickingLogo] = useState(false);
   const pickLogo = async (): Promise<void> => {
-    const picked = await pickLogoDataUri();
-    if (picked) setLogo(picked);
+    setPickingLogo(true);
+    try {
+      const picked = await pickLogoDataUri();
+      if (picked) setLogo(picked);
+    } catch (error) {
+      alertError('Could not add the logo', error);
+    } finally {
+      setPickingLogo(false);
+    }
+  };
+
+  // A required field left empty: Next says what is missing and puts the cursor there, rather than sitting greyed out.
+  const [missing, setMissing] = useState<'name' | 'worker' | 'phone' | null>(null);
+  const nameRef = useRef<ComponentRef<typeof TextInput>>(null);
+  const workerNameRef = useRef<ComponentRef<typeof TextInput>>(null);
+  const phoneRef = useRef<ComponentRef<typeof TextInput>>(null);
+  const required = (value: string, which: 'name' | 'worker', ref: RefObject<ComponentRef<typeof TextInput> | null>, then: () => void): void => {
+    if (value.trim() !== '') return then();
+    setMissing(which);
+    ref.current?.focus();
   };
 
   /** Saves everything in one go. `withWorker` is false when the worker step was skipped. */
@@ -224,50 +246,106 @@ export function Onboarding() {
       title = 'What is your business called?';
       subtitle = 'Printed at the top of every pay stub.';
       body = (
-        <SubCard>
-          <SteadyField label="Business name" value={name} onChangeText={setName} autoCapitalize="words" autoCorrect={false} returnKeyType="done" />
-          <View style={{ minHeight: 56, paddingHorizontal: 12, flexDirection: 'row', alignItems: 'center', gap: 10 }}>
-            <Icon name="photo" size={18} color={c.muted} />
-            <View style={{ flex: 1 }}>
-              <Text style={{ fontSize: 14, fontWeight: '600', color: c.text }}>Logo</Text>
-              <Text style={{ fontSize: 12, color: c.muted }}>Optional. Your initials are used without one.</Text>
+        <View style={{ gap: 6 }}>
+          <SubCard>
+            <SteadyField
+              ref={nameRef}
+              label="Business name"
+              value={name}
+              onChangeText={(text) => {
+                setName(text);
+                if (missing === 'name' && text.trim()) setMissing(null);
+              }}
+              autoCapitalize="words"
+              autoCorrect={false}
+              returnKeyType="done"
+            />
+            <View style={{ minHeight: 56, paddingHorizontal: 12, flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+              <Icon name="photo" size={18} color={c.muted} />
+              <View style={{ flex: 1 }}>
+                <Text style={{ fontSize: 14, fontWeight: '600', color: c.text }}>Logo</Text>
+                <Text style={{ fontSize: 12, color: c.muted }}>Optional. Your initials are used without one.</Text>
+              </View>
+              {pickingLogo ? (
+                <ActivityIndicator color={c.primaryText} accessibilityLabel="Adding the logo" />
+              ) : (
+                <Pressable onPress={() => (logo ? setLogo(null) : void pickLogo())} hitSlop={12} accessibilityRole="button">
+                  <Text style={{ fontSize: 14, fontWeight: '600', color: c.primaryText }}>{logo ? 'Remove' : 'Choose'}</Text>
+                </Pressable>
+              )}
             </View>
-            <Pressable onPress={() => (logo ? setLogo(null) : void pickLogo())} hitSlop={12} accessibilityRole="button">
-              <Text style={{ fontSize: 14, fontWeight: '600', color: logo ? c.muted : c.primaryText }}>{logo ? 'Remove' : 'Choose'}</Text>
-            </Pressable>
-          </View>
-        </SubCard>
+          </SubCard>
+          {missing === 'name' ? <Text style={{ fontSize: 13, color: c.danger, marginHorizontal: 4 }}>Enter your business name to continue.</Text> : null}
+        </View>
       );
-      primary = { title: 'Next', onPress: next, disabled: name.trim() === '' };
+      primary = { title: 'Next', onPress: () => required(name, 'name', nameRef, next), disabled: pickingLogo };
       break;
 
     case 'details':
       visual = (
         <ScenePanel tone="sky">
-          <DetailsScene name={name.trim()} logo={logo} state={state} address={address.trim()} phone={phone.trim()} employerId={employerId.trim()} />
+          <DetailsScene name={name.trim()} logo={logo} state={state} address={address.trim()} phone={normalizeUsPhone(phone) ?? phone.trim()} employerId={employerId.trim()} />
         </ScenePanel>
       );
       title = 'Where is your business?';
       subtitle = 'The state sets the tax rules. The rest prints under your name.';
       body = (
-        <SubCard>
-          <Row
-            title={state ? usStateName(state) : 'Choose your state'}
-            subtitle="State"
-            minHeight={56}
-            strong={state !== null}
-            right={<Icon name="chevron.down" size={14} color={c.muted} />}
-            onPress={() => setPickingState(true)}
-          />
-          <SteadyField label="Street address, city, ZIP" value={address} onChangeText={setAddress} autoCapitalize="words" autoCorrect={false} />
-          <View style={{ flexDirection: 'row' }}>
-            <SteadyField label="Phone" value={phone} onChangeText={setPhone} keyboardType="phone-pad" last style={{ flex: 1, borderRightWidth: 1, borderRightColor: c.border }} />
-            <SteadyField label="EIN, optional" value={employerId} onChangeText={setEmployerId} keyboardType="numbers-and-punctuation" last style={{ flex: 1 }} />
-          </View>
-        </SubCard>
+        <View style={{ gap: 6 }}>
+          <SubCard>
+            <Row
+              title={state ? usStateName(state) : 'Choose your state'}
+              subtitle="State"
+              minHeight={56}
+              strong={state !== null}
+              right={<Icon name="chevron.down" size={14} color={c.muted} />}
+              onPress={() => setPickingState(true)}
+            />
+            <SteadyField label="Street address, city, ZIP" value={address} onChangeText={setAddress} autoCapitalize="words" autoCorrect={false} />
+            <View style={{ flexDirection: 'row' }}>
+              <SteadyField
+                ref={phoneRef}
+                label="Phone"
+                value={phone}
+                onChangeText={(text) => {
+                  setPhone(text);
+                  if (missing === 'phone' && normalizeUsPhone(text) !== null) setMissing(null);
+                }}
+                keyboardType="phone-pad"
+                textContentType="telephoneNumber"
+                last
+                style={{ flex: 1, borderRightWidth: 1, borderRightColor: c.border }}
+              />
+              <SteadyField label="EIN, optional" value={employerId} onChangeText={setEmployerId} keyboardType="numbers-and-punctuation" last style={{ flex: 1 }} />
+            </View>
+          </SubCard>
+          {missing === 'phone' ? (
+            <Text style={{ fontSize: 13, color: c.danger, marginHorizontal: 4 }}>Enter a US phone number with area code, for example {US_PHONE_EXAMPLE}.</Text>
+          ) : null}
+        </View>
       );
-      primary = { title: 'Next', onPress: next };
-      skip = { title: 'Skip', onPress: next };
+      // The phone is optional, but when given it must be a US number; it is saved in one form, "(423) 555-0142".
+      primary = {
+        title: 'Next',
+        onPress: () => {
+          const normalized = normalizeUsPhone(phone);
+          if (normalized === null) {
+            setMissing('phone');
+            phoneRef.current?.focus();
+            return;
+          }
+          setPhone(normalized);
+          next();
+        },
+      };
+      // Skipping leaves out a number that is not a US one, so setup cannot fail on it at the end.
+      skip = {
+        title: 'Skip',
+        onPress: () => {
+          if (normalizeUsPhone(phone) === null) setPhone('');
+          setMissing(null);
+          next();
+        },
+      };
       break;
 
     case 'pay':
@@ -333,8 +411,20 @@ export function Onboarding() {
       body = (
         <View style={{ gap: 10 }}>
           <SubCard>
-            <SteadyField label="Full name" value={workerName} onChangeText={setWorkerName} autoCapitalize="words" autoCorrect={false} last />
+            <SteadyField
+              ref={workerNameRef}
+              label="Full name"
+              value={workerName}
+              onChangeText={(text) => {
+                setWorkerName(text);
+                if (missing === 'worker' && text.trim()) setMissing(null);
+              }}
+              autoCapitalize="words"
+              autoCorrect={false}
+              last
+            />
           </SubCard>
+          {missing === 'worker' ? <Text style={{ fontSize: 13, color: c.danger, marginHorizontal: 4 }}>Enter the worker’s name, or tap Add later.</Text> : null}
           <Segmented
             value={workerType}
             onChange={setWorkerType}
@@ -382,7 +472,7 @@ export function Onboarding() {
           </View>
         </View>
       );
-      primary = { title: 'Finish', onPress: () => void finish(true), disabled: saving || workerName.trim() === '' };
+      primary = { title: 'Finish', onPress: () => required(workerName, 'worker', workerNameRef, () => void finish(true)), disabled: saving };
       skip = { title: 'Add later', onPress: () => void finish(false) };
       break;
 

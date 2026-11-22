@@ -1,16 +1,7 @@
 import { LinearGradient } from 'expo-linear-gradient';
 import { SymbolView, type SFSymbol } from 'expo-symbols';
-import { type ComponentProps, type ReactNode, useState } from 'react';
-import {
-  Pressable,
-  type StyleProp,
-  Text,
-  TextInput,
-  type TextInputProps,
-  type TextStyle,
-  View,
-  type ViewStyle,
-} from 'react-native';
+import { type ComponentProps, type ComponentRef, type ReactNode, type Ref, useState } from 'react';
+import { Pressable, type StyleProp, Text, TextInput, type TextInputProps, type TextStyle, View, type ViewStyle } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { avatarTint, initials, useTheme } from './theme';
 
@@ -39,14 +30,8 @@ export function Screen({
   const insets = useSafeAreaInsets();
   return (
     <View style={{ flex: 1, backgroundColor: c.bg }}>
-      <LinearGradient
-        colors={[c.bgTint, c.bg]}
-        style={{ position: 'absolute', left: 0, right: 0, top: 0, height: 260 }}
-        pointerEvents="none"
-      />
-      <View style={{ flex: 1, paddingTop: (modal ? 10 : insets.top) + 6, paddingBottom: footer || !padBottom ? 0 : Math.max(insets.bottom, 16) }}>
-        {children}
-      </View>
+      <LinearGradient colors={[c.bgTint, c.bg]} style={{ position: 'absolute', left: 0, right: 0, top: 0, height: 260 }} pointerEvents="none" />
+      <View style={{ flex: 1, paddingTop: (modal ? 10 : insets.top) + 6, paddingBottom: footer || !padBottom ? 0 : Math.max(insets.bottom, 16) }}>{children}</View>
       {footer}
     </View>
   );
@@ -59,11 +44,7 @@ export function Sheet({ children, style }: { children: ReactNode; style?: StyleP
 
 export function SubCard({ children, style }: { children: ReactNode; style?: StyleProp<ViewStyle> }) {
   const c = useTheme();
-  return (
-    <View style={[{ borderWidth: 1, borderColor: c.border, borderRadius: 14, overflow: 'hidden', backgroundColor: c.sheet }, style]}>
-      {children}
-    </View>
-  );
+  return <View style={[{ borderWidth: 1, borderColor: c.border, borderRadius: 14, overflow: 'hidden', backgroundColor: c.sheet }, style]}>{children}</View>;
 }
 
 /** The grey strip that titles a bordered card, with an optional action on the right. */
@@ -113,9 +94,7 @@ export function Avatar({ name, seed, size = 38 }: { name: string; seed: string; 
   const c = useTheme();
   const tint = avatarTint(c.scheme, seed);
   return (
-    <View
-      style={{ width: size, height: size, borderRadius: size / 2, backgroundColor: tint.bg, alignItems: 'center', justifyContent: 'center' }}
-      accessibilityElementsHidden>
+    <View style={{ width: size, height: size, borderRadius: size / 2, backgroundColor: tint.bg, alignItems: 'center', justifyContent: 'center' }} accessibilityElementsHidden>
       <Text style={{ fontSize: Math.round(size * 0.34), fontWeight: '600', color: tint.fg }}>{initials(name)}</Text>
     </View>
   );
@@ -270,14 +249,10 @@ export function Segmented<Value extends string>({
  * Uncontrolled on purpose: `value` only seeds the field, and the native input
  * reports each change. See the note on BigInput in sheets.tsx for why.
  */
-export function Field({ label, last, style, value, ...input }: TextInputProps & { label: string; last?: boolean }) {
+export function Field({ label, last, style, value, ...input }: TextInputProps & { label: string; last?: boolean; ref?: Ref<ComponentRef<typeof TextInput>> }) {
   const c = useTheme();
   return (
-    <View
-      style={[
-        { minHeight: 56, paddingHorizontal: 12, justifyContent: 'center', borderBottomWidth: last ? 0 : 1, borderBottomColor: c.border },
-        style,
-      ]}>
+    <View style={[{ minHeight: 56, paddingHorizontal: 12, justifyContent: 'center', borderBottomWidth: last ? 0 : 1, borderBottomColor: c.border }, style]}>
       <Text style={{ fontSize: 12, color: c.muted }}>{label}</Text>
       <TextInput
         accessibilityLabel={label}

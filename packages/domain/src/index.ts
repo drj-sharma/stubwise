@@ -6,3 +6,4 @@ export * from './ytd';
 export * from './nextStub';
 export * from './usStates';
 export * from './tax';
+export * from './phone';

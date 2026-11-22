@@ -14,6 +14,7 @@ from typing import Annotated, Any, Literal
 
 from pydantic import AfterValidator, BaseModel, ConfigDict, Field, StringConstraints, model_validator
 
+from .domain.phone import US_PHONE_EXAMPLE, normalize_us_phone
 from .domain.tax.types import DEFAULT_STATE_W4, DEFAULT_TAX_PROFILE, DEFAULT_W4
 from .domain.us_states import is_us_state_code
 
@@ -79,6 +80,18 @@ Label = Annotated[str, _text(60, required=True)]
 Name = Annotated[str, _text(120, required=True)]
 Address = Annotated[str, _text(240)]
 Phone = Annotated[str, _text(40)]
+
+
+def _us_phone(value: str) -> str:
+    normalized = normalize_us_phone(value)
+    if normalized is None:
+        raise ValueError(f"must be a US phone number with area code, for example {US_PHONE_EXAMPLE}")
+    return normalized
+
+
+# What the business's phone can be set to: empty, or a US number, stored as "(423) 555-0142".
+# Backups keep the older, freer Phone so records saved before this rule still restore.
+UsPhone = Annotated[str, _text(40), AfterValidator(_us_phone)]
 EmployerId = Annotated[str, _text(20)]
 Cents = Annotated[int, Field(ge=0, le=1_000_000_000)]
 Minutes = Annotated[int, Field(ge=0, le=100_000)]
@@ -224,7 +237,7 @@ class BusinessCreate(Model):
 
     name: Name
     address: Address = ""
-    phone: Phone = ""
+    phone: UsPhone = ""
     state: UsState | None = None
     employerId: EmployerId | None = None
     logoDataUri: Logo | None = None
@@ -245,7 +258,7 @@ class BusinessPatch(Model):
 
     name: Name | None = None
     address: Address | None = None
-    phone: Phone | None = None
+    phone: UsPhone | None = None
     state: UsState | None = None
     employerId: EmployerId | None = None
     logoDataUri: Logo | None = None

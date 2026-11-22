@@ -295,7 +295,7 @@ def test_if_match_prevents_lost_updates(client: TestClient, auth: dict[str, str]
     lines = {"lines": [hourly("Regular", 60, 2400)]}
     assert client.put(f"{stub_url}/lines", headers={**auth, "if-match": "7"}, json=lines).status_code == 412
     assert client.patch(stub_url, headers={**auth, "if-match": "7"}, json={"payDate": "2026-12-01"}).status_code == 412
-    assert client.patch("/v1/business", headers={**auth, "if-match": "7"}, json={"phone": "x"}).status_code == 412
+    assert client.patch("/v1/business", headers={**auth, "if-match": "7"}, json={"phone": "4235550199"}).status_code == 412
     assert client.put(f"{stub_url}/lines", headers={**auth, "if-match": "1"}, json=lines).json()["version"] == 2
 
 
