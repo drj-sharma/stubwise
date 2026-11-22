@@ -1,0 +1,61 @@
+{
+  "year": 2026,
+  "jurisdiction": "MI",
+  "rules": [
+    {
+      "tax": "income",
+      "method": "state",
+      "params": {
+        "ratePercent": "4.25",
+        "perField": {
+          "allowances": 590000
+        },
+        "round": "cent",
+        "certificate": {
+          "form": "MI-W4",
+          "fields": [
+            {
+              "key": "allowances",
+              "label": "Personal and dependent exemptions (line 6)",
+              "kind": "count"
+            }
+          ]
+        }
+      },
+      "source": "https://www.michigan.gov/taxes/business-taxes/withholding/calendar-year-tax-information",
+      "revision": 2
+    },
+    {
+      "tax": "local",
+      "method": "local_rate",
+      "params": {
+        "choose": "City",
+        "label": "{name} city tax",
+        "localities": {
+          "DETROIT-R": { "name": "Detroit (resident)", "ratePercent": "2.4" },
+          "DETROIT-N": { "name": "Detroit (nonresident)", "ratePercent": "1.2" },
+          "FLINT-R": { "name": "Flint (resident)", "ratePercent": "1" },
+          "FLINT-N": { "name": "Flint (nonresident)", "ratePercent": "0.5" },
+          "GRANDRAPIDS-R": { "name": "Grand Rapids (resident)", "ratePercent": "1.5" },
+          "GRANDRAPIDS-N": { "name": "Grand Rapids (nonresident)", "ratePercent": "0.75" },
+          "HAMTRAMCK-R": { "name": "Hamtramck (resident)", "ratePercent": "1" },
+          "HAMTRAMCK-N": { "name": "Hamtramck (nonresident)", "ratePercent": "0.5" },
+          "HIGHLANDPK-R": { "name": "Highland Park (resident)", "ratePercent": "2" },
+          "HIGHLANDPK-N": { "name": "Highland Park (nonresident)", "ratePercent": "1" },
+          "HUDSON-R": { "name": "Hudson (resident)", "ratePercent": "1" },
+          "HUDSON-N": { "name": "Hudson (nonresident)", "ratePercent": "0.5" }
+        },
+        "sources": {
+          "DETROIT": "https://detroitmi.gov/taxonomy/term/2286",
+          "FLINT": "https://www.cityofflint.com/wp-content/uploads/2026/01/2025-City-of-Flint-Employers-Withholding-Forms-and-Instruction-Booklet.pdf",
+          "GRANDRAPIDS": "https://www.grandrapidsmi.gov/departments/fiscal-services/income-tax/employers-and-withholders/income-tax-guide-for-withholders/",
+          "HAMTRAMCK": "https://hamtramckcity.gov/wp-content/uploads/2026/01/H-1040ES-Estimated-Payment-Instructions-2026-Copy.pdf",
+          "HIGHLANDPK": "https://highlandparkmi.gov/incometax/",
+          "HUDSON": "https://www.ci.hudson.mi.us/_files/ugd/6c24f6_ff44061ce2b145e09ebb1b33c4caa7a6.pdf"
+        }
+      },
+      "source": "https://www.michigan.gov/taxes/citytax/what-cities-impose-an-income-tax",
+      "revision": 1
+    }
+  ]
+}

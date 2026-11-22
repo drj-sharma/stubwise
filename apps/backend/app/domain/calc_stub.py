@@ -11,7 +11,8 @@ from .time import Minutes, pay_for_minutes
 
 LineKind = Literal["earning", "deduction"]
 LineSource = Literal["manual", "calculated"]
-TaxCode = Literal["fit", "ss", "medicare", "sit"]
+TaxCode = str
+"""fit, ss, medicare, sit (state income), sdi, fli, pfml, ui, ltc, transit, or local:<place>."""
 
 
 class StubLine(TypedDict):

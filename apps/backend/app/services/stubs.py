@@ -21,11 +21,12 @@ from sqlalchemy.orm import Session
 from ..domain.calc_stub import calc_stub, with_computed_amount
 from ..domain.next_stub import draft_next_stub
 from ..domain.pay_period import add_days, current_period, default_pay_date, diff_days, year_of
-from ..domain.tax.apply_taxes import TaxContext, apply_taxes, is_tax_override
+from ..domain.tax.apply_taxes import TaxContext, apply_taxes, is_tax_override, work_state
 from ..domain.tax.types import normalize_tax_profile
 from ..domain.ytd import compute_ytd, prior_ytd_gross
 from ..errors import ApiError
 from ..models import Business, Stub, StubLine, Worker, as_utc, iso_z, utcnow
+from ..tax_rules.store import RULES
 from . import records
 
 Line = dict[str, Any]
@@ -80,16 +81,22 @@ def worker_stubs(db: Session, worker: Worker) -> list[Stub]:
 
 
 def tax_context(
-    business: Business, worker: Worker, target: dict[str, Any], history: Sequence[dict[str, Any]]
+    db: Session, business: Business, worker: Worker, target: dict[str, Any], history: Sequence[dict[str, Any]]
 ) -> TaxContext:
-    """What the tax calculation needs to know about one stub: who, where, when, and pay so far this year."""
+    """What the tax calculation needs to know about one stub: who, where, when, pay so far this
+    year, and the work state's tax rules for that year (from the tax_rules table)."""
+    # Nothing is withheld from a 1099 contractor.
+    profile = None if worker.type == "contractor" else normalize_tax_profile(worker.tax_profile)
+    year = year_of(target["payDate"])
+    state = work_state(profile, business.state)
     return {
-        # Nothing is withheld from a 1099 contractor.
-        "profile": None if worker.type == "contractor" else normalize_tax_profile(worker.tax_profile),
+        "profile": profile,
         "businessState": business.state,
-        "year": year_of(target["payDate"]),
+        "year": year,
         "schedule": business.pay_schedule,  # type: ignore[typeddict-item]
         "priorYtdGrossCents": prior_ytd_gross(target, history, worker.starting_ytd),  # type: ignore[arg-type]
+        "stateRules": list(RULES.for_state(db, year, state)) if state else [],  # type: ignore[typeddict-item]
+        "payDate": target["payDate"],
     }
 
 
@@ -136,7 +143,7 @@ def create_next(db: Session, business: Business, worker: Worker, today: str) -> 
     stubs = worker_stubs(db, worker)
     draft = _draft(business, worker, stubs, today)
     history = [_ytd_stub(stub) for stub in stubs]
-    lines = apply_taxes(draft["lines"], tax_context(business, worker, _unsaved(draft["payDate"]), history))["lines"]
+    lines = apply_taxes(draft["lines"], tax_context(db, business, worker, _unsaved(draft["payDate"]), history))["lines"]
     stub = _insert(db, worker, draft["period"], draft["payDate"], lines)  # type: ignore[arg-type]
     db.commit()
     return stub
@@ -191,7 +198,7 @@ def create_batch(db: Session, business: Business, user_id: str, today: str) -> t
             else default_pay_date(period)
         )
         history = [_ytd_stub(stub) for stub in stubs]
-        lines = apply_taxes(draft["lines"], tax_context(business, worker, _unsaved(pay_date), history))["lines"]
+        lines = apply_taxes(draft["lines"], tax_context(db, business, worker, _unsaved(pay_date), history))["lines"]
         created.append(_insert(db, worker, period, pay_date, lines))  # type: ignore[arg-type]
     db.commit()
     return period, created  # type: ignore[return-value]
@@ -201,7 +208,7 @@ def replace_lines(db: Session, business: Business, worker: Worker, stub: Stub, l
     """Saves edited lines. Hourly amounts are recalculated from minutes and rate, and
     the calculated tax lines are brought back in step with the pay."""
     history = [_ytd_stub(other) for other in worker_stubs(db, worker)]
-    context = tax_context(business, worker, _ytd_stub(stub), history)
+    context = tax_context(db, business, worker, _ytd_stub(stub), history)
     taxed = apply_taxes([with_computed_amount(line) for line in lines], context)["lines"]  # type: ignore[arg-type]
     _replace(db, stub, taxed)
     return stub
@@ -227,7 +234,7 @@ def update_dates(
         stub.pay_date = pay_date
     history = [_ytd_stub(other) for other in worker_stubs(db, worker) if other.id != stub.id]
     target = _ytd_stub(stub)
-    taxed = apply_taxes(target["lines"], tax_context(business, worker, target, [*history, target]))["lines"]
+    taxed = apply_taxes(target["lines"], tax_context(db, business, worker, target, [*history, target]))["lines"]
     _replace(db, stub, taxed)
     return stub
 
@@ -266,12 +273,12 @@ class StubView:
         target = _ytd_stub(stub)
         # The stub itself may be newer than the cached history (it was just saved).
         history = [target if other["id"] == stub.id else other for other in history]
-        context = tax_context(self._business, worker, target, history)
+        context = tax_context(self._db, self._business, worker, target, history)
         ytd = compute_ytd(target, history, worker.starting_ytd)  # type: ignore[arg-type]
         lines = []
         for row, line in zip(stub.lines, target["lines"], strict=True):
             override = is_tax_override(
-                line, profile=context["profile"], business_state=context["businessState"], year=context["year"]
+                line, profile=context["profile"], year=context["year"], state_rules=context["stateRules"]
             )
             lines.append({"id": row.id, **line, "taxCode": row.tax_code, "taxOverride": override})
         return {

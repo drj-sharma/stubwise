@@ -7,11 +7,12 @@ import { useIsWide } from './layout';
 import { Icon } from './primitives';
 import { initials, useTheme } from './theme';
 
-export type TabName = 'workers' | 'stubs' | 'settings';
+export type TabName = 'home' | 'workers' | 'reports' | 'settings';
 
 const TABS: readonly { name: TabName; label: string; icon: SFSymbol }[] = [
+  { name: 'home', label: 'Pay stub', icon: 'doc.text' },
   { name: 'workers', label: 'Workers', icon: 'person.2' },
-  { name: 'stubs', label: 'Stubs', icon: 'doc.text' },
+  { name: 'reports', label: 'Reports', icon: 'chart.bar' },
   { name: 'settings', label: 'Settings', icon: 'slider.horizontal.3' },
 ];
 
@@ -30,7 +31,7 @@ export function TabBar({ active }: { active: TabName }) {
       style={{
         flexDirection: 'row',
         paddingTop: 8,
-        paddingHorizontal: 24,
+        paddingHorizontal: 12,
         paddingBottom: Math.max(insets.bottom, 12),
         borderTopWidth: 1,
         borderTopColor: c.border,

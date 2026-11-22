@@ -1,0 +1,128 @@
+{
+  "year": 2026,
+  "jurisdiction": "MT",
+  "rules": [
+    {
+      "tax": "income",
+      "method": "state",
+      "params": {
+        "statuses": ["S", "M", "H", "B"],
+        "defaultStatus": "S",
+        "tableFor": {
+          "S": "single",
+          "M": "married",
+          "H": "head",
+          "B": "single"
+        },
+        "tables": {
+          "52": {
+            "single": [
+              [31000, 0, "4.7"],
+              [122300, 4300, "5.65"]
+            ],
+            "married": [
+              [61900, 0, "4.7"],
+              [244600, 8600, "5.65"]
+            ],
+            "head": [
+              [46400, 0, "4.7"],
+              [183500, 6500, "5.65"]
+            ]
+          },
+          "26": {
+            "single": [
+              [61900, 0, "4.7"],
+              [244600, 8600, "5.65"]
+            ],
+            "married": [
+              [123800, 0, "4.7"],
+              [489200, 17200, "5.65"]
+            ],
+            "head": [
+              [92900, 0, "4.7"],
+              [366900, 12900, "5.65"]
+            ]
+          },
+          "24": {
+            "single": [
+              [67100, 0, "4.7"],
+              [265000, 9400, "5.65"]
+            ],
+            "married": [
+              [134200, 0, "4.7"],
+              [530000, 18700, "5.65"]
+            ],
+            "head": [
+              [100600, 0, "4.7"],
+              [397500, 14000, "5.65"]
+            ]
+          },
+          "12": {
+            "single": [
+              [134200, 0, "4.7"],
+              [530000, 18700, "5.65"]
+            ],
+            "married": [
+              [268300, 0, "4.7"],
+              [1060000, 37200, "5.65"]
+            ],
+            "head": [
+              [201300, 0, "4.7"],
+              [795000, 28000, "5.65"]
+            ]
+          },
+          "1": {
+            "single": [
+              [1610000, 0, "4.7"],
+              [6360000, 223300, "5.65"]
+            ],
+            "married": [
+              [3220000, 0, "4.7"],
+              [12720000, 446500, "5.65"]
+            ],
+            "head": [
+              [2415000, 0, "4.7"],
+              [9540000, 334900, "5.65"]
+            ]
+          }
+        },
+        "round": "dollar",
+        "certificate": {
+          "form": "MW-4",
+          "fields": [
+            {
+              "key": "status",
+              "label": "Line 1 federal filing status / line 2",
+              "kind": "choice",
+              "options": [
+                {
+                  "value": "S",
+                  "label": "1a: Single or married filing separately"
+                },
+                {
+                  "value": "M",
+                  "label": "1b: Married filing jointly or qualifying surviving spouse"
+                },
+                {
+                  "value": "H",
+                  "label": "1c: Head of household"
+                },
+                {
+                  "value": "B",
+                  "label": "2: Married filing jointly with both spouses working"
+                }
+              ]
+            },
+            {
+              "key": "options.specifiedCents",
+              "label": "Line 4 specified withholding per pay period",
+              "kind": "money"
+            }
+          ]
+        }
+      },
+      "source": "https://revenuefiles.mt.gov/files/Forms/Montana_Employer_and_Information_Agent_Guide_with_Tax_Tables.pdf",
+      "revision": 2
+    }
+  ]
+}

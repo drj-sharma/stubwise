@@ -1,0 +1,106 @@
+{
+  "year": 2026,
+  "jurisdiction": "OR",
+  "rules": [
+    {
+      "tax": "income",
+      "method": "state",
+      "params": {
+        "statuses": ["single", "married", "single-rate"],
+        "marriedStatuses": ["married"],
+        "noCertificateRatePercent": "8",
+        "marriedTableFromAllowances": 3,
+        "standardDeductionCents": {
+          "single": 291000,
+          "married": 582000
+        },
+        "federalTaxCapCents": {
+          "single": [
+            [0, 875000],
+            [12500000, 700000],
+            [13000000, 525000],
+            [13500000, 350000],
+            [14000000, 175000],
+            [14500000, 0]
+          ],
+          "married": [
+            [0, 875000],
+            [25000000, 700000],
+            [26000000, 525000],
+            [27000000, 350000],
+            [28000000, 175000],
+            [29000000, 0]
+          ]
+        },
+        "highWagesFromCents": 5000000,
+        "lowWageFormula": {
+          "single": [
+            [0, 26300, "4.75", 0],
+            [455000, 47900, "6.75", 455000],
+            [1140000, 94100, "8.75", 1140000]
+          ],
+          "married": [
+            [0, 26300, "4.75", 0],
+            [910000, 69500, "6.75", 910000],
+            [2280000, 162000, "8.75", 2280000]
+          ]
+        },
+        "highWageFormula": {
+          "single": [
+            [0, 67800, "8.75", 1140000],
+            [12500000, 1061800, "9.9", 12500000]
+          ],
+          "married": [
+            [0, 135700, "8.75", 2280000],
+            [25000000, 2123700, "9.9", 25000000]
+          ]
+        },
+        "noAllowancesAboveCents": {
+          "single": 10000000,
+          "married": 20000000
+        },
+        "allowanceCreditCents": 26300,
+        "round": "cent",
+        "certificate": {
+          "form": "OR-W-4",
+          "fields": [
+            {
+              "key": "status",
+              "label": "Filing status",
+              "kind": "choice",
+              "options": [
+                { "value": "single", "label": "Single" },
+                { "value": "married", "label": "Married" },
+                { "value": "single-rate", "label": "Married, but withhold at the higher single rate" }
+              ]
+            },
+            { "key": "allowances", "label": "Allowances", "kind": "count" }
+          ]
+        }
+      },
+      "source": "https://www.oregon.gov/dor/forms/FormsPubs/withholding-tax-formulas_206-436_2026.pdf",
+      "revision": 2
+    },
+    {
+      "tax": "transit",
+      "method": "capped_rate",
+      "params": {
+        "ratePercent": "0.1",
+        "label": "Oregon statewide transit tax"
+      },
+      "source": "https://www.oregon.gov/dor/programs/businesses/Pages/Statewide-Transit-Tax.aspx",
+      "revision": 1
+    },
+    {
+      "tax": "pfml",
+      "method": "capped_rate",
+      "params": {
+        "ratePercent": "0.6",
+        "wageBaseCents": 18450000,
+        "label": "Paid Leave Oregon"
+      },
+      "source": "https://paidleave.oregon.gov/employers/contributions-calculator.html",
+      "revision": 1
+    }
+  ]
+}

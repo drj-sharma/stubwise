@@ -60,6 +60,7 @@ export function buildVectors() {
   });
 
   const randomStateW4 = (): StateW4 => ({
+    ...DEFAULT_STATE_W4,
     allowances: random() < 0.5 ? 0 : int(0, 6),
     additionalAllowances: random() < 0.7 ? 0 : int(0, 3),
     extraWithholdingCents: random() < 0.8 ? 0 : int(0, 50_00),

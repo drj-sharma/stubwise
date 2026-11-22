@@ -7,10 +7,11 @@ import pytest
 from app.domain import money
 from app.domain.calc_stub import line_key
 from app.domain.pay_period import is_iso_date, next_period
-from app.domain.tax import data
-from app.domain.tax.state import state_income_tax, state_rule, state_tax_support
+from app.domain.tax.state import state_tax_support, state_taxes
+from app.domain.tax.states._common import StateInput
 from app.domain.tax.types import DEFAULT_STATE_W4, DEFAULT_TAX_PROFILE, DEFAULT_W4, normalize_tax_profile
 from app.domain.time import format_clock, format_duration, overtime_rate_cents, pay_for_minutes, to_minutes
+from app.tax_rules.store import seed_files
 
 
 def test_rounding_is_half_away_from_zero() -> None:
@@ -76,26 +77,76 @@ def test_tax_profiles_are_normalised() -> None:
     assert DEFAULT_W4["exempt"] is False
 
 
-def test_state_rules_come_from_the_data_file() -> None:
-    assert state_tax_support("TX", 2026) == "none"
-    assert state_tax_support("PA", 2026) == "calculated"
-    assert state_tax_support("PA", 2027) == "manual"
-    assert state_rule("NC", 2026)["round"] == "dollar"
-    assert state_rule("CA", 2026) is None
+def _seed(state: str, year: int = 2026) -> list[dict]:
+    return [dict(rule) for rule in seed_files() if rule["jurisdiction"] == state and rule["year"] == year]
+
+
+def _nc(wages_cents: int, cert: dict | None = None) -> list:
+    inp = StateInput(
+        year=2026,
+        wages_cents=wages_cents,
+        periods_per_year=26,
+        w4=DEFAULT_W4,
+        cert={**DEFAULT_STATE_W4, **(cert or {})},
+    )
+    return state_taxes(_seed("NC"), "NC", inp)
+
+
+def test_state_rules_come_from_the_rules_table_seed() -> None:
+    assert state_tax_support(_seed("TX")) == "none"
+    assert state_tax_support(_seed("PA")) == "calculated"
+    assert state_tax_support(_seed("PA", 2027)) == "manual"
+    assert _seed("NC")[0]["params"]["round"] == "dollar"
     # North Carolina, NC-30 annualised method: whole dollars, extra withholding on top, nothing on a zero check.
-    nc = {"state": "NC", "year": 2026, "periods_per_year": 26, "w4": DEFAULT_W4}
-    extra = {**DEFAULT_STATE_W4, "allowances": 1, "extraWithholdingCents": 1000}
-    assert state_income_tax(**nc, wages_cents=200_000, state_w4=extra) == {"kind": "amount", "cents": 6800}
-    assert state_income_tax(**nc, wages_cents=0, state_w4=extra) == {"kind": "amount", "cents": 0}
-    assert state_income_tax(**nc, wages_cents=200_000, state_w4={**extra, "exempt": True})["cents"] == 0
-    assert state_income_tax(**nc, wages_cents=200_000)["cents"] == 6200  # no certificate on file
+    extra = {"allowances": 1, "extraWithholdingCents": 1000}
+    assert _nc(200_000, extra)[0]["cents"] == 6800
+    assert _nc(0, extra)[0]["cents"] == 0
+    assert _nc(200_000, {**extra, "exempt": True})[0]["cents"] == 0
+    assert _nc(200_000)[0]["cents"] == 6200  # no certificate on file
 
 
-def test_an_unknown_kind_of_state_rule_stops_the_server(monkeypatch: pytest.MonkeyPatch) -> None:
-    bracket_rule = {"kind": "brackets", "round": "cent", "rateBasisPoints": 100}
-    monkeypatch.setitem(data.STATE_RULES[2026], "CA", bracket_rule)
-    with pytest.raises(RuntimeError, match="CA 2026 has state rule kind 'brackets'"):
-        data._check_state_rules()
-    # And if one ever got past start-up, calculating with it raises rather than returning zero.
-    with pytest.raises(ValueError, match="Unknown state rule kind"):
-        state_income_tax(state="CA", year=2026, wages_cents=100_000, periods_per_year=26, w4=DEFAULT_W4)
+def test_a_rule_the_server_cannot_apply_raises_rather_than_withholding_nothing() -> None:
+    rules = [{"tax": "income", "method": "brackets", "params": {}, "source": "", "revision": 1}]
+    inp = StateInput(year=2026, wages_cents=100_000, periods_per_year=26, w4=DEFAULT_W4, cert=dict(DEFAULT_STATE_W4))
+    with pytest.raises(ValueError, match="cannot be applied"):
+        state_taxes(rules, "CA", inp)
+
+
+def test_every_seed_file_is_valid_and_every_state_has_an_income_rule() -> None:
+    rules = seed_files()
+    states = {rule["jurisdiction"] for rule in rules if rule["tax"] == "income" and rule["year"] == 2026}
+    assert len(states) == 51
+
+
+def test_figures_changed_during_the_year_follow_the_pay_date() -> None:
+    rules = [
+        {
+            "tax": "income",
+            "method": "state",
+            "source": "",
+            "revision": 1,
+            "params": {
+                "ratePercent": "4.99",
+                "earlier": [
+                    {"until": "2026-05-10", "params": {"ratePercent": "5.19"}},
+                    {"until": "2026-02-28", "params": {"ratePercent": "6"}},
+                ],
+            },
+        }
+    ]
+
+    def withheld(pay_date: str | None) -> int:
+        inp = StateInput(
+            year=2026,
+            wages_cents=100_000,
+            periods_per_year=52,
+            w4=DEFAULT_W4,
+            cert=dict(DEFAULT_STATE_W4),
+            pay_date=pay_date,
+        )
+        return state_taxes(rules, "PA", inp)[0]["cents"]  # PA's module is the plain annualized formula
+
+    assert withheld("2026-02-27") == 6000
+    assert withheld("2026-05-10") == 5190
+    assert withheld("2026-05-11") == 4990
+    assert withheld(None) == 4990

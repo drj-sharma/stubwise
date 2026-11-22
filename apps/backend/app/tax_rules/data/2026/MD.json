@@ -1,0 +1,381 @@
+{
+  "year": 2026,
+  "jurisdiction": "MD",
+  "rules": [
+    {
+      "tax": "income",
+      "method": "state",
+      "params": {
+        "label": "Maryland state and county income tax",
+        "statuses": [
+          "S",
+          "M",
+          "MS"
+        ],
+        "statusFromFederal": {
+          "single": "S",
+          "married": "M",
+          "head": "M"
+        },
+        "defaultStatus": "S",
+        "standardDeductionCents": 340000,
+        "exemptionCents": 320000,
+        "noCertificate": {
+          "allowances": 1
+        },
+        "minimumWagesCents": {
+          "1": 500000,
+          "4": 125000,
+          "12": 41700,
+          "24": 20800,
+          "26": 19200,
+          "52": 9600
+        },
+        "brackets": {
+          "M": [
+            [
+              0,
+              "4.75"
+            ],
+            [
+              15000000,
+              "5"
+            ],
+            [
+              17500000,
+              "5.25"
+            ],
+            [
+              22500000,
+              "5.5"
+            ],
+            [
+              30000000,
+              "5.75"
+            ],
+            [
+              60000000,
+              "6.25"
+            ],
+            [
+              120000000,
+              "6.5"
+            ]
+          ],
+          "*": [
+            [
+              0,
+              "4.75"
+            ],
+            [
+              10000000,
+              "5"
+            ],
+            [
+              12500000,
+              "5.25"
+            ],
+            [
+              15000000,
+              "5.5"
+            ],
+            [
+              25000000,
+              "5.75"
+            ],
+            [
+              50000000,
+              "6.25"
+            ],
+            [
+              100000000,
+              "6.5"
+            ]
+          ]
+        },
+        "localRates": {
+          "ALLEGANY": {
+            "ratePercent": "3.20"
+          },
+          "BALTIMORE-CO": {
+            "ratePercent": "3.20"
+          },
+          "BALTIMORE-CITY": {
+            "ratePercent": "3.20"
+          },
+          "CALVERT": {
+            "ratePercent": "3.20"
+          },
+          "CAROLINE": {
+            "ratePercent": "3.20"
+          },
+          "CARROLL": {
+            "ratePercent": "3.03"
+          },
+          "CECIL": {
+            "ratePercent": "2.74"
+          },
+          "CHARLES": {
+            "ratePercent": "3.03"
+          },
+          "DORCHESTER": {
+            "ratePercent": "3.30"
+          },
+          "GARRETT": {
+            "ratePercent": "2.65"
+          },
+          "HARFORD": {
+            "ratePercent": "3.06"
+          },
+          "HOWARD": {
+            "ratePercent": "3.20"
+          },
+          "KENT": {
+            "ratePercent": "3.30"
+          },
+          "MONTGOMERY": {
+            "ratePercent": "3.20"
+          },
+          "PRINCE-GEORGES": {
+            "ratePercent": "3.20"
+          },
+          "QUEEN-ANNES": {
+            "ratePercent": "3.20"
+          },
+          "ST-MARYS": {
+            "ratePercent": "3.20"
+          },
+          "SOMERSET": {
+            "ratePercent": "3.20"
+          },
+          "TALBOT": {
+            "ratePercent": "2.40"
+          },
+          "WASHINGTON": {
+            "ratePercent": "2.95"
+          },
+          "WICOMICO": {
+            "ratePercent": "3.20"
+          },
+          "WORCESTER": {
+            "ratePercent": "2.25"
+          },
+          "NONRESIDENT": {
+            "ratePercent": "2.25"
+          },
+          "ANNE-ARUNDEL": {
+            "brackets": {
+              "M": [
+                [
+                  0,
+                  "2.70"
+                ],
+                [
+                  7500000,
+                  "2.94"
+                ],
+                [
+                  48000000,
+                  "3.20"
+                ]
+              ],
+              "*": [
+                [
+                  0,
+                  "2.70"
+                ],
+                [
+                  5000000,
+                  "2.94"
+                ],
+                [
+                  40000000,
+                  "3.20"
+                ]
+              ]
+            }
+          },
+          "FREDERICK": {
+            "brackets": {
+              "M": [
+                [
+                  0,
+                  "2.25"
+                ],
+                [
+                  2500000,
+                  "2.75"
+                ],
+                [
+                  10000000,
+                  "2.96"
+                ],
+                [
+                  25000000,
+                  "3.20"
+                ]
+              ],
+              "*": [
+                [
+                  0,
+                  "2.25"
+                ],
+                [
+                  2500000,
+                  "2.75"
+                ],
+                [
+                  5000000,
+                  "2.96"
+                ],
+                [
+                  15000000,
+                  "3.20"
+                ]
+              ]
+            }
+          }
+        },
+        "defaultLocalRatePercent": "3.30",
+        "localRatesSource": "https://www.marylandcomptroller.gov/content/dam/mdcomp/md/state-payroll/memos/2026/2026-maryland-state-and-local-withholding-information.pdf",
+        "localities": {
+          "choose": "County",
+          "options": [
+            {
+              "code": "ALLEGANY",
+              "name": "Allegany County"
+            },
+            {
+              "code": "ANNE-ARUNDEL",
+              "name": "Anne Arundel County"
+            },
+            {
+              "code": "BALTIMORE-CO",
+              "name": "Baltimore County"
+            },
+            {
+              "code": "BALTIMORE-CITY",
+              "name": "Baltimore City"
+            },
+            {
+              "code": "CALVERT",
+              "name": "Calvert County"
+            },
+            {
+              "code": "CAROLINE",
+              "name": "Caroline County"
+            },
+            {
+              "code": "CARROLL",
+              "name": "Carroll County"
+            },
+            {
+              "code": "CECIL",
+              "name": "Cecil County"
+            },
+            {
+              "code": "CHARLES",
+              "name": "Charles County"
+            },
+            {
+              "code": "DORCHESTER",
+              "name": "Dorchester County"
+            },
+            {
+              "code": "FREDERICK",
+              "name": "Frederick County"
+            },
+            {
+              "code": "GARRETT",
+              "name": "Garrett County"
+            },
+            {
+              "code": "HARFORD",
+              "name": "Harford County"
+            },
+            {
+              "code": "HOWARD",
+              "name": "Howard County"
+            },
+            {
+              "code": "KENT",
+              "name": "Kent County"
+            },
+            {
+              "code": "MONTGOMERY",
+              "name": "Montgomery County"
+            },
+            {
+              "code": "PRINCE-GEORGES",
+              "name": "Prince George's County"
+            },
+            {
+              "code": "QUEEN-ANNES",
+              "name": "Queen Anne's County"
+            },
+            {
+              "code": "ST-MARYS",
+              "name": "St. Mary's County"
+            },
+            {
+              "code": "SOMERSET",
+              "name": "Somerset County"
+            },
+            {
+              "code": "TALBOT",
+              "name": "Talbot County"
+            },
+            {
+              "code": "WASHINGTON",
+              "name": "Washington County"
+            },
+            {
+              "code": "WICOMICO",
+              "name": "Wicomico County"
+            },
+            {
+              "code": "WORCESTER",
+              "name": "Worcester County"
+            },
+            {
+              "code": "NONRESIDENT",
+              "name": "Lives outside Maryland (nonresident)"
+            }
+          ]
+        },
+        "round": "cent",
+        "certificate": {
+          "form": "MW507",
+          "fields": [
+            {
+              "key": "status",
+              "label": "Filing status",
+              "kind": "choice",
+              "options": [
+                {
+                  "value": "S",
+                  "label": "Single"
+                },
+                {
+                  "value": "M",
+                  "label": "Married (surviving spouse or unmarried head of household) rate"
+                },
+                {
+                  "value": "MS",
+                  "label": "Married, but withhold at single rate"
+                }
+              ]
+            },
+            {
+              "key": "allowances",
+              "label": "Total exemptions (line 1)",
+              "kind": "count"
+            }
+          ]
+        }
+      },
+      "source": "https://www.marylandcomptroller.gov/content/dam/mdcomp/tax/instructions/withholding/2026/withholding-guide.pdf",
+      "revision": 2
+    }
+  ]
+}

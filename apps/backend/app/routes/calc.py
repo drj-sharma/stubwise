@@ -5,6 +5,7 @@ from __future__ import annotations
 from typing import Any
 
 from fastapi import APIRouter, Depends
+from sqlalchemy.orm import Session
 
 from ..auth.deps import reader
 from ..calc_schemas import (
@@ -14,11 +15,13 @@ from ..calc_schemas import (
     CalcTaxesRequest,
     CalcYtdRequest,
 )
+from ..db import get_session
 from ..domain.calc_stub import calc_stub, with_computed_amount
 from ..domain.next_stub import draft_next_stub
 from ..domain.pay_period import current_period, default_pay_date, next_period, period_containing
-from ..domain.tax.apply_taxes import apply_taxes
+from ..domain.tax.apply_taxes import apply_taxes, work_state
 from ..domain.ytd import compute_ytd, prior_ytd_gross
+from ..tax_rules.store import RULES
 
 router = APIRouter(prefix="/v1/calc", tags=["Calculations"], dependencies=[Depends(reader)])
 
@@ -31,9 +34,13 @@ def stub_totals(body: CalcStubRequest) -> dict[str, Any]:
 
 
 @router.post("/taxes", summary="Bring the tax lines in step with the earnings")
-def taxes(body: CalcTaxesRequest) -> dict[str, Any]:
+def taxes(body: CalcTaxesRequest, db: Session = Depends(get_session)) -> dict[str, Any]:
+    """The work state's rules are read from the database for the context's year."""
     lines = [with_computed_amount(line.as_domain()) for line in body.lines]  # type: ignore[arg-type]
-    result = apply_taxes(lines, body.context.model_dump())  # type: ignore[arg-type]
+    context = body.context.model_dump()
+    state = work_state(context["profile"], context["businessState"])
+    context["stateRules"] = RULES.for_state(db, context["year"], state) if state else []
+    result = apply_taxes(lines, context)  # type: ignore[arg-type]
     return {"lines": result["lines"], "status": result["status"], "totals": calc_stub(result["lines"])}
 
 

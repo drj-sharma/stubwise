@@ -60,10 +60,14 @@ function Navigator() {
           <Stack.Screen name="setup" options={{ animation: 'none' }} />
         </Stack.Protected>
         <Stack.Protected guard={signedIn && !!business}>
-          {/* The three tabs swap without a push animation, like a tab bar. */}
+          {/* The tabs swap without a push animation, like a tab bar. */}
+          <Stack.Screen name="home" options={{ animation: 'none' }} />
           <Stack.Screen name="workers" options={{ animation: 'none' }} />
-          <Stack.Screen name="stubs" options={{ animation: 'none' }} />
+          <Stack.Screen name="reports" options={{ animation: 'none' }} />
           <Stack.Screen name="settings" options={{ animation: 'none' }} />
+          <Stack.Screen name="report/[kind]" />
+          <Stack.Screen name="stubs" />
+          <Stack.Screen name="pick-worker" options={{ presentation: 'modal' }} />
           <Stack.Screen name="worker/new" options={{ presentation: 'modal' }} />
           <Stack.Screen name="worker/[id]/edit" options={{ presentation: 'modal' }} />
           <Stack.Screen name="worker/[id]/index" />

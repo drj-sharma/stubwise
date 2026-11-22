@@ -14,7 +14,7 @@ export default function PreviewScreen() {
       <TopBar
         title="Preview"
         left={<CircleButton icon="arrow.left" label="Back to edit" onPress={() => router.back()} />}
-        right={<TextButton title="Done" onPress={() => router.dismissTo('/workers')} />}
+        right={<TextButton title="Done" onPress={() => router.dismissAll()} />}
       />
       <Sheet style={{ flex: 1, margin: 12 }}>
         <StubPreview stubId={id} />

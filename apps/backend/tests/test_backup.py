@@ -153,7 +153,7 @@ def test_new_fields_round_trip(client: TestClient, auth: dict[str, str]) -> None
         "calculate": True,
         "state": "NC",
         "w4": {**DEFAULT_TAX_PROFILE["w4"], "filingStatus": "head"},
-        "stateW4": {"allowances": 3, "additionalAllowances": 0, "extraWithholdingCents": 250, "exempt": False},
+        "stateW4": {**DEFAULT_TAX_PROFILE["stateW4"], "allowances": 3, "extraWithholdingCents": 250, "status": "H"},
     }
     full["workers"][0]["taxProfile"] = profile
     full["workers"][0]["createdAt"] = "2026-03-01T09:30:00.000Z"

@@ -1,0 +1,20 @@
+{
+  "year": 2026,
+  "jurisdiction": "RI",
+  "rules": [
+    {
+      "tax": "income",
+      "method": "manual",
+      "params": {},
+      "source": "https://tax.ri.gov/sites/g/files/xkgbur541/files/2025-12/2026%20Withholding%20Tax%20Booklet.pdf",
+      "revision": 2
+    },
+    {
+      "tax": "sdi",
+      "method": "manual",
+      "params": { "label": "{state} TDI" },
+      "source": "https://dlt.ri.gov/press-releases/2026-tax-rates-unemployment-insurance-and-temporary-disability-insurance",
+      "revision": 1
+    }
+  ]
+}

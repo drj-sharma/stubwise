@@ -1,0 +1,89 @@
+{
+  "year": 2026,
+  "jurisdiction": "GA",
+  "rules": [
+    {
+      "tax": "income",
+      "method": "state",
+      "params": {
+        "ratePercent": "4.99",
+        "statuses": [
+          "A",
+          "B",
+          "C",
+          "D"
+        ],
+        "defaultStatus": "A",
+        "standardDeductionCents": {
+          "A": 1500000,
+          "B": 1500000,
+          "C": 3000000,
+          "D": 1500000
+        },
+        "perField": {
+          "dependents": 500000,
+          "additionalAllowances": 500000
+        },
+        "round": "cent",
+        "certificate": {
+          "form": "G-4",
+          "fields": [
+            {
+              "key": "status",
+              "label": "Marital status (line 3)",
+              "kind": "choice",
+              "options": [
+                {
+                  "value": "A",
+                  "label": "A: Single"
+                },
+                {
+                  "value": "B",
+                  "label": "B: Married filing separate, or joint with both spouses working"
+                },
+                {
+                  "value": "C",
+                  "label": "C: Married filing joint, one spouse working"
+                },
+                {
+                  "value": "D",
+                  "label": "D: Head of household"
+                }
+              ]
+            },
+            {
+              "key": "dependents",
+              "label": "Dependent allowances (line 4)",
+              "kind": "count"
+            },
+            {
+              "key": "additionalAllowances",
+              "label": "Georgia adjustments allowances (line 5)",
+              "kind": "count"
+            }
+          ]
+        },
+        "earlier": [
+          {
+            "until": "2026-05-10",
+            "params": {
+              "ratePercent": "5.19",
+              "standardDeductionCents": {
+                "A": 1200000,
+                "B": 1200000,
+                "C": 2400000,
+                "D": 1200000
+              },
+              "perField": {
+                "dependents": 400000,
+                "additionalAllowances": 400000
+              }
+            }
+          }
+        ]
+      },
+      "source": "https://dor.georgia.gov/document/document/2026-employers-tax-guide-updated-september-2026/download",
+      "revision": 2
+    }
+  ]
+}

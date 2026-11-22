@@ -1,0 +1,82 @@
+{
+  "year": 2026,
+  "jurisdiction": "PA",
+  "rules": [
+    {
+      "tax": "income",
+      "method": "state",
+      "params": {
+        "ratePercent": "3.07",
+        "round": "cent",
+        "certificate": {
+          "form": "none",
+          "fields": []
+        }
+      },
+      "source": "https://www.pa.gov/agencies/revenue/resources/tax-types-and-information/employer-withholding",
+      "revision": 1
+    },
+    {
+      "tax": "ui",
+      "method": "capped_rate",
+      "params": {
+        "ratePercent": "0.07"
+      },
+      "source": "https://www.pa.gov/agencies/dli/resources/for-employers-and-educators/how-to-file/uc-tax/yearly-tax-highlights",
+      "revision": 1
+    },
+    {
+      "tax": "local",
+      "method": "local_rate",
+      "params": {
+        "choose": "City",
+        "label": "{name}",
+        "localities": {
+          "PHL-R": {
+            "name": "Philadelphia Wage Tax (resident)",
+            "ratePercent": "3.735"
+          },
+          "PHL-N": {
+            "name": "Philadelphia Wage Tax (non-resident)",
+            "ratePercent": "3.425"
+          },
+          "PIT-R": {
+            "name": "Pittsburgh earned income tax (resident)",
+            "ratePercent": "3"
+          },
+          "PIT-N": {
+            "name": "Pittsburgh earned income tax (lives outside Pennsylvania)",
+            "ratePercent": "1"
+          }
+        },
+        "earlier": [
+          {
+            "until": "2026-06-30",
+            "params": {
+              "localities": {
+                "PHL-R": {
+                  "name": "Philadelphia Wage Tax (resident)",
+                  "ratePercent": "3.74"
+                },
+                "PHL-N": {
+                  "name": "Philadelphia Wage Tax (non-resident)",
+                  "ratePercent": "3.43"
+                },
+                "PIT-R": {
+                  "name": "Pittsburgh earned income tax (resident)",
+                  "ratePercent": "3"
+                },
+                "PIT-N": {
+                  "name": "Pittsburgh earned income tax (lives outside Pennsylvania)",
+                  "ratePercent": "1"
+                }
+              }
+            }
+          }
+        ]
+      },
+      "source": "https://www.phila.gov/services/payments-assistance-taxes/business-taxes/wage-tax-employers/ https://www.pittsburghpa.gov/City-Government/Finance-Budget/Taxes",
+      "revision": 2
+    }
+  ]
+}

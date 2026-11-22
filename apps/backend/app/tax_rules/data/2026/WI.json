@@ -1,0 +1,51 @@
+{
+  "year": 2026,
+  "jurisdiction": "WI",
+  "rules": [
+    {
+      "tax": "income",
+      "method": "state",
+      "params": {
+        "statuses": ["single", "married", "marriedSingle"],
+        "defaultStatus": "single",
+        "deduction": {
+          "single": { "amountCents": 670200, "fullBelowCents": 1778000, "phaseOutPercent": "12" },
+          "marriedSingle": { "amountCents": 670200, "fullBelowCents": 1778000, "phaseOutPercent": "12" },
+          "married": { "amountCents": 946100, "fullBelowCents": 2572700, "phaseOutPercent": "20" }
+        },
+        "exemptionCents": 40000,
+        "brackets": {
+          "*": [
+            [0, "3.54", 0],
+            [1276000, "4.65", 45170],
+            [2552000, "5.30", 104504],
+            [28095000, "7.65", 1458283]
+          ]
+        },
+        "round": "cent",
+        "certificate": {
+          "form": "WT-4",
+          "fields": [
+            {
+              "key": "status",
+              "label": "Withholding status",
+              "kind": "choice",
+              "options": [
+                { "value": "single", "label": "Single" },
+                { "value": "married", "label": "Married" },
+                { "value": "marriedSingle", "label": "Married, but withhold at higher Single rate" }
+              ]
+            },
+            {
+              "key": "allowances",
+              "label": "Total exemptions (line 1d)",
+              "kind": "count"
+            }
+          ]
+        }
+      },
+      "source": "https://www.revenue.wi.gov/DOR%20Publications/pb166.pdf",
+      "revision": 2
+    }
+  ]
+}

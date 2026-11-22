@@ -1,0 +1,59 @@
+{
+  "year": 2026,
+  "jurisdiction": "NC",
+  "rules": [
+    {
+      "tax": "income",
+      "method": "state",
+      "params": {
+        "ratePercent": "4.09",
+        "statuses": [
+          "single",
+          "married",
+          "head"
+        ],
+        "defaultStatus": "single",
+        "standardDeductionCents": {
+          "single": 1275000,
+          "married": 1275000,
+          "head": 1912500
+        },
+        "perField": {
+          "allowances": 250000
+        },
+        "round": "dollar",
+        "certificate": {
+          "form": "NC-4",
+          "fields": [
+            {
+              "key": "status",
+              "label": "Filing status",
+              "kind": "choice",
+              "options": [
+                {
+                  "value": "single",
+                  "label": "Single"
+                },
+                {
+                  "value": "married",
+                  "label": "Married or surviving spouse"
+                },
+                {
+                  "value": "head",
+                  "label": "Head of household"
+                }
+              ]
+            },
+            {
+              "key": "allowances",
+              "label": "Allowances",
+              "kind": "count"
+            }
+          ]
+        }
+      },
+      "source": "https://www.ncdor.gov/income-tax-withholding-tables-and-instructions-employers/open",
+      "revision": 2
+    }
+  ]
+}

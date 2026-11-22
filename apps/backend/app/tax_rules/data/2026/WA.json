@@ -1,0 +1,34 @@
+{
+  "year": 2026,
+  "jurisdiction": "WA",
+  "rules": [
+    {
+      "tax": "income",
+      "method": "none",
+      "source": "",
+      "revision": 1
+    },
+    {
+      "tax": "pfml",
+      "method": "capped_rate",
+      "params": {
+        "ratePercent": "0.807159",
+        "wageBaseCents": 18450000,
+        "label": "WA Paid Family and Medical Leave"
+      },
+      "source": "https://paidleave.wa.gov/app/uploads/2021/12/Employer-Wage-Reporting-and-Premiums-Toolkit-v25.1-2026.06.26.pdf",
+      "revision": 1
+    },
+    {
+      "tax": "ltc",
+      "method": "capped_rate",
+      "params": {
+        "ratePercent": "0.58",
+        "label": "WA Cares Fund",
+        "optional": true
+      },
+      "source": "https://wacaresfund.wa.gov/employers",
+      "revision": 1
+    }
+  ]
+}

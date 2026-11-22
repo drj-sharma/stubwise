@@ -1,0 +1,23 @@
+{
+  "year": 2026,
+  "jurisdiction": "AK",
+  "rules": [
+    {
+      "tax": "income",
+      "method": "none",
+      "source": "",
+      "revision": 1
+    },
+    {
+      "tax": "ui",
+      "method": "capped_rate",
+      "params": {
+        "ratePercent": "0.5",
+        "wageBaseCents": 5420000,
+        "label": "Alaska unemployment (employee)"
+      },
+      "source": "https://labor.alaska.gov/estax/2026-experience-rates.html",
+      "revision": 1
+    }
+  ]
+}

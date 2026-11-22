@@ -1,0 +1,164 @@
+{
+  "year": 2026,
+  "jurisdiction": "KS",
+  "rules": [
+    {
+      "tax": "income",
+      "method": "state",
+      "params": {
+        "statuses": ["single", "married"],
+        "defaultStatus": "single",
+        "personalAllowances": {
+          "single": 1,
+          "married": 2
+        },
+        "allowanceCents": {
+          "52": {
+            "single": 17615,
+            "married": 35231,
+            "additional": 4462
+          },
+          "26": {
+            "single": 35231,
+            "married": 70462,
+            "additional": 8923
+          },
+          "24": {
+            "single": 38167,
+            "married": 76333,
+            "additional": 9667
+          },
+          "12": {
+            "single": 76333,
+            "married": 152667,
+            "additional": 19333
+          },
+          "4": {
+            "single": 229000,
+            "married": 458000,
+            "additional": 58000
+          },
+          "2": {
+            "single": 458000,
+            "married": 916000,
+            "additional": 116000
+          },
+          "1": {
+            "single": 916000,
+            "married": 1832000,
+            "additional": 232000
+          },
+          "260": {
+            "single": 3523,
+            "married": 7046,
+            "additional": 892
+          }
+        },
+        "tables": {
+          "52": {
+            "single": [
+              [6900, 0, "5.2"],
+              [51200, 2300, "5.58"]
+            ],
+            "married": [
+              [15800, 0, "5.2"],
+              [104300, 4600, "5.58"]
+            ]
+          },
+          "26": {
+            "single": [
+              [13900, 0, "5.2"],
+              [102300, 4600, "5.58"]
+            ],
+            "married": [
+              [31700, 0, "5.2"],
+              [208600, 9200, "5.58"]
+            ]
+          },
+          "24": {
+            "single": [
+              [15000, 0, "5.2"],
+              [110900, 4983, "5.58"]
+            ],
+            "married": [
+              [34300, 0, "5.2"],
+              [226000, 9967, "5.58"]
+            ]
+          },
+          "12": {
+            "single": [
+              [30000, 0, "5.2"],
+              [221700, 9967, "5.58"]
+            ],
+            "married": [
+              [68700, 0, "5.2"],
+              [452000, 19933, "5.58"]
+            ]
+          },
+          "4": {
+            "single": [
+              [90100, 0, "5.2"],
+              [665100, 29900, "5.58"]
+            ],
+            "married": [
+              [206000, 0, "5.2"],
+              [1356000, 59800, "5.58"]
+            ]
+          },
+          "2": {
+            "single": [
+              [180300, 0, "5.2"],
+              [1330300, 59800, "5.58"]
+            ],
+            "married": [
+              [412000, 0, "5.2"],
+              [2712000, 119600, "5.58"]
+            ]
+          },
+          "1": {
+            "single": [
+              [360500, 0, "5.2"],
+              [2660500, 119600, "5.58"]
+            ],
+            "married": [
+              [824000, 0, "5.2"],
+              [5424000, 239200, "5.58"]
+            ]
+          },
+          "260": {
+            "single": [
+              [1400, 0, "5.2"],
+              [10200, 460, "5.58"]
+            ],
+            "married": [
+              [3200, 0, "5.2"],
+              [20900, 920, "5.58"]
+            ]
+          }
+        },
+        "round": "cent",
+        "certificate": {
+          "form": "K-4",
+          "fields": [
+            {
+              "key": "status",
+              "label": "Allowance rate",
+              "kind": "choice",
+              "options": [
+                { "value": "single", "label": "Single" },
+                { "value": "married", "label": "Joint" }
+              ]
+            },
+            {
+              "key": "allowances",
+              "label": "Line 4 total allowances",
+              "kind": "count"
+            }
+          ]
+        }
+      },
+      "source": "https://www.ksrevenue.gov/pdf/kw100.pdf",
+      "revision": 2
+    }
+  ]
+}

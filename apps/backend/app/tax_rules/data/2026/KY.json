@@ -1,0 +1,45 @@
+{
+  "year": 2026,
+  "jurisdiction": "KY",
+  "rules": [
+    {
+      "tax": "income",
+      "method": "state",
+      "params": {
+        "ratePercent": "3.5",
+        "standardDeductionCents": 336000,
+        "round": "cent",
+        "certificate": {
+          "form": "K-4",
+          "fields": []
+        }
+      },
+      "source": "https://revenue.ky.gov/Forms/2026%20Withholding%20Formula.pdf",
+      "revision": 1
+    },
+    {
+      "tax": "local",
+      "method": "local_rate",
+      "params": {
+        "choose": "Where they work",
+        "label": "{name} occupational tax",
+        "localities": {
+          "LOU-R": {
+            "name": "Louisville Metro (lives and works there)",
+            "ratePercent": "2.2"
+          },
+          "LOU-N": {
+            "name": "Louisville Metro (works there, lives elsewhere)",
+            "ratePercent": "1.45"
+          },
+          "LEX": {
+            "name": "Lexington-Fayette",
+            "ratePercent": "2.25"
+          }
+        }
+      },
+      "source": "https://louisvilleky.gov/sites/default/files/2026-01/W-1_Form_2026_2.pdf https://www.lexingtonky.gov/working/business-licensing-taxes/occupational-license-fee-rates-current-forms",
+      "revision": 1
+    }
+  ]
+}

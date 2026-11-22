@@ -1,0 +1,12 @@
+{
+  "year": 2026,
+  "jurisdiction": "NV",
+  "rules": [
+    {
+      "tax": "income",
+      "method": "none",
+      "source": "",
+      "revision": 1
+    }
+  ]
+}

@@ -1,5 +1,6 @@
 import * as AppleAuthentication from 'expo-apple-authentication';
 import * as Crypto from 'expo-crypto';
+import type { SFSymbol } from 'expo-symbols';
 import { type ReactNode, useCallback, useEffect, useState } from 'react';
 import { ActivityIndicator, Alert, Image, KeyboardAvoidingView, Platform, Pressable, Text, View } from 'react-native';
 import Animated, { FadeInRight } from 'react-native-reanimated';
@@ -9,7 +10,7 @@ import { getMeta, signInWithApple, signInWithPassword, signUpWithPassword } from
 import type { Meta } from '@/api/types';
 import { AccountScene, Check, ScenePanel, WelcomeScene } from '@/features/OnboardingScenes';
 import { useAuth } from '@/state/auth';
-import { Button, CircleButton, Screen, SteadyField, SubCard, TextButton } from '@/ui/primitives';
+import { Button, CircleButton, Icon, Screen, SteadyField, SubCard, TextButton } from '@/ui/primitives';
 import { useFit, useKeyboardShown } from '@/ui/fit';
 import { alertError } from '@/ui/states';
 import { useTheme } from '@/ui/theme';
@@ -20,9 +21,10 @@ const APP_ICON = require('../../assets/images/icon.png');
 const MIN_PASSWORD = 10;
 
 /**
- * Everything before setup, for anyone not signed in, as three screens that
- * each fit without scrolling: a welcome (what CrewStub does, Continue with
- * Apple, and the way in to email and password), Sign in, and Create account.
+ * Everything before setup, for anyone not signed in, as screens that each fit
+ * without scrolling: a welcome (what CrewStub does), a choice between a new
+ * account and an existing one, then Sign in (Apple, Google, or email and
+ * password) or Create account.
  * Signing in comes before setup so a returning person on a new phone goes
  * straight to their records, and so nothing typed during setup can be lost to
  * a failed sign-in at the end.
@@ -36,7 +38,7 @@ export function SignIn() {
   const [meta, setMeta] = useState<Meta | null>(null);
   const [metaError, setMetaError] = useState<unknown>(null);
   const [appleAvailable, setAppleAvailable] = useState(false);
-  const [screen, setScreen] = useState<'welcome' | 'signin' | 'signup'>('welcome');
+  const [screen, setScreen] = useState<'welcome' | 'choose' | 'signin' | 'signup'>('welcome');
   const mode = screen === 'signup' ? 'signup' : 'signin';
   const fit = useFit();
   const keyboard = useKeyboardShown();
@@ -127,7 +129,7 @@ export function SignIn() {
 
   const appleButton = showApple ? (
     <AppleAuthentication.AppleAuthenticationButton
-      buttonType={screen === 'signin' ? AppleAuthentication.AppleAuthenticationButtonType.SIGN_IN : AppleAuthentication.AppleAuthenticationButtonType.CONTINUE}
+      buttonType={AppleAuthentication.AppleAuthenticationButtonType.CONTINUE}
       buttonStyle={c.scheme === 'dark' ? AppleAuthentication.AppleAuthenticationButtonStyle.WHITE : AppleAuthentication.AppleAuthenticationButtonStyle.BLACK}
       cornerRadius={26}
       style={{ height: 52 }}
@@ -137,7 +139,7 @@ export function SignIn() {
 
   const header = (
     <View style={{ height: 48, paddingHorizontal: 16, flexDirection: 'row', alignItems: 'center', gap: 12 }}>
-      {onForm ? <CircleButton icon="arrow.left" label="Back" onPress={() => setScreen('welcome')} /> : null}
+      {onForm ? <CircleButton icon="arrow.left" label="Back" onPress={() => setScreen(screen === 'choose' ? 'welcome' : 'choose')} /> : null}
       <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center', gap: 8 }}>
         <Image source={APP_ICON} style={{ width: 28, height: 28, borderRadius: 7 }} accessibilityIgnoresInvertColors accessible={false} />
         <Text style={{ fontSize: 17, fontWeight: '700', letterSpacing: -0.3, color: c.text }}>CrewStub</Text>
@@ -167,20 +169,22 @@ export function SignIn() {
         <Check>A clean PDF to share or print</Check>
       </View>
     );
-    footer = (
-      <>
-        {appleButton}
-        {showGoogle ? <Button title="Continue with Google" variant="secondary" onPress={withGoogle} style={pill} /> : null}
-        {showPassword ? (
-          <>
-            <Button title="Create an account" variant={showApple ? 'secondary' : 'primary'} onPress={() => setScreen('signup')} style={pill} />
-            <View style={{ alignItems: 'center' }}>
-              <TextButton title="I already have an account" onPress={() => setScreen('signin')} />
-            </View>
-          </>
-        ) : null}
-      </>
+    footer = <Button title="Get started" onPress={() => setScreen('choose')} style={pill} />;
+  } else if (screen === 'choose') {
+    visual = (
+      <ScenePanel tone="pink">
+        <AccountScene />
+      </ScenePanel>
     );
+    title = 'Do you have an account?';
+    subtitle = 'Your workers and stubs are kept under your account, ready on any device.';
+    body = (
+      <View style={{ gap: 10 }}>
+        <ChoiceCard icon="person.badge.plus" title="Create a new account" detail="Set up in a few minutes" onPress={() => setScreen('signup')} strong />
+        <ChoiceCard icon="person.crop.circle.badge.checkmark" title="I already have an account" detail="Sign in to your workers and stubs" onPress={() => setScreen('signin')} />
+      </View>
+    );
+    footer = null;
   } else {
     const signup = screen === 'signup';
     visual = (
@@ -190,36 +194,48 @@ export function SignIn() {
     );
     title = signup ? 'Create your account' : 'Welcome back';
     subtitle = signup ? 'Your workers and stubs are kept under this account, ready on any device.' : 'Sign in to see your workers and stubs.';
+    // Signing in offers every way in up front; with the keyboard up only the form stays, so nothing is pushed off screen.
+    const providers =
+      !signup && !keyboard ? (
+        <>
+          {appleButton}
+          <Button title="Continue with Google" variant="secondary" icon="g.circle.fill" onPress={withGoogle} style={pill} />
+          {showPassword ? <OrDivider label="or with email" /> : null}
+        </>
+      ) : null;
     body = (
-      <View style={{ gap: 8 }}>
-        <SubCard key={screen}>
-          {signup ? (
-            <SteadyField label="Your name (optional)" value={form.name} onChangeText={remember('name')} autoCapitalize="words" autoCorrect={false} textContentType="name" />
-          ) : null}
-          <SteadyField
-            label="Email"
-            value={form.email}
-            onChangeText={remember('email')}
-            autoCapitalize="none"
-            autoCorrect={false}
-            keyboardType="email-address"
-            textContentType="username"
-            autoComplete="email"
-          />
-          <SteadyField
-            label={signup ? `Password (at least ${MIN_PASSWORD} characters)` : 'Password'}
-            value={form.password}
-            onChangeText={remember('password')}
-            autoCapitalize="none"
-            autoCorrect={false}
-            secureTextEntry
-            textContentType={signup ? 'newPassword' : 'password'}
-            autoComplete={signup ? 'new-password' : 'current-password'}
-            onSubmitEditing={(event) => void withPassword(event.nativeEvent.text)}
-            returnKeyType="go"
-            last
-          />
-        </SubCard>
+      <View style={{ gap: 10 }}>
+        {providers}
+        {showPassword || signup ? (
+          <SubCard key={screen}>
+            {signup ? (
+              <SteadyField label="Your name (optional)" value={form.name} onChangeText={remember('name')} autoCapitalize="words" autoCorrect={false} textContentType="name" />
+            ) : null}
+            <SteadyField
+              label="Email"
+              value={form.email}
+              onChangeText={remember('email')}
+              autoCapitalize="none"
+              autoCorrect={false}
+              keyboardType="email-address"
+              textContentType="username"
+              autoComplete="email"
+            />
+            <SteadyField
+              label={signup ? `Password (at least ${MIN_PASSWORD} characters)` : 'Password'}
+              value={form.password}
+              onChangeText={remember('password')}
+              autoCapitalize="none"
+              autoCorrect={false}
+              secureTextEntry
+              textContentType={signup ? 'newPassword' : 'password'}
+              autoComplete={signup ? 'new-password' : 'current-password'}
+              onSubmitEditing={(event) => void withPassword(event.nativeEvent.text)}
+              returnKeyType="go"
+              last
+            />
+          </SubCard>
+        ) : null}
         {signup && !keyboard ? (
           <Text style={{ fontSize: 12, lineHeight: 17, color: c.muted, marginHorizontal: 4 }}>There is no password reset yet, so keep your password somewhere safe.</Text>
         ) : null}
@@ -227,16 +243,16 @@ export function SignIn() {
     );
     footer = (
       <>
-        <Button title={signup ? 'Create account' : 'Sign in'} onPress={() => void withPassword()} disabled={busy} style={pill} />
+        {showPassword || signup ? <Button title={signup ? 'Create account' : 'Sign in'} onPress={() => void withPassword()} disabled={busy} style={pill} /> : null}
         {/* With the keyboard up only the form and its button are shown, so nothing is pushed off screen. */}
-        {keyboard ? null : (
+        {signup && !keyboard ? (
           <>
             {appleButton}
             <View style={{ alignItems: 'center' }}>
-              <TextButton title={signup ? 'Have an account? Sign in' : 'New to CrewStub? Create an account'} onPress={() => setScreen(signup ? 'signin' : 'signup')} />
+              <TextButton title="Have an account? Sign in" onPress={() => setScreen('signin')} />
             </View>
           </>
-        )}
+        ) : null}
       </>
     );
   }
@@ -282,5 +298,57 @@ export function SignIn() {
         </View>
       </KeyboardAvoidingView>
     </Screen>
+  );
+}
+
+/** One of the two big choices on the account screen: an icon, a title, a line of detail and a chevron. */
+function ChoiceCard({ icon, title, detail, onPress, strong }: { icon: SFSymbol; title: string; detail: string; onPress: () => void; strong?: boolean }) {
+  const c = useTheme();
+  return (
+    <Pressable
+      onPress={onPress}
+      accessibilityRole="button"
+      accessibilityHint={detail}
+      style={({ pressed }) => ({
+        minHeight: 76,
+        paddingHorizontal: 16,
+        borderRadius: 22,
+        borderWidth: strong ? 0 : 1,
+        borderColor: c.border,
+        backgroundColor: strong ? c.primary : c.sheet,
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 14,
+        opacity: pressed ? 0.85 : 1,
+      })}>
+      <View
+        style={{
+          width: 44,
+          height: 44,
+          borderRadius: 22,
+          backgroundColor: strong ? 'rgba(255,255,255,0.2)' : c.primarySoft,
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}>
+        <Icon name={icon} size={20} color={strong ? c.onPrimary : c.primaryText} />
+      </View>
+      <View style={{ flex: 1, gap: 2 }}>
+        <Text style={{ fontSize: 16, fontWeight: '700', color: strong ? c.onPrimary : c.text }}>{title}</Text>
+        <Text style={{ fontSize: 13, color: strong ? c.onPrimaryMuted : c.muted }}>{detail}</Text>
+      </View>
+      <Icon name="chevron.right" size={15} color={strong ? c.onPrimary : c.muted} />
+    </Pressable>
+  );
+}
+
+/** A thin rule with a word in the middle, between the sign-in buttons and the email form. */
+function OrDivider({ label }: { label: string }) {
+  const c = useTheme();
+  return (
+    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, marginVertical: 2 }}>
+      <View style={{ flex: 1, height: 1, backgroundColor: c.border }} />
+      <Text style={{ fontSize: 12, fontWeight: '500', color: c.muted }}>{label}</Text>
+      <View style={{ flex: 1, height: 1, backgroundColor: c.border }} />
+    </View>
   );
 }

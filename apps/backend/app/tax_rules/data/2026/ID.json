@@ -1,0 +1,71 @@
+{
+  "year": 2026,
+  "jurisdiction": "ID",
+  "rules": [
+    {
+      "tax": "income",
+      "method": "state",
+      "params": {
+        "statuses": ["A", "B", "C"],
+        "defaultStatus": "A",
+        "ratePercent": "5.3",
+        "standardDeductionCents": {
+          "A": 1610000,
+          "B": 3220000,
+          "C": 1610000
+        },
+        "perField": {
+          "allowances": 0
+        },
+        "round": "dollar",
+        "certificate": {
+          "form": "ID W-4",
+          "fields": [
+            {
+              "key": "status",
+              "label": "Withholding status",
+              "kind": "choice",
+              "options": [
+                {
+                  "value": "A",
+                  "label": "A: Single (including head of household)"
+                },
+                {
+                  "value": "B",
+                  "label": "B: Married"
+                },
+                {
+                  "value": "C",
+                  "label": "C: Married, but withhold at Single rate"
+                }
+              ]
+            },
+            {
+              "key": "allowances",
+              "label": "Line 1 Idaho allowances",
+              "kind": "count"
+            }
+          ]
+        },
+        "earlier": [
+          {
+            "until": "2026-07-30",
+            "source": "EPB00744 (04-28-2025) and the Idaho Child Tax Credit Allowance Table, https://tax.idaho.gov/wp-content/uploads/pubs/EPB00744/EPB00744_04-28-2025.pdf",
+            "params": {
+              "standardDeductionCents": {
+                "A": 1500000,
+                "B": 3000000,
+                "C": 1500000
+              },
+              "perField": {
+                "allowances": 386800
+              }
+            }
+          }
+        ]
+      },
+      "source": "https://tax.idaho.gov/wp-content/uploads/pubs/EPB00744/EPB00744_07-23-2026.pdf",
+      "revision": 3
+    }
+  ]
+}

@@ -1,0 +1,116 @@
+{
+  "year": 2026,
+  "jurisdiction": "DE",
+  "rules": [
+    {
+      "tax": "income",
+      "method": "state",
+      "params": {
+        "statuses": [
+          "single",
+          "married",
+          "separate"
+        ],
+        "statusFromFederal": {
+          "single": "single",
+          "married": "married",
+          "head": "single"
+        },
+        "defaultStatus": "single",
+        "standardDeductionCents": {
+          "single": 325000,
+          "married": 650000,
+          "separate": 325000
+        },
+        "brackets": [
+          [
+            0,
+            "0"
+          ],
+          [
+            200000,
+            "2.2"
+          ],
+          [
+            500000,
+            "3.9"
+          ],
+          [
+            1000000,
+            "4.8"
+          ],
+          [
+            2000000,
+            "5.2"
+          ],
+          [
+            2500000,
+            "5.55"
+          ],
+          [
+            6000000,
+            "6.6"
+          ]
+        ],
+        "creditPerField": {
+          "allowances": 11000
+        },
+        "round": "cent",
+        "certificate": {
+          "form": "W-4 (for State of Delaware purposes)",
+          "fields": [
+            {
+              "key": "status",
+              "label": "Filing status",
+              "kind": "choice",
+              "options": [
+                {
+                  "value": "single",
+                  "label": "Single"
+                },
+                {
+                  "value": "married",
+                  "label": "Married filing jointly"
+                },
+                {
+                  "value": "separate",
+                  "label": "Married filing separately"
+                }
+              ]
+            },
+            {
+              "key": "allowances",
+              "label": "Delaware allowances (personal exemptions)",
+              "kind": "count"
+            }
+          ]
+        }
+      },
+      "source": "https://revenue.delaware.gov/employers-guide-withholding-regulations-employers-duties/",
+      "revision": 2
+    },
+    {
+      "tax": "pfml",
+      "method": "none",
+      "params": {},
+      "source": "https://labor.delaware.gov/delaware-paid-leave",
+      "revision": 1
+    },
+    {
+      "tax": "local",
+      "method": "local_rate",
+      "params": {
+        "choose": "City",
+        "label": "{name} city wage tax",
+        "localities": {
+          "WILMINGTON": {
+            "name": "Wilmington",
+            "ratePercent": "1.25"
+          }
+        }
+      },
+      "source": "https://delcode.delaware.gov/title22/c009/index.html",
+      "revision": 1
+    }
+  ]
+}

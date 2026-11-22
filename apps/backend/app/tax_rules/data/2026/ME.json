@@ -1,0 +1,101 @@
+{
+  "year": 2026,
+  "jurisdiction": "ME",
+  "rules": [
+    {
+      "tax": "income",
+      "method": "state",
+      "params": {
+        "statuses": ["single", "married", "higherSingle"],
+        "defaultStatus": "single",
+        "exemptionCents": 530000,
+        "standardDeduction": {
+          "married": {
+            "amountCents": 2855000,
+            "phaseOutStartCents": 20455000,
+            "phaseOutEndCents": 35455000
+          },
+          "*": {
+            "amountCents": 1285000,
+            "phaseOutStartCents": 10225000,
+            "phaseOutEndCents": 17725000
+          }
+        },
+        "phaseOutRatioDecimals": 4,
+        "brackets": {
+          "married": [
+            [0, 0, "5.8"],
+            [5485000, 318100, "6.75"],
+            [12975000, 823700, "7.15"]
+          ],
+          "*": [
+            [0, 0, "5.8"],
+            [2740000, 158900, "6.75"],
+            [6485000, 411700, "7.15"]
+          ]
+        },
+        "surcharge": {
+          "ratePercent": "2",
+          "overCents": {
+            "married": 150000000,
+            "*": 100000000
+          }
+        },
+        "round": "dollar",
+        "earlier": [
+          {
+            "until": "2026-08-16",
+            "params": {
+              "standardDeduction": {
+                "married": {
+                  "amountCents": 2775000,
+                  "phaseOutStartCents": 20455000,
+                  "phaseOutEndCents": 35455000
+                },
+                "*": {
+                  "amountCents": 1245000,
+                  "phaseOutStartCents": 10225000,
+                  "phaseOutEndCents": 17725000
+                }
+              },
+              "surcharge": null
+            }
+          }
+        ],
+        "certificate": {
+          "form": "Form W-4ME",
+          "fields": [
+            {
+              "key": "status",
+              "label": "Filing status",
+              "kind": "choice",
+              "options": [
+                { "value": "single", "label": "Single or head of household" },
+                { "value": "married", "label": "Married" },
+                { "value": "higherSingle", "label": "Married, but withholding at higher single rate" }
+              ]
+            },
+            {
+              "key": "allowances",
+              "label": "Line 4 total allowances",
+              "kind": "count"
+            }
+          ]
+        }
+      },
+      "source": "https://www.maine.gov/revenue/sites/maine.gov.revenue/files/inline-files/26_wh_tab_instr_August2026.pdf",
+      "revision": 3
+    },
+    {
+      "tax": "pfml",
+      "method": "capped_rate",
+      "params": {
+        "ratePercent": "0.5",
+        "wageBaseCents": 18450000,
+        "label": "Maine paid family and medical leave"
+      },
+      "source": "https://www.maine.gov/paidleave/docs/2026/employers/faq/employerFAQenglish.pdf",
+      "revision": 1
+    }
+  ]
+}

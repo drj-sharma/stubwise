@@ -5,12 +5,11 @@ import { ScrollView, Text, TextInput, View } from 'react-native';
 import { listStubs, listWorkers } from '@/api/records';
 import { useQuery } from '@/state/useQuery';
 import { useIsWide } from '@/ui/layout';
-import { Avatar, Heading, Icon, Pill, Row, Screen, Sheet, SubCard, TABULAR } from '@/ui/primitives';
-import { BusinessHeader, SideRail, TabBar } from '@/ui/TabBar';
+import { Avatar, CircleButton, Heading, Icon, Pill, Row, Screen, Sheet, SubCard, TABULAR, TopBar } from '@/ui/primitives';
 import { ErrorState, Loading, Refresher, StaleBanner } from '@/ui/states';
 import { useTheme } from '@/ui/theme';
 
-/** Every stub ever made, newest first, searchable by worker name or date. */
+/** History: every stub ever made, newest first, searchable by worker name or date. Opened from Home. */
 export default function Stubs() {
   const c = useTheme();
   const wide = useIsWide();
@@ -30,10 +29,9 @@ export default function Stubs() {
 
   const body = (
     <Sheet style={{ paddingTop: 18, gap: 10 }}>
-      <Heading title="Stubs" subtitle="Every pay stub you have made, newest first" />
+      <Heading title="All pay stubs" subtitle="Every pay stub you have made, newest first" />
       {error && data ? <StaleBanner error={error} /> : null}
-      <View
-        style={{ height: 44, paddingHorizontal: 12, borderWidth: 1, borderColor: c.border, borderRadius: 12, flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+      <View style={{ height: 44, paddingHorizontal: 12, borderWidth: 1, borderColor: c.border, borderRadius: 12, flexDirection: 'row', alignItems: 'center', gap: 8 }}>
         <Icon name="magnifyingglass" size={16} color={c.muted} />
         <TextInput
           value={query}
@@ -49,7 +47,7 @@ export default function Stubs() {
       {data === undefined ? error ? <ErrorState title="Could not load your stubs" error={error} onRetry={() => void reload()} /> : <Loading label="Loading stubs…" /> : null}
       {data && stubs.length === 0 ? (
         <Text style={{ fontSize: 13, lineHeight: 20, color: c.muted, textAlign: 'center', paddingVertical: 24 }}>
-          {needle === '' ? 'No stubs yet. Open a worker and make their first one.' : 'No stubs match that search.'}
+          {needle === '' ? 'No stubs yet. Tap + on the Pay stub screen to make the first one.' : 'No stubs match that search.'}
         </Text>
       ) : null}
       {stubs.map((stub) => {
@@ -85,27 +83,11 @@ export default function Stubs() {
     </Sheet>
   );
 
-  if (wide) {
-    return (
-      <Screen>
-        <View style={{ flex: 1, flexDirection: 'row', gap: 12, paddingHorizontal: 16, paddingTop: 8 }}>
-          <SideRail active="stubs" />
-          <ScrollView
-            style={{ flex: 1 }}
-            contentContainerStyle={{ maxWidth: 720 }}
-            keyboardShouldPersistTaps="handled"
-            refreshControl={<Refresher refreshing={refreshing} onRefresh={() => void refresh()} />}>
-            {body}
-          </ScrollView>
-        </View>
-      </Screen>
-    );
-  }
   return (
-    <Screen footer={<TabBar active="stubs" />}>
-      <BusinessHeader />
+    <Screen padBottom={false}>
+      <TopBar title="History" left={<CircleButton icon="arrow.left" label="Back" onPress={() => router.back()} />} />
       <ScrollView
-        contentContainerStyle={{ padding: 12, paddingTop: 14 }}
+        contentContainerStyle={{ padding: 12, paddingTop: 8, width: '100%', maxWidth: wide ? 720 : undefined, alignSelf: 'center' }}
         keyboardShouldPersistTaps="handled"
         refreshControl={<Refresher refreshing={refreshing} onRefresh={() => void refresh()} />}>
         {body}

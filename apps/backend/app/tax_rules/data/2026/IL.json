@@ -1,0 +1,35 @@
+{
+  "year": 2026,
+  "jurisdiction": "IL",
+  "rules": [
+    {
+      "tax": "income",
+      "method": "state",
+      "params": {
+        "ratePercent": "4.95",
+        "perField": {
+          "allowances": 292500,
+          "additionalAllowances": 100000
+        },
+        "round": "cent",
+        "certificate": {
+          "form": "IL-W-4",
+          "fields": [
+            {
+              "key": "allowances",
+              "label": "Line 1 allowances",
+              "kind": "count"
+            },
+            {
+              "key": "additionalAllowances",
+              "label": "Line 2 allowances",
+              "kind": "count"
+            }
+          ]
+        }
+      },
+      "source": "https://tax.illinois.gov/content/dam/soi/en/web/tax/forms/withholding/documents/currentyear/il-700-t.pdf",
+      "revision": 1
+    }
+  ]
+}

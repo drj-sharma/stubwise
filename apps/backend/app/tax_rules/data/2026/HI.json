@@ -1,0 +1,24 @@
+{
+  "year": 2026,
+  "jurisdiction": "HI",
+  "rules": [
+    {
+      "tax": "income",
+      "method": "manual",
+      "params": {
+        "label": "Hawaii income tax"
+      },
+      "source": "https://tax.hawaii.gov/?p=12716",
+      "revision": 1
+    },
+    {
+      "tax": "sdi",
+      "method": "manual",
+      "params": {
+        "label": "Hawaii TDI (employee share, per your plan)"
+      },
+      "source": "https://labor.hawaii.gov/dcd/files/2025/12/2026-Maximum-Weekly-Wage-Base.pdf",
+      "revision": 1
+    }
+  ]
+}

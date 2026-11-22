@@ -21,7 +21,9 @@ from .errors import ErrorResponse, install_error_handlers
 from .logs import configure_logging
 from .middleware import BodyLimitMiddleware, install_request_middleware
 from .rate_limit import RateLimiter
-from .routes import auth, calc, filing, records, system
+from .routes import auth, calc, filing, records, reports, system
+from .tax_rules.store import RULES
+from .tax_rules.store import seed as seed_tax_rules
 from .taxbandits import TaxBanditsClient
 
 log = logging.getLogger(__name__)
@@ -54,7 +56,11 @@ def create_app(settings: Settings | None = None, *, outbound_transport: httpx.Ba
         log.info("tax form filing enabled against the TaxBandits %s environment", taxbandits.environment)
 
     @asynccontextmanager
-    async def lifespan(_app: FastAPI) -> AsyncIterator[None]:
+    async def lifespan(app: FastAPI) -> AsyncIterator[None]:
+        # The tax rules the calculations read: seed files written to the database, then cached.
+        with app.state.sessions() as db:
+            seed_tax_rules(db)
+            RULES.refresh(db, force=True)
         yield
         http.close()
         if taxbandits is not None:
@@ -110,6 +116,7 @@ def create_app(settings: Settings | None = None, *, outbound_transport: httpx.Ba
         records.stubs_router,
         records.backup_router,
         calc.router,
+        reports.router,
     ):
         app.include_router(router)
     if settings.password_login_enabled:

@@ -1,8 +1,9 @@
-import { type UsStateCode, stateTaxSupport, usStateName } from '@stubwise/domain';
+import { type UsStateCode, usStateName } from '@stubwise/domain';
 import type { SFSymbol } from 'expo-symbols';
 import { type ReactNode, useState } from 'react';
 import { Image, type StyleProp, Text, View, type ViewStyle } from 'react-native';
 import Animated, { FadeInDown } from 'react-native-reanimated';
+import { useStateCoverage } from '@/api/taxCoverage';
 import { Animation } from '@/ui/Animation';
 import { Avatar, Icon, TABULAR } from '@/ui/primitives';
 import { initials, type Palette, useTheme } from '@/ui/theme';
@@ -289,62 +290,61 @@ export function NameScene({ name, logo }: { name: string; logo: string | null })
   );
 }
 
-/** The location step: their state and what it means for tax. */
-export function LocationScene({ state, address }: { state: UsStateCode | null; address: string }) {
-  const c = useTheme();
-  const support = state ? stateTaxSupport(state, new Date().getFullYear()) : null;
-  const taxLine =
-    support === 'calculated' ? 'State tax worked out for you' : support === 'none' ? 'No state income tax' : support === 'manual' ? 'You enter state tax' : 'Sets the tax rules';
-  return (
-    <>
-      <Card at={{ left: 55, top: 64 }} width={230} delay={60}>
-        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
-          <View style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: c.primarySoft, alignItems: 'center', justifyContent: 'center' }}>
-            <Icon name="mappin.and.ellipse" size={19} color={c.primaryText} />
-          </View>
-          <View style={{ flex: 1, gap: 2 }}>
-            <Text style={{ fontSize: 11, fontWeight: '600', color: c.muted }}>STATE</Text>
-            <Text style={{ fontSize: 16, fontWeight: '700', color: state ? c.text : c.faint }} numberOfLines={1}>
-              {state ? usStateName(state) : 'Your state'}
-            </Text>
-          </View>
-        </View>
-        <Divider />
-        {address ? (
-          <Text style={{ fontSize: 12, color: c.muted }} numberOfLines={1}>
-            {address}
-          </Text>
-        ) : (
-          <Bar width="85%" />
-        )}
-      </Card>
-      <Chip at={{ right: 8, bottom: 52 }} icon={support === 'none' ? 'checkmark' : 'function'} label={taxLine} tone="success" delay={260} rotate={2} />
-      <Chip at={{ left: 14, top: 36 }} icon="building.columns.fill" label="Federal tax included" tone="sky" delay={360} rotate={-3} />
-    </>
-  );
-}
-
-/** The contact step: the stub header again, now with the phone and EIN under the name. */
-export function ContactScene({ name, logo, phone, employerId }: { name: string; logo: string | null; phone: string; employerId: string }) {
+/**
+ * The business details step: the stub header with the address, phone and EIN
+ * under the name as they are typed, and what the chosen state means for tax.
+ */
+export function DetailsScene({
+  name,
+  logo,
+  state,
+  address,
+  phone,
+  employerId,
+}: {
+  name: string;
+  logo: string | null;
+  state: UsStateCode | null;
+  address: string;
+  phone: string;
+  employerId: string;
+}) {
   const c = useTheme();
   const small = { fontSize: 11, color: c.muted } as const;
+  const coverage = useStateCoverage(state, new Date().getFullYear());
+  const support = state && coverage ? coverage.support : null;
+  const taxLine =
+    support === 'calculated'
+      ? `${usStateName(state!)} tax worked out`
+      : support === 'none'
+        ? `No ${usStateName(state!)} income tax`
+        : support === 'manual'
+          ? `You enter ${usStateName(state!)} tax`
+          : 'State sets the tax rules';
   return (
     <>
-      <Card at={{ left: 50, top: 82 }} width={240} delay={60}>
+      <Card at={{ left: 50, top: 70 }} width={240} delay={60}>
         <StubHeader
           name={name}
           logo={logo}
           lines={
             <View style={{ gap: 2 }}>
-              {phone ? <Text style={small}>{phone}</Text> : <Bar width="55%" />}
-              {employerId ? <Text style={small}>EIN {employerId}</Text> : <Bar width="40%" colour={c.primarySoft} />}
+              {address ? (
+                <Text style={small} numberOfLines={1}>
+                  {address}
+                </Text>
+              ) : (
+                <Bar width="80%" />
+              )}
+              {phone ? <Text style={small}>{phone}</Text> : <Bar width="50%" />}
+              {employerId ? <Text style={small}>EIN {employerId}</Text> : <Bar width="38%" colour={c.primarySoft} />}
             </View>
           }
         />
       </Card>
-      <Chip at={{ right: 18, top: 52 }} icon="phone.fill" label="Phone" tone="sky" delay={240} rotate={4} />
-      <Chip at={{ left: 36, bottom: 62 }} icon="number" label="EIN, if you have one" tone="primary" delay={340} rotate={-2} />
-      <Sparkle left={300} top={172} size={11} />
+      <Chip at={{ left: 14, top: 30 }} icon="building.columns.fill" label="Federal tax included" tone="sky" delay={260} rotate={-3} />
+      <Chip at={{ right: 8, bottom: 46 }} icon={support === 'none' ? 'checkmark' : 'mappin.and.ellipse'} label={taxLine} tone="success" delay={360} rotate={2} />
+      <Sparkle left={34} top={190} size={11} />
     </>
   );
 }

@@ -8,7 +8,7 @@ import { ErrorState, Loading } from '@/ui/states';
 /**
  * Entry point, and where Expo Router lands whenever sign-in state changes:
  * nobody signed in goes to sign-in, an account without a business to setup,
- * everyone else to the workers list.
+ * everyone else to Home (the + that makes a pay stub).
  */
 export default function Index() {
   const { status, restoreError, retryRestore } = useAuth();
@@ -41,5 +41,5 @@ export default function Index() {
       </Screen>
     );
   }
-  return <Redirect href={business ? '/workers' : '/setup'} />;
+  return <Redirect href={business ? '/home' : '/setup'} />;
 }

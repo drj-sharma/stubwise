@@ -1,0 +1,55 @@
+{
+  "year": 2026,
+  "jurisdiction": "OH",
+  "rules": [
+    {
+      "tax": "income",
+      "method": "state",
+      "params": {
+        "effective": "2026-08-01",
+        "exemptionCents": 65000,
+        "brackets": [
+          [0, "1.6", 0],
+          [2605000, "2.99", 41680],
+          [10000000, "3.4", 262791]
+        ],
+        "round": "cent",
+        "earlier": [
+          {
+            "until": "2026-07-31",
+            "params": {
+              "effective": "2025-10-01",
+              "brackets": [
+                [0, "1.775", 0],
+                [2605000, "2.99", 46239],
+                [10000000, "3.64", 267350]
+              ]
+            },
+            "source": "https://dam.assets.ohio.gov/image/upload/tax.ohio.gov/employer_withholding/2025%20Withholding%20Tables/WHT_OptionalComputerFormula_2025.pdf"
+          }
+        ],
+        "certificate": {
+          "form": "IT 4",
+          "fields": [
+            {
+              "key": "allowances",
+              "label": "Exemptions (line 4)",
+              "kind": "count"
+            }
+          ]
+        }
+      },
+      "source": "https://dam.assets.ohio.gov/image/upload/tax.ohio.gov/employer_withholding/2026%20Withholding%20Tables/WHT_OptionalComputerFormula_2026.pdf",
+      "revision": 3
+    },
+    {
+      "tax": "local",
+      "method": "manual",
+      "params": {
+        "label": "Ohio city or school district tax"
+      },
+      "source": "https://dam.assets.ohio.gov/image/upload/tax.ohio.gov/employer_withholding/2025-2026%20NYP%20Updates/2026_OH_Employer_School_District_Withholding_Tax_Filing_Guidelines.pdf",
+      "revision": 1
+    }
+  ]
+}

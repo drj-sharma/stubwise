@@ -1,0 +1,13 @@
+{
+  "year": 2026,
+  "jurisdiction": "DC",
+  "rules": [
+    {
+      "tax": "income",
+      "method": "manual",
+      "params": {},
+      "source": "https://otr.cfo.dc.gov/page/withholding-tax-forms",
+      "revision": 1
+    }
+  ]
+}

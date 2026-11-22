@@ -1,4 +1,16 @@
-import { PAY_SCHEDULES, PAY_SCHEDULE_LABELS, type PaySchedule, type UsStateCode, DEFAULT_TAX_PROFILE, parseDollars, usStateName } from '@stubwise/domain';
+import {
+  PAY_SCHEDULES,
+  PAY_SCHEDULE_LABELS,
+  type PaySchedule,
+  type UsStateCode,
+  DEFAULT_TAX_PROFILE,
+  daysInMonth,
+  nextPeriod,
+  parseDollars,
+  periodContaining,
+  todayIso,
+  usStateName,
+} from '@stubwise/domain';
 import { DEFAULT_ACCENT, DEFAULT_TEMPLATE_ID, TEMPLATES, type TemplateId } from '@stubwise/templates';
 import * as Crypto from 'expo-crypto';
 import * as ImagePicker from 'expo-image-picker';
@@ -10,7 +22,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { ApiError } from '@/api';
 import { createBusiness, createWorker } from '@/api/records';
 import type { NewWorker, Worker } from '@/db/types';
-import { Check, ContactScene, DoneScene, LocationScene, NameScene, ProgressPills, ScenePanel, SecureScene, WorkerScene } from '@/features/OnboardingScenes';
+import { Check, DetailsScene, DoneScene, NameScene, ProgressPills, ScenePanel, SecureScene, WorkerScene } from '@/features/OnboardingScenes';
 import { AccentSwatches, DesignPreview, TemplatePicker } from '@/features/TemplatePicker';
 import { useAuth } from '@/state/auth';
 import { useBusinessState } from '@/state/business';
@@ -30,7 +42,7 @@ const APP_ICON = require('../../assets/images/icon.png');
  * questions are split across steps. `accent` is only shown for designs that
  * use a colour.
  */
-const STEPS = ['secure', 'name', 'location', 'contact', 'pay', 'template', 'accent', 'worker', 'done'] as const;
+const STEPS = ['secure', 'name', 'details', 'pay', 'template', 'accent', 'worker', 'done'] as const;
 type Step = (typeof STEPS)[number];
 
 /** The server's limit on a logo (a data: URI), so a too-large photo is caught before it is sent. */
@@ -164,7 +176,7 @@ export function Onboarding() {
   };
 
   const leave = (): void => {
-    router.replace('/workers');
+    router.replace('/home');
     if (firstWorkerId) router.push(`/worker/${firstWorkerId}`);
   };
 
@@ -229,14 +241,14 @@ export function Onboarding() {
       primary = { title: 'Next', onPress: next, disabled: name.trim() === '' };
       break;
 
-    case 'location':
+    case 'details':
       visual = (
         <ScenePanel tone="sky">
-          <LocationScene state={state} address={address.trim()} />
+          <DetailsScene name={name.trim()} logo={logo} state={state} address={address.trim()} phone={phone.trim()} employerId={employerId.trim()} />
         </ScenePanel>
       );
       title = 'Where is your business?';
-      subtitle = 'The state sets which tax rules apply.';
+      subtitle = 'The state sets the tax rules. The rest prints under your name.';
       body = (
         <SubCard>
           <Row
@@ -247,25 +259,11 @@ export function Onboarding() {
             right={<Icon name="chevron.down" size={14} color={c.muted} />}
             onPress={() => setPickingState(true)}
           />
-          <SteadyField label="Street address, city, ZIP" value={address} onChangeText={setAddress} autoCapitalize="words" autoCorrect={false} last />
-        </SubCard>
-      );
-      primary = { title: 'Next', onPress: next };
-      skip = { title: 'Skip', onPress: next };
-      break;
-
-    case 'contact':
-      visual = (
-        <ScenePanel tone="pink">
-          <ContactScene name={name.trim()} logo={logo} phone={phone.trim()} employerId={employerId.trim()} />
-        </ScenePanel>
-      );
-      title = 'How can workers reach you?';
-      subtitle = 'Printed under the business name. Add only what you want on the stub.';
-      body = (
-        <SubCard>
-          <SteadyField label="Phone" value={phone} onChangeText={setPhone} keyboardType="phone-pad" />
-          <SteadyField label="Employer ID (EIN), optional" value={employerId} onChangeText={setEmployerId} keyboardType="numbers-and-punctuation" last />
+          <SteadyField label="Street address, city, ZIP" value={address} onChangeText={setAddress} autoCapitalize="words" autoCorrect={false} />
+          <View style={{ flexDirection: 'row' }}>
+            <SteadyField label="Phone" value={phone} onChangeText={setPhone} keyboardType="phone-pad" last style={{ flex: 1, borderRightWidth: 1, borderRightColor: c.border }} />
+            <SteadyField label="EIN, optional" value={employerId} onChangeText={setEmployerId} keyboardType="numbers-and-punctuation" last style={{ flex: 1 }} />
+          </View>
         </SubCard>
       );
       primary = { title: 'Next', onPress: next };
@@ -273,22 +271,14 @@ export function Onboarding() {
       break;
 
     case 'pay':
-      // The four schedules are the picture: big tiles, the chosen one in the brand pink.
-      visual = (
-        <View style={{ flex: 1, minHeight: 0, gap: 10, padding: 10, borderRadius: 28, backgroundColor: c.bgTint }} accessibilityRole="radiogroup">
-          {[PAY_SCHEDULES.slice(0, 2), PAY_SCHEDULES.slice(2)].map((row, r) => (
-            <View key={r} style={{ flex: 1, flexDirection: 'row', gap: 10 }}>
-              {row.map((option) => (
-                <ScheduleTile key={option} schedule={option} on={option === schedule} onPress={() => setSchedule(option)} />
-              ))}
-            </View>
-          ))}
-        </View>
-      );
+      // This month as a calendar, banded by pay period, so the choice below shows what it means.
+      visual = <PayCalendar schedule={schedule} height={room} />;
       title = 'How often do you pay?';
       subtitle = 'CrewStub works out each next pay period for you.';
       body = (
         <View style={{ gap: 6 }}>
+          <ScheduleChoices value={schedule} onChange={setSchedule} />
+          <View style={{ height: 6 }} />
           <SectionLabel>Overtime pay</SectionLabel>
           <Segmented
             value={overtimePct}
@@ -499,71 +489,151 @@ function SteadyInput({ value, ...props }: TextInputProps) {
   return <TextInput {...props} defaultValue={initial} />;
 }
 
-const SCHEDULE_FACTS: Record<PaySchedule, { count: number; hint: string; paidWeeks: readonly boolean[] }> = {
-  weekly: { count: 52, hint: 'Every week', paidWeeks: [true, true, true, true] },
-  biweekly: { count: 26, hint: 'The most common', paidWeeks: [true, false, true, false] },
-  semimonthly: { count: 24, hint: '15th and last day', paidWeeks: [false, true, false, true] },
-  monthly: { count: 12, hint: 'Once a month', paidWeeks: [false, false, false, true] },
+const SCHEDULE_FACTS: Record<PaySchedule, { count: number; hint: string }> = {
+  weekly: { count: 52, hint: 'A new pay period every Monday' },
+  biweekly: { count: 26, hint: 'Two weeks at a time, Monday to Sunday' },
+  semimonthly: { count: 24, hint: 'The 1st to the 15th, then the 16th to month end' },
+  monthly: { count: 12, hint: 'The whole calendar month' },
 };
 
-/** One pay schedule as a big tile: how many stubs a year, and its name. */
-function ScheduleTile({ schedule, on, onPress }: { schedule: PaySchedule; on: boolean; onPress: () => void }) {
+const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+const WEEKDAYS = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
+
+/**
+ * This month as a calendar, its days banded by pay period: one band per
+ * period, alternating solid and soft pink, so each schedule looks different
+ * at a glance. Periods are worked out the same way as for a first stub.
+ * Fills `height`; below about 200 points the day grid is left out.
+ */
+function PayCalendar({ schedule, height }: { schedule: PaySchedule; height: number }) {
   const c = useTheme();
+  const today = todayIso();
+  const year = Number(today.slice(0, 4));
+  const month = Number(today.slice(5, 7));
+  const days = daysInMonth(year, month);
+  const dateOf = (day: number): string => `${today.slice(0, 8)}${String(day).padStart(2, '0')}`;
+  // Monday first, as pay weeks start on a Monday.
+  const lead = (new Date(`${dateOf(1)}T00:00:00Z`).getUTCDay() + 6) % 7;
+  const rows = Math.ceil((lead + days) / 7);
+
+  // Which pay period each day falls in, counting from the one that holds the 1st.
+  const periodOf: number[] = [];
+  let period = periodContaining(dateOf(1), schedule);
+  let index = 0;
+  for (let day = 1; day <= days; day += 1) {
+    while (dateOf(day) > period.end) {
+      period = nextPeriod(period, schedule);
+      index += 1;
+    }
+    periodOf[day] = index;
+  }
   const facts = SCHEDULE_FACTS[schedule];
+
+  // Full: panel and card padding, the month line, weekday letters, the caption and the gaps between them.
+  // Compact (iPhone SE): tighter padding, and the weekday letters and caption left out to keep the days readable.
+  const fullCell = Math.floor((height - 24 - 28 - 26 - 10 - 19 - 10 - 18 - (rows - 1) * 5) / rows);
+  const compact = fullCell < 20;
+  const cell = Math.min(36, compact ? Math.floor((height - 12 - 20 - 26 - 8 - (rows - 1) * 3) / rows) : fullCell);
+  const showGrid = cell >= 16;
+
   return (
-    <Pressable
-      onPress={onPress}
-      accessibilityRole="radio"
-      accessibilityState={{ selected: on }}
-      accessibilityLabel={`${PAY_SCHEDULE_LABELS[schedule]}. ${facts.hint}. ${facts.count} stubs a year.`}
-      style={({ pressed }) => ({
-        flex: 1,
-        padding: 14,
-        borderRadius: 22,
-        backgroundColor: on ? c.primary : c.sheet,
-        borderWidth: on ? 0 : 1,
-        borderColor: c.border,
-        justifyContent: 'space-between',
-        opacity: pressed ? 0.85 : 1,
-      })}>
-      <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-        <View>
-          <Text style={[{ fontSize: 30, lineHeight: 34, fontWeight: '700', letterSpacing: -1, color: on ? c.onPrimary : c.text }, TABULAR]}>{facts.count}</Text>
-          <Text style={{ fontSize: 12, color: on ? c.onPrimaryMuted : c.muted }}>stubs a year</Text>
+    <View style={{ height, padding: compact ? 6 : 12, borderRadius: 28, backgroundColor: c.bgTint }}>
+      <View style={{ flex: 1, padding: compact ? 10 : 14, borderRadius: 22, backgroundColor: c.sheet, gap: compact ? 8 : 10, justifyContent: 'center' }}>
+        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+          <Text style={{ fontSize: 16, fontWeight: '700', color: c.text }}>
+            {MONTHS[month - 1]} {year}
+          </Text>
+          <View style={{ height: 26, paddingHorizontal: 10, borderRadius: 13, backgroundColor: c.primarySoft, justifyContent: 'center' }}>
+            <Text style={[{ fontSize: 12, fontWeight: '600', color: c.primaryText }, TABULAR]}>{facts.count} stubs a year</Text>
+          </View>
         </View>
-        <View
-          style={{
-            width: 22,
-            height: 22,
-            borderRadius: 11,
-            borderWidth: 2,
-            borderColor: on ? c.onPrimary : c.fieldBorder,
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}>
-          {on ? <View style={{ width: 10, height: 10, borderRadius: 5, backgroundColor: c.onPrimary }} /> : null}
+        {showGrid ? (
+          <View style={{ gap: compact ? 3 : 5 }} accessibilityElementsHidden importantForAccessibility="no-hide-descendants">
+            {compact ? null : (
+              <View style={{ flexDirection: 'row' }}>
+                {WEEKDAYS.map((letter, i) => (
+                  <Text key={i} style={{ flex: 1, textAlign: 'center', fontSize: 11, fontWeight: '600', color: c.faint }}>
+                    {letter}
+                  </Text>
+                ))}
+              </View>
+            )}
+            {Array.from({ length: rows }, (_, row) => (
+              <View key={row} style={{ flexDirection: 'row' }}>
+                {Array.from({ length: 7 }, (_, col) => {
+                  const day = row * 7 + col - lead + 1;
+                  if (day < 1 || day > days) return <View key={col} style={{ flex: 1, height: cell }} />;
+                  const solid = periodOf[day]! % 2 === 0;
+                  // Round the ends of each band, and where it wraps onto the next week.
+                  const startsBand = day === 1 || col === 0 || periodOf[day - 1] !== periodOf[day];
+                  const endsBand = day === days || col === 6 || periodOf[day + 1] !== periodOf[day];
+                  const radius = cell / 2;
+                  // Every column the same width; the gap at a band's ends is padding inside its column.
+                  return (
+                    <View key={col} style={{ flex: 1, height: cell, paddingLeft: startsBand ? 2 : 0, paddingRight: endsBand ? 2 : 0 }}>
+                      <View
+                        style={{
+                          flex: 1,
+                          borderTopLeftRadius: startsBand ? radius : 0,
+                          borderBottomLeftRadius: startsBand ? radius : 0,
+                          borderTopRightRadius: endsBand ? radius : 0,
+                          borderBottomRightRadius: endsBand ? radius : 0,
+                          backgroundColor: solid ? c.primary : c.primarySoft,
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                        }}>
+                        <Text style={[{ fontSize: Math.min(13, Math.round(cell * 0.45)), fontWeight: '600', color: solid ? c.onPrimary : c.primaryText }, TABULAR]}>{day}</Text>
+                      </View>
+                    </View>
+                  );
+                })}
+              </View>
+            ))}
+          </View>
+        ) : null}
+        {compact && showGrid ? null : (
+          <Text style={{ fontSize: 13, color: c.muted, textAlign: 'center' }} numberOfLines={1}>
+            {facts.hint}
+          </Text>
+        )}
+      </View>
+    </View>
+  );
+}
+
+/** The four pay schedules as a two-by-two set of choices. */
+function ScheduleChoices({ value, onChange }: { value: PaySchedule; onChange: (schedule: PaySchedule) => void }) {
+  const c = useTheme();
+  return (
+    <View style={{ gap: 8 }} accessibilityRole="radiogroup">
+      {[PAY_SCHEDULES.slice(0, 2), PAY_SCHEDULES.slice(2)].map((row, r) => (
+        <View key={r} style={{ flexDirection: 'row', gap: 8 }}>
+          {row.map((option) => {
+            const on = option === value;
+            return (
+              <Pressable
+                key={option}
+                onPress={() => onChange(option)}
+                accessibilityRole="radio"
+                accessibilityState={{ selected: on }}
+                accessibilityLabel={`${PAY_SCHEDULE_LABELS[option]}. ${SCHEDULE_FACTS[option].count} stubs a year.`}
+                style={({ pressed }) => ({
+                  flex: 1,
+                  height: 46,
+                  borderRadius: 23,
+                  borderWidth: 1,
+                  borderColor: on ? c.primary : c.border,
+                  backgroundColor: on ? c.primary : c.sheet,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  opacity: pressed ? 0.8 : 1,
+                })}>
+                <Text style={{ fontSize: 14, fontWeight: '600', color: on ? c.onPrimary : c.text }}>{PAY_SCHEDULE_LABELS[option]}</Text>
+              </Pressable>
+            );
+          })}
         </View>
-      </View>
-      {/* A month as four weeks, the pay days filled in. */}
-      <View style={{ flexDirection: 'row', gap: 5 }}>
-        {facts.paidWeeks.map((paid, i) => (
-          <View
-            key={i}
-            style={{
-              flex: 1,
-              height: 18,
-              borderRadius: 6,
-              backgroundColor: paid ? (on ? c.onPrimary : c.primary) : on ? 'rgba(255,255,255,0.25)' : c.segment,
-            }}
-          />
-        ))}
-      </View>
-      <View style={{ gap: 1 }}>
-        <Text style={{ fontSize: 16, fontWeight: '700', color: on ? c.onPrimary : c.text }}>{PAY_SCHEDULE_LABELS[schedule]}</Text>
-        <Text style={{ fontSize: 12, color: on ? c.onPrimaryMuted : c.muted }} numberOfLines={1}>
-          {facts.hint}
-        </Text>
-      </View>
-    </Pressable>
+      ))}
+    </View>
   );
 }

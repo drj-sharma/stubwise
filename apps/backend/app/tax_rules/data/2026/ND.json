@@ -1,0 +1,42 @@
+{
+  "year": 2026,
+  "jurisdiction": "ND",
+  "rules": [
+    {
+      "tax": "income",
+      "method": "state",
+      "params": {
+        "statusFromFederal": {
+          "single": "single",
+          "married": "married",
+          "head": "head"
+        },
+        "defaultStatus": "single",
+        "brackets": {
+          "single": [
+            [0, "0"],
+            [5762500, "1.95"],
+            [25845000, "2.5"]
+          ],
+          "married": [
+            [0, "0"],
+            [5750000, "1.95"],
+            [16852500, "2.5"]
+          ],
+          "head": [
+            [0, "0"],
+            [7847500, "1.95"],
+            [28967500, "2.5"]
+          ]
+        },
+        "round": "dollar",
+        "certificate": {
+          "form": "Federal Form W-4",
+          "fields": []
+        }
+      },
+      "source": "https://www.tax.nd.gov/sites/www/files/documents/forms/individual/2026-iit/2026-income-tax-withholding-rates-booklet.pdf",
+      "revision": 2
+    }
+  ]
+}

@@ -1,0 +1,97 @@
+{
+  "year": 2026,
+  "jurisdiction": "CA",
+  "rules": [
+    {
+      "tax": "income",
+      "method": "state",
+      "params": {
+        "statuses": ["S", "M", "H"],
+        "defaultStatus": "S",
+        "marriedHigherAmountsFromAllowances": 2,
+        "lowIncomeExemptionCents": {
+          "S": 1889600,
+          "M": 1889600,
+          "M2+": 3779100,
+          "H": 3779100
+        },
+        "standardDeductionCents": {
+          "S": 570600,
+          "M": 570600,
+          "M2+": 1141200,
+          "H": 1141200
+        },
+        "estimatedDeductionCents": 100000,
+        "allowanceCreditCents": 16830,
+        "taxRates": {
+          "S": [
+            [0, "1.1", 0],
+            [1107900, "2.2", 12187],
+            [2626400, "4.4", 45594],
+            [4145200, "6.6", 112421],
+            [5754200, "8.8", 218615],
+            [7272400, "10.23", 352217],
+            [37147900, "11.33", 3408481],
+            [44577100, "12.43", 4250209],
+            [74295300, "13.53", 7944181],
+            [100000000, "14.63", 11422027]
+          ],
+          "M": [
+            [0, "1.1", 0],
+            [2215800, "2.2", 24374],
+            [5252800, "4.4", 91188],
+            [8290400, "6.6", 224842],
+            [11508400, "8.8", 437230],
+            [14544800, "10.23", 704433],
+            [74295800, "11.33", 6816960],
+            [89154200, "12.43", 8500417],
+            [100000000, "13.53", 9848550],
+            [148590600, "14.63", 16422858]
+          ],
+          "H": [
+            [0, "1.1", 0],
+            [2217300, "2.2", 24390],
+            [5253000, "4.4", 91175],
+            [6771600, "6.6", 157993],
+            [8380500, "8.8", 264180],
+            [9899000, "10.23", 397808],
+            [50520800, "11.33", 4553418],
+            [60625100, "12.43", 5698235],
+            [100000000, "13.53", 10592535],
+            [101041700, "14.63", 10733477]
+          ]
+        },
+        "round": "cent",
+        "certificate": {
+          "form": "DE 4",
+          "fields": [
+            {
+              "key": "status",
+              "label": "Filing status",
+              "kind": "choice",
+              "options": [
+                { "value": "S", "label": "Single or married (with two or more incomes)" },
+                { "value": "M", "label": "Married (one income)" },
+                { "value": "H", "label": "Head of household" }
+              ]
+            },
+            { "key": "allowances", "label": "Regular withholding allowances", "kind": "count" },
+            { "key": "additionalAllowances", "label": "Estimated deduction allowances", "kind": "count" }
+          ]
+        }
+      },
+      "source": "https://edd.ca.gov/siteassets/files/pdf_pub_ctr/26methb.pdf",
+      "revision": 2
+    },
+    {
+      "tax": "sdi",
+      "method": "capped_rate",
+      "params": {
+        "ratePercent": "1.3",
+        "label": "California SDI"
+      },
+      "source": "https://www.edd.ca.gov/siteassets/files/pdf_pub_ctr/de44.pdf",
+      "revision": 1
+    }
+  ]
+}

@@ -32,15 +32,24 @@ class W4(TypedDict):
     """Claimed exempt from federal income tax withholding. Social Security and Medicare still apply."""
 
 
-class StateW4(TypedDict):
+class StateW4(TypedDict, total=False):
     """What an employee wrote on their state's withholding certificate.
 
-    States name these lines differently; the rule for each state says which it uses.
+    States name these lines differently; each state's rule (its ``certificate``
+    in the tax_rules params) says which it asks for and what they are called.
     """
 
     allowances: int
     additionalAllowances: int
     """A second kind of allowance, on certificates that have one (Illinois Line 2)."""
+    dependents: int
+    """Dependents claimed, on certificates that count them separately."""
+    status: str | None
+    """The certificate's own filing status code, for states that have one; None uses the federal W-4's."""
+    localities: list[str]
+    """County, city or school district codes the worker owes local tax to (see the state's local rule)."""
+    options: dict[str, Any]
+    """Answers particular to one state's certificate (Arizona's chosen percentage, say)."""
     extraWithholdingCents: Cents
     """Extra state withholding, per pay period."""
     exempt: bool
@@ -71,7 +80,16 @@ DEFAULT_W4: W4 = {
     "exempt": False,
 }
 # With no state certificate on file: no allowances, nothing extra.
-DEFAULT_STATE_W4: StateW4 = {"allowances": 0, "additionalAllowances": 0, "extraWithholdingCents": 0, "exempt": False}
+DEFAULT_STATE_W4: StateW4 = {
+    "allowances": 0,
+    "additionalAllowances": 0,
+    "dependents": 0,
+    "status": None,
+    "localities": [],
+    "options": {},
+    "extraWithholdingCents": 0,
+    "exempt": False,
+}
 DEFAULT_TAX_PROFILE: TaxProfile = {
     "calculate": True,
     "w4": DEFAULT_W4,
@@ -92,10 +110,35 @@ def _count(value: object) -> int:
     return value if is_integer(value) and 0 <= value <= 99 else 0  # type: ignore[operator, return-value]
 
 
+def _code(value: object) -> str | None:
+    return value if isinstance(value, str) and 0 < len(value) <= 20 else None
+
+
+def _state_w4(value: dict[str, Any]) -> StateW4:
+    localities = value.get("localities")
+    options = value.get("options")
+    return {
+        "allowances": _count(value.get("allowances")),
+        "additionalAllowances": _count(value.get("additionalAllowances")),
+        "dependents": _count(value.get("dependents")),
+        "status": _code(value.get("status")),
+        "localities": [code for code in localities if _code(code)][:4] if isinstance(localities, list) else [],
+        "options": {
+            key: item
+            for key, item in options.items()
+            if isinstance(key, str) and len(key) <= 30 and isinstance(item, str | int | bool) and len(str(item)) <= 30
+        }
+        if isinstance(options, dict)
+        else {},
+        "extraWithholdingCents": _cents_or_zero(value.get("extraWithholdingCents")),
+        "exempt": value.get("exempt") is True,
+    }
+
+
 def normalize_tax_profile(value: Any) -> TaxProfile:
     """Reads a stored tax profile, falling back to the defaults for anything missing or malformed."""
     if not isinstance(value, dict):
-        return {"calculate": True, "w4": {**DEFAULT_W4}, "state": None, "stateW4": {**DEFAULT_STATE_W4}}
+        return {"calculate": True, "w4": {**DEFAULT_W4}, "state": None, "stateW4": _state_w4({})}
     w4 = value.get("w4") if isinstance(value.get("w4"), dict) else {}
     state_w4 = value.get("stateW4") if isinstance(value.get("stateW4"), dict) else {}
     status = w4.get("filingStatus")
@@ -103,12 +146,7 @@ def normalize_tax_profile(value: Any) -> TaxProfile:
     return {
         "calculate": value.get("calculate") is not False,
         "state": state if is_us_state_code(state) else None,
-        "stateW4": {
-            "allowances": _count(state_w4.get("allowances")),
-            "additionalAllowances": _count(state_w4.get("additionalAllowances")),
-            "extraWithholdingCents": _cents_or_zero(state_w4.get("extraWithholdingCents")),
-            "exempt": state_w4.get("exempt") is True,
-        },
+        "stateW4": _state_w4(state_w4),
         "w4": {
             "filingStatus": status if status in ("married", "head") else "single",
             "multipleJobs": w4.get("multipleJobs") is True,

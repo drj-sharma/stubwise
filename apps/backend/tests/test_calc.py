@@ -6,7 +6,10 @@ from typing import Any
 
 from fastapi.testclient import TestClient
 
-from .test_parity import VECTORS
+from app.domain.tax.apply_taxes import work_state
+from app.tax_rules.store import seed_files
+
+from .test_parity import VECTORS, _still_comparable
 
 
 def with_tax_code(lines: list[dict[str, Any]]) -> list[dict[str, Any]]:
@@ -24,6 +27,12 @@ def test_stub_totals_match_the_vectors(client: TestClient, auth: dict[str, str])
 def test_taxes_match_the_vectors(client: TestClient, auth: dict[str, str]) -> None:
     checked = 0
     for case in VECTORS["taxLines"]:
+        context = case["context"]
+        state = work_state(context["profile"], context["businessState"])
+        sit = next((line for line in case["expected"]["lines"] if line.get("taxCode") == "sit"), None)
+        kind = "none" if sit is None else "manual" if sit["source"] == "manual" else "amount"
+        if not _still_comparable(state, context["year"], kind):
+            continue  # calculated by the server since the vectors were made (tests/tax_states covers it)
         response = client.post(
             "/v1/calc/taxes", headers=auth, json={"lines": case["input"], "context": case["context"]}
         )
@@ -32,7 +41,8 @@ def test_taxes_match_the_vectors(client: TestClient, auth: dict[str, str]) -> No
         assert with_tax_code(body["lines"]) == case["expected"]["lines"]
         assert body["status"] == case["expected"]["status"]
         checked += 1
-    assert checked == len(VECTORS["taxLines"]) >= 120
+    # Fewer each time a state is added; the per-state tests take over from the vectors for those.
+    assert checked >= 20
 
 
 def test_ytd_matches_the_vectors(client: TestClient, auth: dict[str, str]) -> None:
@@ -93,20 +103,19 @@ def test_tax_coverage_lists_every_state(client: TestClient) -> None:
     assert year["federal"] is True
     states = year["states"]
     assert len(states) == 51
-    assert states["TN"] == {"name": "Tennessee", "support": "none"}
-    assert states["CA"] == {"name": "California", "support": "manual"}
+    assert states["TN"]["support"] == "none"
     assert states["PA"]["support"] == "calculated"
-    assert states["PA"]["certificate"] is None
-    assert states["IL"]["certificate"] == {
-        "form": "IL-W-4",
-        "allowances": "Line 1 allowances",
-        "additionalAllowances": "Line 2 allowances",
-    }
-    assert states["NC"]["certificate"] == {"form": "NC-4", "allowances": "Allowances"}
+    assert states["IL"]["certificate"]["form"] == "IL-W-4"
+    assert [field["key"] for field in states["IL"]["certificate"]["fields"]] == ["allowances", "additionalAllowances"]
     assert states["IL"]["source"].startswith("https://tax.illinois.gov/")
+    # Whatever the rules table holds, not a list kept here: adding a state must not need a code change.
+    seeded = {
+        rule["jurisdiction"]: rule["method"]
+        for rule in seed_files()
+        if rule["tax"] == "income" and rule["year"] == 2026
+    }
     calculated = sorted(code for code, entry in states.items() if entry["support"] == "calculated")
-    # Whatever the data file holds, not a list kept here: adding a state to the data must not need a code change.
-    from app.domain.tax.data import STATE_RULES
-
-    assert calculated == sorted(STATE_RULES[2026])
-    assert set(body["noWageIncomeTaxStates"]) == {c for c, e in states.items() if e["support"] == "none"}
+    assert calculated == sorted(code for code, method in seeded.items() if method == "state")
+    assert sorted(code for code, entry in states.items() if entry["support"] == "none") == sorted(
+        code for code, method in seeded.items() if method == "none"
+    )

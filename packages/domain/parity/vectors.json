@@ -18612,6 +18612,10 @@
    "stateW4": {
     "allowances": 0,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -18636,6 +18640,10 @@
    "stateW4": {
     "allowances": 5,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -18660,6 +18668,10 @@
    "stateW4": {
     "allowances": 1,
     "additionalAllowances": 1,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -18684,6 +18696,10 @@
    "stateW4": {
     "allowances": 0,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": true
    },
@@ -18708,6 +18724,10 @@
    "stateW4": {
     "allowances": 0,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -18732,6 +18752,10 @@
    "stateW4": {
     "allowances": 0,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -18756,6 +18780,10 @@
    "stateW4": {
     "allowances": 0,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 4803,
     "exempt": false
    },
@@ -18780,6 +18808,10 @@
    "stateW4": {
     "allowances": 1,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 4036,
     "exempt": false
    },
@@ -18804,6 +18836,10 @@
    "stateW4": {
     "allowances": 0,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -18828,6 +18864,10 @@
    "stateW4": {
     "allowances": 0,
     "additionalAllowances": 1,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": true
    },
@@ -18852,6 +18892,10 @@
    "stateW4": {
     "allowances": 0,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -18876,6 +18920,10 @@
    "stateW4": {
     "allowances": 6,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 2474,
     "exempt": false
    },
@@ -18900,6 +18948,10 @@
    "stateW4": {
     "allowances": 0,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -18924,6 +18976,10 @@
    "stateW4": {
     "allowances": 0,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -18948,6 +19004,10 @@
    "stateW4": {
     "allowances": 0,
     "additionalAllowances": 3,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 2057,
     "exempt": false
    },
@@ -18972,6 +19032,10 @@
    "stateW4": {
     "allowances": 0,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 4407,
     "exempt": false
    },
@@ -18996,6 +19060,10 @@
    "stateW4": {
     "allowances": 0,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -19020,6 +19088,10 @@
    "stateW4": {
     "allowances": 1,
     "additionalAllowances": 2,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 1627,
     "exempt": false
    },
@@ -19044,6 +19116,10 @@
    "stateW4": {
     "allowances": 0,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -19068,6 +19144,10 @@
    "stateW4": {
     "allowances": 0,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -19092,6 +19172,10 @@
    "stateW4": {
     "allowances": 0,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -19116,6 +19200,10 @@
    "stateW4": {
     "allowances": 5,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 2812,
     "exempt": false
    },
@@ -19140,6 +19228,10 @@
    "stateW4": {
     "allowances": 0,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -19164,6 +19256,10 @@
    "stateW4": {
     "allowances": 1,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -19188,6 +19284,10 @@
    "stateW4": {
     "allowances": 0,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -19212,6 +19312,10 @@
    "stateW4": {
     "allowances": 1,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -19236,6 +19340,10 @@
    "stateW4": {
     "allowances": 0,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -19260,6 +19368,10 @@
    "stateW4": {
     "allowances": 3,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -19284,6 +19396,10 @@
    "stateW4": {
     "allowances": 0,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -19308,6 +19424,10 @@
    "stateW4": {
     "allowances": 0,
     "additionalAllowances": 3,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -19332,6 +19452,10 @@
    "stateW4": {
     "allowances": 0,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -19356,6 +19480,10 @@
    "stateW4": {
     "allowances": 0,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -19380,6 +19508,10 @@
    "stateW4": {
     "allowances": 0,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -19404,6 +19536,10 @@
    "stateW4": {
     "allowances": 1,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 1443,
     "exempt": false
    },
@@ -19428,6 +19564,10 @@
    "stateW4": {
     "allowances": 5,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -19452,6 +19592,10 @@
    "stateW4": {
     "allowances": 0,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -19476,6 +19620,10 @@
    "stateW4": {
     "allowances": 0,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -19500,6 +19648,10 @@
    "stateW4": {
     "allowances": 2,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 167,
     "exempt": false
    },
@@ -19524,6 +19676,10 @@
    "stateW4": {
     "allowances": 0,
     "additionalAllowances": 3,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -19548,6 +19704,10 @@
    "stateW4": {
     "allowances": 0,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -19572,6 +19732,10 @@
    "stateW4": {
     "allowances": 0,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -19596,6 +19760,10 @@
    "stateW4": {
     "allowances": 5,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -19620,6 +19788,10 @@
    "stateW4": {
     "allowances": 6,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -19644,6 +19816,10 @@
    "stateW4": {
     "allowances": 0,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -19668,6 +19844,10 @@
    "stateW4": {
     "allowances": 0,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -19692,6 +19872,10 @@
    "stateW4": {
     "allowances": 0,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -19716,6 +19900,10 @@
    "stateW4": {
     "allowances": 2,
     "additionalAllowances": 3,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -19740,6 +19928,10 @@
    "stateW4": {
     "allowances": 3,
     "additionalAllowances": 2,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 657,
     "exempt": false
    },
@@ -19764,6 +19956,10 @@
    "stateW4": {
     "allowances": 0,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -19788,6 +19984,10 @@
    "stateW4": {
     "allowances": 0,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 1194,
     "exempt": false
    },
@@ -19812,6 +20012,10 @@
    "stateW4": {
     "allowances": 6,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -19836,6 +20040,10 @@
    "stateW4": {
     "allowances": 2,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -19860,6 +20068,10 @@
    "stateW4": {
     "allowances": 0,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -19885,6 +20097,10 @@
    "stateW4": {
     "allowances": 2,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 4846,
     "exempt": false
    },
@@ -19910,6 +20126,10 @@
    "stateW4": {
     "allowances": 1,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -19935,6 +20155,10 @@
    "stateW4": {
     "allowances": 0,
     "additionalAllowances": 2,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -19959,6 +20183,10 @@
    "stateW4": {
     "allowances": 0,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -19983,6 +20211,10 @@
    "stateW4": {
     "allowances": 0,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -20007,6 +20239,10 @@
    "stateW4": {
     "allowances": 3,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -20031,6 +20267,10 @@
    "stateW4": {
     "allowances": 0,
     "additionalAllowances": 2,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -20055,6 +20295,10 @@
    "stateW4": {
     "allowances": 0,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -20079,6 +20323,10 @@
    "stateW4": {
     "allowances": 5,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -20103,6 +20351,10 @@
    "stateW4": {
     "allowances": 0,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -20127,6 +20379,10 @@
    "stateW4": {
     "allowances": 3,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -20151,6 +20407,10 @@
    "stateW4": {
     "allowances": 0,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -20175,6 +20435,10 @@
    "stateW4": {
     "allowances": 3,
     "additionalAllowances": 1,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -20199,6 +20463,10 @@
    "stateW4": {
     "allowances": 0,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -20223,6 +20491,10 @@
    "stateW4": {
     "allowances": 0,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -20247,6 +20519,10 @@
    "stateW4": {
     "allowances": 0,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -20272,6 +20548,10 @@
    "stateW4": {
     "allowances": 1,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -20297,6 +20577,10 @@
    "stateW4": {
     "allowances": 0,
     "additionalAllowances": 3,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -20322,6 +20606,10 @@
    "stateW4": {
     "allowances": 0,
     "additionalAllowances": 3,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -20346,6 +20634,10 @@
    "stateW4": {
     "allowances": 0,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -20370,6 +20662,10 @@
    "stateW4": {
     "allowances": 0,
     "additionalAllowances": 2,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -20394,6 +20690,10 @@
    "stateW4": {
     "allowances": 0,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -20418,6 +20718,10 @@
    "stateW4": {
     "allowances": 0,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -20442,6 +20746,10 @@
    "stateW4": {
     "allowances": 0,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -20466,6 +20774,10 @@
    "stateW4": {
     "allowances": 0,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -20490,6 +20802,10 @@
    "stateW4": {
     "allowances": 0,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 1613,
     "exempt": false
    },
@@ -20514,6 +20830,10 @@
    "stateW4": {
     "allowances": 3,
     "additionalAllowances": 3,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -20538,6 +20858,10 @@
    "stateW4": {
     "allowances": 0,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -20562,6 +20886,10 @@
    "stateW4": {
     "allowances": 2,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 3818,
     "exempt": false
    },
@@ -20586,6 +20914,10 @@
    "stateW4": {
     "allowances": 4,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -20610,6 +20942,10 @@
    "stateW4": {
     "allowances": 2,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -20634,6 +20970,10 @@
    "stateW4": {
     "allowances": 0,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -20658,6 +20998,10 @@
    "stateW4": {
     "allowances": 6,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -20682,6 +21026,10 @@
    "stateW4": {
     "allowances": 0,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 4567,
     "exempt": false
    },
@@ -20706,6 +21054,10 @@
    "stateW4": {
     "allowances": 1,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -20730,6 +21082,10 @@
    "stateW4": {
     "allowances": 0,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -20754,6 +21110,10 @@
    "stateW4": {
     "allowances": 0,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -20778,6 +21138,10 @@
    "stateW4": {
     "allowances": 3,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -20802,6 +21166,10 @@
    "stateW4": {
     "allowances": 5,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 4398,
     "exempt": false
    },
@@ -20826,6 +21194,10 @@
    "stateW4": {
     "allowances": 0,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -20850,6 +21222,10 @@
    "stateW4": {
     "allowances": 4,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -20874,6 +21250,10 @@
    "stateW4": {
     "allowances": 0,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 2740,
     "exempt": false
    },
@@ -20898,6 +21278,10 @@
    "stateW4": {
     "allowances": 0,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -20922,6 +21306,10 @@
    "stateW4": {
     "allowances": 0,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -20946,6 +21334,10 @@
    "stateW4": {
     "allowances": 2,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -20970,6 +21362,10 @@
    "stateW4": {
     "allowances": 0,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -20994,6 +21390,10 @@
    "stateW4": {
     "allowances": 6,
     "additionalAllowances": 1,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 918,
     "exempt": false
    },
@@ -21018,6 +21418,10 @@
    "stateW4": {
     "allowances": 0,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -21042,6 +21446,10 @@
    "stateW4": {
     "allowances": 1,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -21066,6 +21474,10 @@
    "stateW4": {
     "allowances": 0,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 1540,
     "exempt": false
    },
@@ -21090,6 +21502,10 @@
    "stateW4": {
     "allowances": 0,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -21114,6 +21530,10 @@
    "stateW4": {
     "allowances": 0,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -21138,6 +21558,10 @@
    "stateW4": {
     "allowances": 0,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -21162,6 +21586,10 @@
    "stateW4": {
     "allowances": 2,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -21186,6 +21614,10 @@
    "stateW4": {
     "allowances": 0,
     "additionalAllowances": 3,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -21210,6 +21642,10 @@
    "stateW4": {
     "allowances": 0,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -21234,6 +21670,10 @@
    "stateW4": {
     "allowances": 0,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 4318,
     "exempt": false
    },
@@ -21258,6 +21698,10 @@
    "stateW4": {
     "allowances": 0,
     "additionalAllowances": 1,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -21282,6 +21726,10 @@
    "stateW4": {
     "allowances": 0,
     "additionalAllowances": 3,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -21306,6 +21754,10 @@
    "stateW4": {
     "allowances": 0,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -21330,6 +21782,10 @@
    "stateW4": {
     "allowances": 0,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 2047,
     "exempt": false
    },
@@ -21354,6 +21810,10 @@
    "stateW4": {
     "allowances": 0,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -21378,6 +21838,10 @@
    "stateW4": {
     "allowances": 0,
     "additionalAllowances": 1,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 3052,
     "exempt": false
    },
@@ -21402,6 +21866,10 @@
    "stateW4": {
     "allowances": 0,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -21426,6 +21894,10 @@
    "stateW4": {
     "allowances": 0,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -21450,6 +21922,10 @@
    "stateW4": {
     "allowances": 0,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -21474,6 +21950,10 @@
    "stateW4": {
     "allowances": 4,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": true
    },
@@ -21498,6 +21978,10 @@
    "stateW4": {
     "allowances": 0,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -21522,6 +22006,10 @@
    "stateW4": {
     "allowances": 0,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": true
    },
@@ -21546,6 +22034,10 @@
    "stateW4": {
     "allowances": 0,
     "additionalAllowances": 3,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -21570,6 +22062,10 @@
    "stateW4": {
     "allowances": 0,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -21594,6 +22090,10 @@
    "stateW4": {
     "allowances": 0,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -21618,6 +22118,10 @@
    "stateW4": {
     "allowances": 2,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -21642,6 +22146,10 @@
    "stateW4": {
     "allowances": 0,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 1373,
     "exempt": false
    },
@@ -21666,6 +22174,10 @@
    "stateW4": {
     "allowances": 1,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -21690,6 +22202,10 @@
    "stateW4": {
     "allowances": 0,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -21714,6 +22230,10 @@
    "stateW4": {
     "allowances": 1,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -21738,6 +22258,10 @@
    "stateW4": {
     "allowances": 2,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -21762,6 +22286,10 @@
    "stateW4": {
     "allowances": 0,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -21786,6 +22314,10 @@
    "stateW4": {
     "allowances": 0,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -21811,6 +22343,10 @@
    "stateW4": {
     "allowances": 1,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -21836,6 +22372,10 @@
    "stateW4": {
     "allowances": 6,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 3482,
     "exempt": false
    },
@@ -21861,6 +22401,10 @@
    "stateW4": {
     "allowances": 4,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -21885,6 +22429,10 @@
    "stateW4": {
     "allowances": 0,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -21909,6 +22457,10 @@
    "stateW4": {
     "allowances": 3,
     "additionalAllowances": 3,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 1921,
     "exempt": false
    },
@@ -21933,6 +22485,10 @@
    "stateW4": {
     "allowances": 6,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -21957,6 +22513,10 @@
    "stateW4": {
     "allowances": 0,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -21981,6 +22541,10 @@
    "stateW4": {
     "allowances": 0,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -22005,6 +22569,10 @@
    "stateW4": {
     "allowances": 0,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 3317,
     "exempt": false
    },
@@ -22029,6 +22597,10 @@
    "stateW4": {
     "allowances": 0,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 1769,
     "exempt": false
    },
@@ -22053,6 +22625,10 @@
    "stateW4": {
     "allowances": 0,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 4839,
     "exempt": true
    },
@@ -22077,6 +22653,10 @@
    "stateW4": {
     "allowances": 0,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -22101,6 +22681,10 @@
    "stateW4": {
     "allowances": 5,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -22125,6 +22709,10 @@
    "stateW4": {
     "allowances": 3,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -22149,6 +22737,10 @@
    "stateW4": {
     "allowances": 1,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -22173,6 +22765,10 @@
    "stateW4": {
     "allowances": 0,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -22197,6 +22793,10 @@
    "stateW4": {
     "allowances": 0,
     "additionalAllowances": 3,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -22221,6 +22821,10 @@
    "stateW4": {
     "allowances": 0,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 3237,
     "exempt": false
    },
@@ -22245,6 +22849,10 @@
    "stateW4": {
     "allowances": 0,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -22269,6 +22877,10 @@
    "stateW4": {
     "allowances": 0,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -22294,6 +22906,10 @@
    "stateW4": {
     "allowances": 2,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -22319,6 +22935,10 @@
    "stateW4": {
     "allowances": 0,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 3270,
     "exempt": false
    },
@@ -22344,6 +22964,10 @@
    "stateW4": {
     "allowances": 4,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -22368,6 +22992,10 @@
    "stateW4": {
     "allowances": 0,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -22392,6 +23020,10 @@
    "stateW4": {
     "allowances": 1,
     "additionalAllowances": 1,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -22416,6 +23048,10 @@
    "stateW4": {
     "allowances": 2,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -22440,6 +23076,10 @@
    "stateW4": {
     "allowances": 5,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -22464,6 +23104,10 @@
    "stateW4": {
     "allowances": 0,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -22488,6 +23132,10 @@
    "stateW4": {
     "allowances": 3,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -22512,6 +23160,10 @@
    "stateW4": {
     "allowances": 4,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -22536,6 +23188,10 @@
    "stateW4": {
     "allowances": 6,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 696,
     "exempt": false
    },
@@ -22560,6 +23216,10 @@
    "stateW4": {
     "allowances": 0,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -22584,6 +23244,10 @@
    "stateW4": {
     "allowances": 2,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -22608,6 +23272,10 @@
    "stateW4": {
     "allowances": 0,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -22632,6 +23300,10 @@
    "stateW4": {
     "allowances": 2,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -22656,6 +23328,10 @@
    "stateW4": {
     "allowances": 0,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -22680,6 +23356,10 @@
    "stateW4": {
     "allowances": 0,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -22704,6 +23384,10 @@
    "stateW4": {
     "allowances": 1,
     "additionalAllowances": 1,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -22728,6 +23412,10 @@
    "stateW4": {
     "allowances": 3,
     "additionalAllowances": 3,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -22752,6 +23440,10 @@
    "stateW4": {
     "allowances": 0,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -22776,6 +23468,10 @@
    "stateW4": {
     "allowances": 3,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -22800,6 +23496,10 @@
    "stateW4": {
     "allowances": 0,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -22824,6 +23524,10 @@
    "stateW4": {
     "allowances": 3,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 494,
     "exempt": false
    },
@@ -22848,6 +23552,10 @@
    "stateW4": {
     "allowances": 0,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -22872,6 +23580,10 @@
    "stateW4": {
     "allowances": 0,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 3394,
     "exempt": false
    },
@@ -22896,6 +23608,10 @@
    "stateW4": {
     "allowances": 0,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -22920,6 +23636,10 @@
    "stateW4": {
     "allowances": 1,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 1599,
     "exempt": false
    },
@@ -22944,6 +23664,10 @@
    "stateW4": {
     "allowances": 0,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -22968,6 +23692,10 @@
    "stateW4": {
     "allowances": 0,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -22992,6 +23720,10 @@
    "stateW4": {
     "allowances": 1,
     "additionalAllowances": 1,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -23016,6 +23748,10 @@
    "stateW4": {
     "allowances": 3,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 3418,
     "exempt": false
    },
@@ -23040,6 +23776,10 @@
    "stateW4": {
     "allowances": 0,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -23064,6 +23804,10 @@
    "stateW4": {
     "allowances": 0,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 4960,
     "exempt": false
    },
@@ -23088,6 +23832,10 @@
    "stateW4": {
     "allowances": 4,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -23112,6 +23860,10 @@
    "stateW4": {
     "allowances": 1,
     "additionalAllowances": 2,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -23136,6 +23888,10 @@
    "stateW4": {
     "allowances": 0,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -23160,6 +23916,10 @@
    "stateW4": {
     "allowances": 0,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -23184,6 +23944,10 @@
    "stateW4": {
     "allowances": 0,
     "additionalAllowances": 2,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -23208,6 +23972,10 @@
    "stateW4": {
     "allowances": 0,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -23232,6 +24000,10 @@
    "stateW4": {
     "allowances": 0,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -23256,6 +24028,10 @@
    "stateW4": {
     "allowances": 0,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -23280,6 +24056,10 @@
    "stateW4": {
     "allowances": 0,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -23304,6 +24084,10 @@
    "stateW4": {
     "allowances": 2,
     "additionalAllowances": 3,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -23328,6 +24112,10 @@
    "stateW4": {
     "allowances": 0,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -23352,6 +24140,10 @@
    "stateW4": {
     "allowances": 4,
     "additionalAllowances": 1,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -23376,6 +24168,10 @@
    "stateW4": {
     "allowances": 3,
     "additionalAllowances": 1,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 1010,
     "exempt": false
    },
@@ -23400,6 +24196,10 @@
    "stateW4": {
     "allowances": 4,
     "additionalAllowances": 2,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -23424,6 +24224,10 @@
    "stateW4": {
     "allowances": 0,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -23448,6 +24252,10 @@
    "stateW4": {
     "allowances": 0,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -23472,6 +24280,10 @@
    "stateW4": {
     "allowances": 3,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 173,
     "exempt": false
    },
@@ -23496,6 +24308,10 @@
    "stateW4": {
     "allowances": 0,
     "additionalAllowances": 0,
+    "dependents": 0,
+    "status": null,
+    "localities": [],
+    "options": {},
     "extraWithholdingCents": 0,
     "exempt": false
    },
@@ -23522,6 +24338,10 @@
      "stateW4": {
       "allowances": 1,
       "additionalAllowances": 0,
+      "dependents": 0,
+      "status": null,
+      "localities": [],
+      "options": {},
       "extraWithholdingCents": 0,
       "exempt": false
      }
@@ -23660,6 +24480,10 @@
      "stateW4": {
       "allowances": 1,
       "additionalAllowances": 0,
+      "dependents": 0,
+      "status": null,
+      "localities": [],
+      "options": {},
       "extraWithholdingCents": 0,
       "exempt": false
      }
@@ -23814,6 +24638,10 @@
      "stateW4": {
       "allowances": 0,
       "additionalAllowances": 0,
+      "dependents": 0,
+      "status": null,
+      "localities": [],
+      "options": {},
       "extraWithholdingCents": 0,
       "exempt": false
      }
@@ -24000,6 +24828,10 @@
      "stateW4": {
       "allowances": 0,
       "additionalAllowances": 0,
+      "dependents": 0,
+      "status": null,
+      "localities": [],
+      "options": {},
       "extraWithholdingCents": 0,
       "exempt": false
      }
@@ -24154,6 +24986,10 @@
      "stateW4": {
       "allowances": 0,
       "additionalAllowances": 0,
+      "dependents": 0,
+      "status": null,
+      "localities": [],
+      "options": {},
       "extraWithholdingCents": 2862,
       "exempt": false
      }
@@ -24276,6 +25112,10 @@
      "stateW4": {
       "allowances": 0,
       "additionalAllowances": 0,
+      "dependents": 0,
+      "status": null,
+      "localities": [],
+      "options": {},
       "extraWithholdingCents": 0,
       "exempt": false
      }
@@ -24406,6 +25246,10 @@
      "stateW4": {
       "allowances": 5,
       "additionalAllowances": 0,
+      "dependents": 0,
+      "status": null,
+      "localities": [],
+      "options": {},
       "extraWithholdingCents": 0,
       "exempt": false
      }
@@ -24526,6 +25370,10 @@
      "stateW4": {
       "allowances": 0,
       "additionalAllowances": 3,
+      "dependents": 0,
+      "status": null,
+      "localities": [],
+      "options": {},
       "extraWithholdingCents": 0,
       "exempt": false
      }
@@ -24672,6 +25520,10 @@
      "stateW4": {
       "allowances": 0,
       "additionalAllowances": 0,
+      "dependents": 0,
+      "status": null,
+      "localities": [],
+      "options": {},
       "extraWithholdingCents": 549,
       "exempt": false
      }
@@ -24810,6 +25662,10 @@
      "stateW4": {
       "allowances": 5,
       "additionalAllowances": 0,
+      "dependents": 0,
+      "status": null,
+      "localities": [],
+      "options": {},
       "extraWithholdingCents": 0,
       "exempt": false
      }
@@ -24930,6 +25786,10 @@
      "stateW4": {
       "allowances": 0,
       "additionalAllowances": 0,
+      "dependents": 0,
+      "status": null,
+      "localities": [],
+      "options": {},
       "extraWithholdingCents": 0,
       "exempt": false
      }
@@ -25084,6 +25944,10 @@
      "stateW4": {
       "allowances": 2,
       "additionalAllowances": 0,
+      "dependents": 0,
+      "status": null,
+      "localities": [],
+      "options": {},
       "extraWithholdingCents": 0,
       "exempt": false
      }
@@ -25166,6 +26030,10 @@
      "stateW4": {
       "allowances": 1,
       "additionalAllowances": 0,
+      "dependents": 0,
+      "status": null,
+      "localities": [],
+      "options": {},
       "extraWithholdingCents": 0,
       "exempt": false
      }
@@ -25304,6 +26172,10 @@
      "stateW4": {
       "allowances": 1,
       "additionalAllowances": 0,
+      "dependents": 0,
+      "status": null,
+      "localities": [],
+      "options": {},
       "extraWithholdingCents": 0,
       "exempt": false
      }
@@ -25442,6 +26314,10 @@
      "stateW4": {
       "allowances": 0,
       "additionalAllowances": 0,
+      "dependents": 0,
+      "status": null,
+      "localities": [],
+      "options": {},
       "extraWithholdingCents": 0,
       "exempt": false
      }
@@ -25596,6 +26472,10 @@
      "stateW4": {
       "allowances": 0,
       "additionalAllowances": 0,
+      "dependents": 0,
+      "status": null,
+      "localities": [],
+      "options": {},
       "extraWithholdingCents": 0,
       "exempt": false
      }
@@ -25678,6 +26558,10 @@
      "stateW4": {
       "allowances": 6,
       "additionalAllowances": 0,
+      "dependents": 0,
+      "status": null,
+      "localities": [],
+      "options": {},
       "extraWithholdingCents": 0,
       "exempt": false
      }
@@ -25776,6 +26660,10 @@
      "stateW4": {
       "allowances": 0,
       "additionalAllowances": 0,
+      "dependents": 0,
+      "status": null,
+      "localities": [],
+      "options": {},
       "extraWithholdingCents": 0,
       "exempt": false
      }
@@ -25914,6 +26802,10 @@
      "stateW4": {
       "allowances": 0,
       "additionalAllowances": 0,
+      "dependents": 0,
+      "status": null,
+      "localities": [],
+      "options": {},
       "extraWithholdingCents": 0,
       "exempt": false
      }
@@ -26084,6 +26976,10 @@
      "stateW4": {
       "allowances": 0,
       "additionalAllowances": 2,
+      "dependents": 0,
+      "status": null,
+      "localities": [],
+      "options": {},
       "extraWithholdingCents": 0,
       "exempt": true
      }
@@ -26222,6 +27118,10 @@
      "stateW4": {
       "allowances": 0,
       "additionalAllowances": 0,
+      "dependents": 0,
+      "status": null,
+      "localities": [],
+      "options": {},
       "extraWithholdingCents": 0,
       "exempt": false
      }
@@ -26456,6 +27356,10 @@
      "stateW4": {
       "allowances": 5,
       "additionalAllowances": 1,
+      "dependents": 0,
+      "status": null,
+      "localities": [],
+      "options": {},
       "extraWithholdingCents": 3008,
       "exempt": false
      }
@@ -26554,6 +27458,10 @@
      "stateW4": {
       "allowances": 0,
       "additionalAllowances": 0,
+      "dependents": 0,
+      "status": null,
+      "localities": [],
+      "options": {},
       "extraWithholdingCents": 317,
       "exempt": false
      }
@@ -26692,6 +27600,10 @@
      "stateW4": {
       "allowances": 1,
       "additionalAllowances": 0,
+      "dependents": 0,
+      "status": null,
+      "localities": [],
+      "options": {},
       "extraWithholdingCents": 1895,
       "exempt": false
      }
@@ -26862,6 +27774,10 @@
      "stateW4": {
       "allowances": 0,
       "additionalAllowances": 0,
+      "dependents": 0,
+      "status": null,
+      "localities": [],
+      "options": {},
       "extraWithholdingCents": 0,
       "exempt": false
      }
@@ -27032,6 +27948,10 @@
      "stateW4": {
       "allowances": 0,
       "additionalAllowances": 1,
+      "dependents": 0,
+      "status": null,
+      "localities": [],
+      "options": {},
       "extraWithholdingCents": 1095,
       "exempt": false
      }
@@ -27186,6 +28106,10 @@
      "stateW4": {
       "allowances": 3,
       "additionalAllowances": 0,
+      "dependents": 0,
+      "status": null,
+      "localities": [],
+      "options": {},
       "extraWithholdingCents": 0,
       "exempt": true
      }
@@ -27340,6 +28264,10 @@
      "stateW4": {
       "allowances": 2,
       "additionalAllowances": 0,
+      "dependents": 0,
+      "status": null,
+      "localities": [],
+      "options": {},
       "extraWithholdingCents": 0,
       "exempt": true
      }
@@ -27494,6 +28422,10 @@
      "stateW4": {
       "allowances": 1,
       "additionalAllowances": 0,
+      "dependents": 0,
+      "status": null,
+      "localities": [],
+      "options": {},
       "extraWithholdingCents": 0,
       "exempt": false
      }
@@ -27648,6 +28580,10 @@
      "stateW4": {
       "allowances": 0,
       "additionalAllowances": 0,
+      "dependents": 0,
+      "status": null,
+      "localities": [],
+      "options": {},
       "extraWithholdingCents": 2097,
       "exempt": false
      }
@@ -27786,6 +28722,10 @@
      "stateW4": {
       "allowances": 0,
       "additionalAllowances": 0,
+      "dependents": 0,
+      "status": null,
+      "localities": [],
+      "options": {},
       "extraWithholdingCents": 0,
       "exempt": false
      }
@@ -27906,6 +28846,10 @@
      "stateW4": {
       "allowances": 0,
       "additionalAllowances": 0,
+      "dependents": 0,
+      "status": null,
+      "localities": [],
+      "options": {},
       "extraWithholdingCents": 174,
       "exempt": false
      }
@@ -28044,6 +28988,10 @@
      "stateW4": {
       "allowances": 0,
       "additionalAllowances": 0,
+      "dependents": 0,
+      "status": null,
+      "localities": [],
+      "options": {},
       "extraWithholdingCents": 0,
       "exempt": true
      }
@@ -28180,6 +29128,10 @@
      "stateW4": {
       "allowances": 0,
       "additionalAllowances": 0,
+      "dependents": 0,
+      "status": null,
+      "localities": [],
+      "options": {},
       "extraWithholdingCents": 0,
       "exempt": false
      }
@@ -28462,6 +29414,10 @@
      "stateW4": {
       "allowances": 4,
       "additionalAllowances": 0,
+      "dependents": 0,
+      "status": null,
+      "localities": [],
+      "options": {},
       "extraWithholdingCents": 0,
       "exempt": false
      }
@@ -28600,6 +29556,10 @@
      "stateW4": {
       "allowances": 0,
       "additionalAllowances": 3,
+      "dependents": 0,
+      "status": null,
+      "localities": [],
+      "options": {},
       "extraWithholdingCents": 0,
       "exempt": false
      }
@@ -28754,6 +29714,10 @@
      "stateW4": {
       "allowances": 3,
       "additionalAllowances": 0,
+      "dependents": 0,
+      "status": null,
+      "localities": [],
+      "options": {},
       "extraWithholdingCents": 0,
       "exempt": false
      }
@@ -28906,6 +29870,10 @@
      "stateW4": {
       "allowances": 0,
       "additionalAllowances": 0,
+      "dependents": 0,
+      "status": null,
+      "localities": [],
+      "options": {},
       "extraWithholdingCents": 3278,
       "exempt": false
      }
@@ -29026,6 +29994,10 @@
      "stateW4": {
       "allowances": 1,
       "additionalAllowances": 1,
+      "dependents": 0,
+      "status": null,
+      "localities": [],
+      "options": {},
       "extraWithholdingCents": 664,
       "exempt": false
      }
@@ -29092,6 +30064,10 @@
      "stateW4": {
       "allowances": 5,
       "additionalAllowances": 3,
+      "dependents": 0,
+      "status": null,
+      "localities": [],
+      "options": {},
       "extraWithholdingCents": 0,
       "exempt": false
      }
@@ -29230,6 +30206,10 @@
      "stateW4": {
       "allowances": 1,
       "additionalAllowances": 0,
+      "dependents": 0,
+      "status": null,
+      "localities": [],
+      "options": {},
       "extraWithholdingCents": 3411,
       "exempt": false
      }
@@ -29384,6 +30364,10 @@
      "stateW4": {
       "allowances": 4,
       "additionalAllowances": 0,
+      "dependents": 0,
+      "status": null,
+      "localities": [],
+      "options": {},
       "extraWithholdingCents": 0,
       "exempt": false
      }
@@ -29554,6 +30538,10 @@
      "stateW4": {
       "allowances": 5,
       "additionalAllowances": 0,
+      "dependents": 0,
+      "status": null,
+      "localities": [],
+      "options": {},
       "extraWithholdingCents": 0,
       "exempt": false
      }
@@ -29692,6 +30680,10 @@
      "stateW4": {
       "allowances": 0,
       "additionalAllowances": 0,
+      "dependents": 0,
+      "status": null,
+      "localities": [],
+      "options": {},
       "extraWithholdingCents": 0,
       "exempt": false
      }
@@ -29814,6 +30806,10 @@
      "stateW4": {
       "allowances": 3,
       "additionalAllowances": 0,
+      "dependents": 0,
+      "status": null,
+      "localities": [],
+      "options": {},
       "extraWithholdingCents": 0,
       "exempt": false
      }
@@ -29968,6 +30964,10 @@
      "stateW4": {
       "allowances": 0,
       "additionalAllowances": 2,
+      "dependents": 0,
+      "status": null,
+      "localities": [],
+      "options": {},
       "extraWithholdingCents": 3430,
       "exempt": false
      }
@@ -30090,6 +31090,10 @@
      "stateW4": {
       "allowances": 0,
       "additionalAllowances": 0,
+      "dependents": 0,
+      "status": null,
+      "localities": [],
+      "options": {},
       "extraWithholdingCents": 0,
       "exempt": false
      }
@@ -30210,6 +31214,10 @@
      "stateW4": {
       "allowances": 5,
       "additionalAllowances": 0,
+      "dependents": 0,
+      "status": null,
+      "localities": [],
+      "options": {},
       "extraWithholdingCents": 0,
       "exempt": false
      }
@@ -30292,6 +31300,10 @@
      "stateW4": {
       "allowances": 3,
       "additionalAllowances": 0,
+      "dependents": 0,
+      "status": null,
+      "localities": [],
+      "options": {},
       "extraWithholdingCents": 0,
       "exempt": false
      }
@@ -30414,6 +31426,10 @@
      "stateW4": {
       "allowances": 0,
       "additionalAllowances": 0,
+      "dependents": 0,
+      "status": null,
+      "localities": [],
+      "options": {},
       "extraWithholdingCents": 0,
       "exempt": false
      }
@@ -30550,6 +31566,10 @@
      "stateW4": {
       "allowances": 0,
       "additionalAllowances": 0,
+      "dependents": 0,
+      "status": null,
+      "localities": [],
+      "options": {},
       "extraWithholdingCents": 3017,
       "exempt": false
      }
@@ -30632,6 +31652,10 @@
      "stateW4": {
       "allowances": 0,
       "additionalAllowances": 0,
+      "dependents": 0,
+      "status": null,
+      "localities": [],
+      "options": {},
       "extraWithholdingCents": 0,
       "exempt": false
      }
@@ -30834,6 +31858,10 @@
      "stateW4": {
       "allowances": 3,
       "additionalAllowances": 0,
+      "dependents": 0,
+      "status": null,
+      "localities": [],
+      "options": {},
       "extraWithholdingCents": 0,
       "exempt": false
      }
@@ -30988,6 +32016,10 @@
      "stateW4": {
       "allowances": 0,
       "additionalAllowances": 1,
+      "dependents": 0,
+      "status": null,
+      "localities": [],
+      "options": {},
       "extraWithholdingCents": 0,
       "exempt": false
      }
@@ -31110,6 +32142,10 @@
      "stateW4": {
       "allowances": 0,
       "additionalAllowances": 3,
+      "dependents": 0,
+      "status": null,
+      "localities": [],
+      "options": {},
       "extraWithholdingCents": 0,
       "exempt": false
      }
@@ -31264,6 +32300,10 @@
      "stateW4": {
       "allowances": 0,
       "additionalAllowances": 1,
+      "dependents": 0,
+      "status": null,
+      "localities": [],
+      "options": {},
       "extraWithholdingCents": 0,
       "exempt": false
      }
@@ -31346,6 +32386,10 @@
      "stateW4": {
       "allowances": 4,
       "additionalAllowances": 0,
+      "dependents": 0,
+      "status": null,
+      "localities": [],
+      "options": {},
       "extraWithholdingCents": 4569,
       "exempt": false
      }
@@ -31500,6 +32544,10 @@
      "stateW4": {
       "allowances": 4,
       "additionalAllowances": 0,
+      "dependents": 0,
+      "status": null,
+      "localities": [],
+      "options": {},
       "extraWithholdingCents": 0,
       "exempt": false
      }
@@ -31604,6 +32652,10 @@
      "stateW4": {
       "allowances": 0,
       "additionalAllowances": 0,
+      "dependents": 0,
+      "status": null,
+      "localities": [],
+      "options": {},
       "extraWithholdingCents": 0,
       "exempt": false
      }
@@ -31742,6 +32794,10 @@
      "stateW4": {
       "allowances": 0,
       "additionalAllowances": 3,
+      "dependents": 0,
+      "status": null,
+      "localities": [],
+      "options": {},
       "extraWithholdingCents": 0,
       "exempt": false
      }
@@ -31896,6 +32952,10 @@
      "stateW4": {
       "allowances": 6,
       "additionalAllowances": 0,
+      "dependents": 0,
+      "status": null,
+      "localities": [],
+      "options": {},
       "extraWithholdingCents": 0,
       "exempt": false
      }
@@ -32032,6 +33092,10 @@
      "stateW4": {
       "allowances": 6,
       "additionalAllowances": 1,
+      "dependents": 0,
+      "status": null,
+      "localities": [],
+      "options": {},
       "extraWithholdingCents": 0,
       "exempt": false
      }
@@ -32114,6 +33178,10 @@
      "stateW4": {
       "allowances": 0,
       "additionalAllowances": 0,
+      "dependents": 0,
+      "status": null,
+      "localities": [],
+      "options": {},
       "extraWithholdingCents": 0,
       "exempt": false
      }
@@ -32180,6 +33248,10 @@
      "stateW4": {
       "allowances": 0,
       "additionalAllowances": 0,
+      "dependents": 0,
+      "status": null,
+      "localities": [],
+      "options": {},
       "extraWithholdingCents": 4456,
       "exempt": false
      }
@@ -32230,6 +33302,10 @@
      "stateW4": {
       "allowances": 0,
       "additionalAllowances": 0,
+      "dependents": 0,
+      "status": null,
+      "localities": [],
+      "options": {},
       "extraWithholdingCents": 0,
       "exempt": false
      }
@@ -32448,6 +33524,10 @@
      "stateW4": {
       "allowances": 5,
       "additionalAllowances": 0,
+      "dependents": 0,
+      "status": null,
+      "localities": [],
+      "options": {},
       "extraWithholdingCents": 0,
       "exempt": false
      }
@@ -32514,6 +33594,10 @@
      "stateW4": {
       "allowances": 0,
       "additionalAllowances": 0,
+      "dependents": 0,
+      "status": null,
+      "localities": [],
+      "options": {},
       "extraWithholdingCents": 0,
       "exempt": false
      }
@@ -32652,6 +33736,10 @@
      "stateW4": {
       "allowances": 2,
       "additionalAllowances": 0,
+      "dependents": 0,
+      "status": null,
+      "localities": [],
+      "options": {},
       "extraWithholdingCents": 0,
       "exempt": false
      }
@@ -32750,6 +33838,10 @@
      "stateW4": {
       "allowances": 0,
       "additionalAllowances": 0,
+      "dependents": 0,
+      "status": null,
+      "localities": [],
+      "options": {},
       "extraWithholdingCents": 2,
       "exempt": false
      }
@@ -32920,6 +34012,10 @@
      "stateW4": {
       "allowances": 0,
       "additionalAllowances": 0,
+      "dependents": 0,
+      "status": null,
+      "localities": [],
+      "options": {},
       "extraWithholdingCents": 0,
       "exempt": false
      }
@@ -33104,6 +34200,10 @@
      "stateW4": {
       "allowances": 4,
       "additionalAllowances": 0,
+      "dependents": 0,
+      "status": null,
+      "localities": [],
+      "options": {},
       "extraWithholdingCents": 0,
       "exempt": false
      }
@@ -33242,6 +34342,10 @@
      "stateW4": {
       "allowances": 0,
       "additionalAllowances": 3,
+      "dependents": 0,
+      "status": null,
+      "localities": [],
+      "options": {},
       "extraWithholdingCents": 0,
       "exempt": false
      }
@@ -33380,6 +34484,10 @@
      "stateW4": {
       "allowances": 2,
       "additionalAllowances": 0,
+      "dependents": 0,
+      "status": null,
+      "localities": [],
+      "options": {},
       "extraWithholdingCents": 0,
       "exempt": false
      }
@@ -33516,6 +34624,10 @@
      "stateW4": {
       "allowances": 0,
       "additionalAllowances": 0,
+      "dependents": 0,
+      "status": null,
+      "localities": [],
+      "options": {},
       "extraWithholdingCents": 0,
       "exempt": false
      }
@@ -33734,6 +34846,10 @@
      "stateW4": {
       "allowances": 0,
       "additionalAllowances": 0,
+      "dependents": 0,
+      "status": null,
+      "localities": [],
+      "options": {},
       "extraWithholdingCents": 0,
       "exempt": false
      }
@@ -33888,6 +35004,10 @@
      "stateW4": {
       "allowances": 0,
       "additionalAllowances": 0,
+      "dependents": 0,
+      "status": null,
+      "localities": [],
+      "options": {},
       "extraWithholdingCents": 0,
       "exempt": false
      }
@@ -34040,6 +35160,10 @@
      "stateW4": {
       "allowances": 2,
       "additionalAllowances": 0,
+      "dependents": 0,
+      "status": null,
+      "localities": [],
+      "options": {},
       "extraWithholdingCents": 0,
       "exempt": false
      }
@@ -34194,6 +35318,10 @@
      "stateW4": {
       "allowances": 1,
       "additionalAllowances": 0,
+      "dependents": 0,
+      "status": null,
+      "localities": [],
+      "options": {},
       "extraWithholdingCents": 4209,
       "exempt": false
      }
@@ -34330,6 +35458,10 @@
      "stateW4": {
       "allowances": 0,
       "additionalAllowances": 0,
+      "dependents": 0,
+      "status": null,
+      "localities": [],
+      "options": {},
       "extraWithholdingCents": 0,
       "exempt": false
      }
@@ -34412,6 +35544,10 @@
      "stateW4": {
       "allowances": 4,
       "additionalAllowances": 2,
+      "dependents": 0,
+      "status": null,
+      "localities": [],
+      "options": {},
       "extraWithholdingCents": 4626,
       "exempt": false
      }
@@ -34566,6 +35702,10 @@
      "stateW4": {
       "allowances": 1,
       "additionalAllowances": 0,
+      "dependents": 0,
+      "status": null,
+      "localities": [],
+      "options": {},
       "extraWithholdingCents": 4294,
       "exempt": false
      }
@@ -34664,6 +35804,10 @@
      "stateW4": {
       "allowances": 0,
       "additionalAllowances": 1,
+      "dependents": 0,
+      "status": null,
+      "localities": [],
+      "options": {},
       "extraWithholdingCents": 0,
       "exempt": false
      }
@@ -34818,6 +35962,10 @@
      "stateW4": {
       "allowances": 0,
       "additionalAllowances": 0,
+      "dependents": 0,
+      "status": null,
+      "localities": [],
+      "options": {},
       "extraWithholdingCents": 0,
       "exempt": false
      }
@@ -34940,6 +36088,10 @@
      "stateW4": {
       "allowances": 2,
       "additionalAllowances": 0,
+      "dependents": 0,
+      "status": null,
+      "localities": [],
+      "options": {},
       "extraWithholdingCents": 0,
       "exempt": false
      }
@@ -35038,6 +36190,10 @@
      "stateW4": {
       "allowances": 6,
       "additionalAllowances": 0,
+      "dependents": 0,
+      "status": null,
+      "localities": [],
+      "options": {},
       "extraWithholdingCents": 0,
       "exempt": false
      }
@@ -35176,6 +36332,10 @@
      "stateW4": {
       "allowances": 0,
       "additionalAllowances": 0,
+      "dependents": 0,
+      "status": null,
+      "localities": [],
+      "options": {},
       "extraWithholdingCents": 0,
       "exempt": false
      }
@@ -35242,6 +36402,10 @@
      "stateW4": {
       "allowances": 0,
       "additionalAllowances": 0,
+      "dependents": 0,
+      "status": null,
+      "localities": [],
+      "options": {},
       "extraWithholdingCents": 0,
       "exempt": false
      }
@@ -35412,6 +36576,10 @@
      "stateW4": {
       "allowances": 1,
       "additionalAllowances": 0,
+      "dependents": 0,
+      "status": null,
+      "localities": [],
+      "options": {},
       "extraWithholdingCents": 4741,
       "exempt": false
      }
@@ -35548,6 +36716,10 @@
      "stateW4": {
       "allowances": 0,
       "additionalAllowances": 0,
+      "dependents": 0,
+      "status": null,
+      "localities": [],
+      "options": {},
       "extraWithholdingCents": 515,
       "exempt": false
      }
@@ -35700,6 +36872,10 @@
      "stateW4": {
       "allowances": 0,
       "additionalAllowances": 0,
+      "dependents": 0,
+      "status": null,
+      "localities": [],
+      "options": {},
       "extraWithholdingCents": 0,
       "exempt": false
      }
@@ -35838,6 +37014,10 @@
      "stateW4": {
       "allowances": 2,
       "additionalAllowances": 0,
+      "dependents": 0,
+      "status": null,
+      "localities": [],
+      "options": {},
       "extraWithholdingCents": 0,
       "exempt": false
      }
@@ -35958,6 +37138,10 @@
      "stateW4": {
       "allowances": 1,
       "additionalAllowances": 0,
+      "dependents": 0,
+      "status": null,
+      "localities": [],
+      "options": {},
       "extraWithholdingCents": 0,
       "exempt": false
      }
@@ -36096,6 +37280,10 @@
      "stateW4": {
       "allowances": 4,
       "additionalAllowances": 0,
+      "dependents": 0,
+      "status": null,
+      "localities": [],
+      "options": {},
       "extraWithholdingCents": 0,
       "exempt": false
      }
@@ -36250,6 +37438,10 @@
      "stateW4": {
       "allowances": 0,
       "additionalAllowances": 1,
+      "dependents": 0,
+      "status": null,
+      "localities": [],
+      "options": {},
       "extraWithholdingCents": 0,
       "exempt": false
      }
@@ -36420,6 +37612,10 @@
      "stateW4": {
       "allowances": 0,
       "additionalAllowances": 0,
+      "dependents": 0,
+      "status": null,
+      "localities": [],
+      "options": {},
       "extraWithholdingCents": 0,
       "exempt": false
      }
@@ -36558,6 +37754,10 @@
      "stateW4": {
       "allowances": 0,
       "additionalAllowances": 0,
+      "dependents": 0,
+      "status": null,
+      "localities": [],
+      "options": {},
       "extraWithholdingCents": 4064,
       "exempt": false
      }
@@ -36742,6 +37942,10 @@
      "stateW4": {
       "allowances": 4,
       "additionalAllowances": 0,
+      "dependents": 0,
+      "status": null,
+      "localities": [],
+      "options": {},
       "extraWithholdingCents": 0,
       "exempt": false
      }
@@ -36808,6 +38012,10 @@
      "stateW4": {
       "allowances": 0,
       "additionalAllowances": 0,
+      "dependents": 0,
+      "status": null,
+      "localities": [],
+      "options": {},
       "extraWithholdingCents": 0,
       "exempt": false
      }
@@ -36928,6 +38136,10 @@
      "stateW4": {
       "allowances": 5,
       "additionalAllowances": 0,
+      "dependents": 0,
+      "status": null,
+      "localities": [],
+      "options": {},
       "extraWithholdingCents": 4911,
       "exempt": false
      }
@@ -37048,6 +38260,10 @@
      "stateW4": {
       "allowances": 0,
       "additionalAllowances": 0,
+      "dependents": 0,
+      "status": null,
+      "localities": [],
+      "options": {},
       "extraWithholdingCents": 0,
       "exempt": false
      }
@@ -37114,6 +38330,10 @@
      "stateW4": {
       "allowances": 0,
       "additionalAllowances": 1,
+      "dependents": 0,
+      "status": null,
+      "localities": [],
+      "options": {},
       "extraWithholdingCents": 0,
       "exempt": true
      }
@@ -37252,6 +38472,10 @@
      "stateW4": {
       "allowances": 5,
       "additionalAllowances": 2,
+      "dependents": 0,
+      "status": null,
+      "localities": [],
+      "options": {},
       "extraWithholdingCents": 753,
       "exempt": false
      }
@@ -37372,6 +38596,10 @@
      "stateW4": {
       "allowances": 0,
       "additionalAllowances": 0,
+      "dependents": 0,
+      "status": null,
+      "localities": [],
+      "options": {},
       "extraWithholdingCents": 0,
       "exempt": false
      }
@@ -37558,6 +38786,10 @@
      "stateW4": {
       "allowances": 0,
       "additionalAllowances": 0,
+      "dependents": 0,
+      "status": null,
+      "localities": [],
+      "options": {},
       "extraWithholdingCents": 0,
       "exempt": false
      }
@@ -37696,6 +38928,10 @@
      "stateW4": {
       "allowances": 0,
       "additionalAllowances": 0,
+      "dependents": 0,
+      "status": null,
+      "localities": [],
+      "options": {},
       "extraWithholdingCents": 0,
       "exempt": false
      }
@@ -37746,6 +38982,10 @@
      "stateW4": {
       "allowances": 2,
       "additionalAllowances": 2,
+      "dependents": 0,
+      "status": null,
+      "localities": [],
+      "options": {},
       "extraWithholdingCents": 0,
       "exempt": false
      }
@@ -37866,6 +39106,10 @@
      "stateW4": {
       "allowances": 2,
       "additionalAllowances": 0,
+      "dependents": 0,
+      "status": null,
+      "localities": [],
+      "options": {},
       "extraWithholdingCents": 0,
       "exempt": false
      }
@@ -38004,6 +39248,10 @@
      "stateW4": {
       "allowances": 6,
       "additionalAllowances": 0,
+      "dependents": 0,
+      "status": null,
+      "localities": [],
+      "options": {},
       "extraWithholdingCents": 0,
       "exempt": false
      }
@@ -38142,6 +39390,10 @@
      "stateW4": {
       "allowances": 1,
       "additionalAllowances": 0,
+      "dependents": 0,
+      "status": null,
+      "localities": [],
+      "options": {},
       "extraWithholdingCents": 0,
       "exempt": false
      }

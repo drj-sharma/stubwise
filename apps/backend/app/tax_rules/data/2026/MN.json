@@ -1,0 +1,70 @@
+{
+  "year": 2026,
+  "jurisdiction": "MN",
+  "rules": [
+    {
+      "tax": "income",
+      "method": "state",
+      "params": {
+        "statuses": ["single", "married", "marriedSingle"],
+        "defaultStatus": "single",
+        "allowanceCents": 530000,
+        "brackets": {
+          "single": [
+            [470000, "5.35", 0],
+            [3801000, "6.80", 178209],
+            [11413000, "7.85", 695825],
+            [20785000, "9.85", 1431527]
+          ],
+          "marriedSingle": [
+            [470000, "5.35", 0],
+            [3801000, "6.80", 178209],
+            [11413000, "7.85", 695825],
+            [20785000, "9.85", 1431527]
+          ],
+          "married": [
+            [1470000, "5.35", 0],
+            [6340000, "6.80", 260545],
+            [20818000, "7.85", 1245049],
+            [35263000, "9.85", 2378982]
+          ]
+        },
+        "round": "cent",
+        "certificate": {
+          "form": "W-4MN",
+          "fields": [
+            {
+              "key": "status",
+              "label": "Marital status",
+              "kind": "choice",
+              "options": [
+                { "value": "single", "label": "Single, or married but legally separated" },
+                { "value": "married", "label": "Married" },
+                { "value": "marriedSingle", "label": "Married, but withhold at higher Single rate" }
+              ]
+            },
+            {
+              "key": "allowances",
+              "label": "Minnesota withholding allowances (Section 1, step F)",
+              "kind": "count"
+            }
+          ]
+        }
+      },
+      "source": "https://www.revenue.state.mn.us/sites/default/files/2025-12/wh-inst-26.pdf",
+      "revision": 2
+    },
+    {
+      "tax": "pfml",
+      "method": "capped_rate",
+      "params": {
+        "label": "Minnesota Paid Leave",
+        "ratePercent": "0.44",
+        "wageBaseCents": 18500000,
+        "optional": true
+      },
+      "source": "https://mn.gov/deed/assets/paid-leave-small-employer-premium-rate-designation-acc_tcm1045-716947.pdf",
+      "revision": 1
+    }
+  ]
+}

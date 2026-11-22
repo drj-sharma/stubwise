@@ -1,0 +1,42 @@
+{
+  "year": 2026,
+  "jurisdiction": "SC",
+  "rules": [
+    {
+      "tax": "income",
+      "method": "state",
+      "params": {
+        "allowanceCents": 500000,
+        "standardDeductionPercent": "10",
+        "standardDeductionMaxCents": 750000,
+        "brackets": [
+          [
+            0,
+            "0"
+          ],
+          [
+            364000,
+            "3"
+          ],
+          [
+            1823000,
+            "6"
+          ]
+        ],
+        "round": "cent",
+        "certificate": {
+          "form": "SC W-4",
+          "fields": [
+            {
+              "key": "allowances",
+              "label": "Total number of allowances (line 5)",
+              "kind": "count"
+            }
+          ]
+        }
+      },
+      "source": "https://dor.sc.gov/sites/dor/files/forms/WH1603F_2026.pdf",
+      "revision": 2
+    }
+  ]
+}

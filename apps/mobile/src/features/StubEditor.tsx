@@ -1,30 +1,11 @@
 import DateTimePicker from '@react-native-community/datetimepicker';
-import {
-  type IsoDate,
-  type LineKind,
-  type StubLine,
-  applyTaxes,
-  calcStub,
-  computeYtd,
-  formatCents,
-  formatDuration,
-  formatPeriod,
-  formatShortDate,
-  isHourlyLine,
-  isTaxOverride,
-  lineAmount,
-  todayIso,
-  withComputedAmount,
-  yearOf,
-} from '@stubwise/domain';
+import { type IsoDate, type LineKind, type StubLine, formatCents, formatDuration, formatPeriod, formatShortDate, isHourlyLine, todayIso, yearOf } from '@stubwise/domain';
 import { router } from 'expo-router';
 import { useState } from 'react';
 import { ActivityIndicator, Alert, Modal, Pressable, ScrollView, Text, View } from 'react-native';
 import { isConflict } from '@/api';
-import { deleteStub, getStub, getWorker, listStubs, replaceStubLines, updateStubDates } from '@/api/records';
+import { deleteStub, getStub, getWorker, replaceStubLines, updateStubDates } from '@/api/records';
 import type { Stub } from '@/db/types';
-import { taxContextFor } from '@/services/taxes';
-import { useBusiness } from '@/state/business';
 import { useQuery } from '@/state/useQuery';
 import { ErrorState, Loading, Refresher, alertError } from '@/ui/states';
 import { Amount, Avatar, Button, CardHeader, Pill, Row, Sheet, SubCard, TABULAR } from '@/ui/primitives';
@@ -38,15 +19,14 @@ type OpenSheet = { kind: 'time'; index: number } | { kind: 'amount'; index: numb
 
 /**
  * Edits one saved stub. Every change is sent to the server straight away, so
- * there is no Save button to forget. While a change is on its way the screen
- * shows it at once, worked out on the phone with the same shared calculations
- * (taxes, gross, net, year to date); when the server answers, its copy (with
- * its own tax lines and totals) replaces the phone's. If the server refuses,
+ * there is no Save button to forget, and every figure (hourly amounts, taxes,
+ * gross, net, year to date) is the server's: nothing is worked out on the
+ * phone. While a change is on its way the edited lines show at once and the
+ * totals are dimmed until the server's copy arrives. If the server refuses,
  * the stub goes back to the saved version and the person is told why.
  */
 export function StubEditor({ stubId, onChanged, footer }: { stubId: string; onChanged?: () => void; footer?: React.ReactNode }) {
   const c = useTheme();
-  const business = useBusiness();
   const [sheet, setSheetState] = useState<OpenSheet>(null);
   /** Lines shown while a change is being saved; null when the screen shows the server's copy. */
   const [pending, setPending] = useState<StubLine[] | null>(null);
@@ -54,8 +34,8 @@ export function StubEditor({ stubId, onChanged, footer }: { stubId: string; onCh
   const { data, error, reload, refresh, refreshing, setData } = useQuery(async () => {
     const stub = await getStub(stubId);
     if (!stub) return null;
-    const [worker, workerStubs] = await Promise.all([getWorker(stub.workerId), listStubs(stub.workerId)]);
-    return worker ? { stub, worker, workerStubs } : null;
+    const worker = await getWorker(stub.workerId);
+    return worker ? { stub, worker } : null;
   }, [stubId]);
 
   if (data === undefined) return error ? <ErrorState title="Could not load this stub" error={error} onRetry={() => void reload()} /> : <Loading />;
@@ -67,15 +47,11 @@ export function StubEditor({ stubId, onChanged, footer }: { stubId: string; onCh
     );
   }
 
-  const { stub, worker, workerStubs } = data;
+  const { stub, worker } = data;
   const lines: readonly StubLine[] = pending ?? stub.lines;
-  const taxContext = taxContextFor(business, worker, stub, workerStubs);
-  // The server's figures, or the phone's own while a change is on its way.
-  const shownStub = { ...stub, lines };
-  const totals = pending ? calcStub(lines) : stub.totals;
-  const ytd = pending ? computeYtd(shownStub, workerStubs.map((other) => (other.id === stub.id ? shownStub : other)), worker.startingYtd) : stub.ytd;
-  const taxStatus = pending ? applyTaxes(lines, taxContext).status : stub.taxStatus;
-  const edited = (line: StubLine, index: number): boolean => (pending ? isTaxOverride(line, taxContext) : (stub.lines[index]?.taxOverride ?? false));
+  // Always the server's figures; while a change is on its way they are the last ones it sent, dimmed.
+  const { totals, ytd, taxStatus } = stub;
+  const edited = (line: StubLine, index: number): boolean => (pending ? Boolean(line.taxCode) && line.source === 'manual' : (stub.lines[index]?.taxOverride ?? false));
   const earnings = lines.map((line, index) => ({ line, index })).filter((entry) => entry.line.kind === 'earning');
   const deductions = lines.map((line, index) => ({ line, index })).filter((entry) => entry.line.kind === 'deduction');
 
@@ -85,7 +61,7 @@ export function StubEditor({ stubId, onChanged, footer }: { stubId: string; onCh
   };
 
   const adopt = (saved: Stub): void => {
-    setData({ stub: saved, worker, workerStubs: workerStubs.map((other) => (other.id === saved.id ? saved : other)) });
+    setData({ stub: saved, worker });
     onChanged?.();
   };
 
@@ -94,9 +70,8 @@ export function StubEditor({ stubId, onChanged, footer }: { stubId: string; onCh
     if (isConflict(caught)) await reload();
   };
 
-  // Every change to the lines brings the calculated taxes back in step with the pay.
-  const saveLines = async (changed: StubLine[]): Promise<void> => {
-    const next = applyTaxes(changed.map(withComputedAmount), taxContext).lines;
+  // The server recalculates hourly amounts and brings the calculated taxes back in step with the pay.
+  const saveLines = async (next: StubLine[]): Promise<void> => {
     setSheetState(null);
     if (next.length === 0) {
       Alert.alert('A stub needs at least one line', 'Add another line before removing this one, or delete the stub from Change dates.');
@@ -113,8 +88,7 @@ export function StubEditor({ stubId, onChanged, footer }: { stubId: string; onCh
       setSaving(false);
     }
   };
-  const patchLine = (index: number, patch: Partial<StubLine>): Promise<void> =>
-    saveLines(lines.map((line, i) => (i === index ? { ...line, ...patch } : line)));
+  const patchLine = (index: number, patch: Partial<StubLine>): Promise<void> => saveLines(lines.map((line, i) => (i === index ? { ...line, ...patch } : line)));
   const removeLine = (index: number): Promise<void> => saveLines(lines.filter((_, i) => i !== index));
   const addLine = (kind: LineKind, label: string, amountCents: number): Promise<void> => {
     const line: StubLine = { kind, label, minutes: null, rateCents: null, amountCents, source: 'manual' };
@@ -141,7 +115,7 @@ export function StubEditor({ stubId, onChanged, footer }: { stubId: string; onCh
               <Text style={[{ fontSize: 13, fontWeight: '500', color: c.text }, TABULAR]}>{formatDuration(line.minutes ?? 0)}</Text>
             </View>
             <View style={{ width: 82, alignItems: 'flex-end' }}>
-              <Amount value={formatCents(lineAmount(line))} />
+              <Amount value={pending ? '…' : formatCents(line.amountCents)} />
             </View>
           </View>
         }
@@ -152,15 +126,7 @@ export function StubEditor({ stubId, onChanged, footer }: { stubId: string; onCh
         title={line.label}
         strong={line.kind === 'earning'}
         last={last}
-        subtitle={
-          !line.taxCode
-            ? undefined
-            : line.source === 'calculated'
-              ? 'Calculated'
-              : edited(line, index)
-                ? 'Typed by hand'
-                : 'Enter by hand'
-        }
+        subtitle={!line.taxCode ? undefined : line.source === 'calculated' ? 'Calculated' : edited(line, index) ? 'Typed by hand' : 'Enter by hand'}
         minHeight={line.taxCode ? 52 : undefined}
         onPress={() => setSheet({ kind: 'amount', index })}
         right={
@@ -212,7 +178,7 @@ export function StubEditor({ stubId, onChanged, footer }: { stubId: string; onCh
             </Text>
           ) : null}
 
-          <View style={{ padding: 12, borderRadius: 14, backgroundColor: c.innerStrong, gap: 8 }}>
+          <View style={{ padding: 12, borderRadius: 14, backgroundColor: c.innerStrong, gap: 8, opacity: pending ? 0.45 : 1 }}>
             <SummaryLine label="Gross pay" value={formatCents(totals.grossCents)} />
             <SummaryLine label="Deductions" value={`− ${formatCents(totals.deductionsCents)}`} />
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'baseline', paddingTop: 8, borderTopWidth: 1, borderTopColor: c.border }}>
@@ -241,11 +207,7 @@ export function StubEditor({ stubId, onChanged, footer }: { stubId: string; onCh
         title={active?.label ?? ''}
         initialCents={active?.amountCents ?? 0}
         onClose={() => setSheet(null)}
-        note={
-          active?.taxCode && active.source === 'calculated'
-            ? 'The app calculated this. If you type a different amount it is kept as typed and marked Edited.'
-            : undefined
-        }
+        note={active?.taxCode && active.source === 'calculated' ? 'The app calculated this. If you type a different amount it is kept as typed and marked Edited.' : undefined}
         // Typing over a tax keeps it as typed; removing the typed figure brings the calculated one back.
         onSave={(amountCents) => {
           if (sheet?.kind !== 'amount') return;
@@ -337,13 +299,7 @@ function DatesSheet({
   const picker = (label: string, value: IsoDate, onChange: (next: IsoDate) => void) => (
     <View style={{ minHeight: 52, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
       <Text style={{ fontSize: 15, color: c.text }}>{label}</Text>
-      <DateTimePicker
-        value={toDate(value)}
-        mode="date"
-        display="compact"
-        themeVariant={c.scheme}
-        onChange={(_event, date) => date && onChange(todayIso(date))}
-      />
+      <DateTimePicker value={toDate(value)} mode="date" display="compact" themeVariant={c.scheme} onChange={(_event, date) => date && onChange(todayIso(date))} />
     </View>
   );
 
@@ -360,7 +316,18 @@ function DatesSheet({
       }}>
       <View style={{ flex: 1, justifyContent: 'flex-end' }}>
         <Pressable style={{ flex: 1, backgroundColor: 'rgba(10, 10, 14, 0.4)' }} onPress={onClose} accessibilityLabel="Close" />
-        <View style={{ backgroundColor: c.sheet, borderTopLeftRadius: 24, borderTopRightRadius: 24, padding: 18, paddingBottom: 34, gap: 8, alignSelf: 'center', width: '100%', maxWidth: 520 }}>
+        <View
+          style={{
+            backgroundColor: c.sheet,
+            borderTopLeftRadius: 24,
+            borderTopRightRadius: 24,
+            padding: 18,
+            paddingBottom: 34,
+            gap: 8,
+            alignSelf: 'center',
+            width: '100%',
+            maxWidth: 520,
+          }}>
           <Text style={{ fontSize: 17, fontWeight: '600', color: c.text }}>Pay period</Text>
           {picker('Period starts', start, setStart)}
           {picker('Period ends', end, setEnd)}

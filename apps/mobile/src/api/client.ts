@@ -64,6 +64,8 @@ export interface RequestOptions {
   /** False for routes that work without a session (sign-in, refresh, meta). */
   auth?: boolean;
   query?: Record<string, string | number | undefined>;
+  /** `text` returns the body as a string (a CSV report) instead of parsing JSON. */
+  responseType?: 'json' | 'text';
 }
 
 export interface ApiClientOptions {
@@ -149,6 +151,7 @@ export class ApiClient {
       if (result.kind === 'response' && result.response.status === 401) throw await this.endSession();
     }
     if (result.kind === 'failed') throw result.error;
+    if (options.responseType === 'text' && result.response.ok) return (await result.response.text()) as T;
     return this.parse<T>(result.response);
   }
 

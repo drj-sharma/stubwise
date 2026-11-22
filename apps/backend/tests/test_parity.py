@@ -26,12 +26,15 @@ from app.domain.pay_period import (
     next_period,
     period_containing,
 )
-from app.domain.tax.apply_taxes import apply_taxes
+from app.domain.tax.apply_taxes import apply_taxes, work_state
 from app.domain.tax.data import PAY_PERIODS_PER_YEAR, TAX_DATA_PATH
 from app.domain.tax.federal import federal_income_tax, federal_tax_data, medicare_tax, social_security_tax
-from app.domain.tax.state import state_income_tax
+from app.domain.tax.state import state_taxes
+from app.domain.tax.states._common import StateInput
+from app.domain.tax.types import DEFAULT_STATE_W4
 from app.domain.time import overtime_rate_cents, pay_for_minutes
 from app.domain.ytd import compute_ytd, prior_ytd_gross
+from app.tax_rules.store import seed_files
 
 PARITY = Path(__file__).resolve().parents[3] / "packages" / "domain" / "parity"
 VECTORS: dict[str, Any] = json.loads((PARITY / "vectors.json").read_text(encoding="utf-8"))
@@ -131,22 +134,63 @@ def test_federal(case: dict[str, Any]) -> None:
     } == case["expected"]
 
 
+# State rules now live in the database (seeded from app/tax_rules/data). The
+# TypeScript vectors still pin the states it calculated, the ones it did not, and
+# those without the tax; a state the server has since learned to calculate is
+# checked by its own tests in tests/tax_states instead.
+SEED_RULES: dict[tuple[int, str], list[dict[str, Any]]] = {}
+for _rule in seed_files():
+    SEED_RULES.setdefault((_rule["year"], _rule["jurisdiction"]), []).append(dict(_rule))
+
+
+def _rules(year: int, state: str | None) -> list[dict[str, Any]]:
+    return SEED_RULES.get((year, state), []) if state else []
+
+
+def _still_comparable(state: str | None, year: int, expected_kind: str) -> bool:
+    income = next((rule for rule in _rules(year, state) if rule["tax"] == "income"), None)
+    if state is None:
+        return True
+    if income is None:
+        # A year with no rules loaded: the server leaves a line to type, whatever the state.
+        return expected_kind == "manual"
+    now = {"none": "none", "manual": "manual"}.get(income["method"], "amount")
+    other_taxes = any(rule["tax"] != "income" and rule["method"] != "none" for rule in _rules(year, state))
+    return now == expected_kind and not other_taxes
+
+
 @pytest.mark.parametrize("case", cases("state"))
 def test_state(case: dict[str, Any]) -> None:
-    result = state_income_tax(
-        state=case["state"],
+    if not _still_comparable(case["state"], case["year"], case["expected"]["kind"]):
+        pytest.skip("calculated by the server since the vectors were made; see tests/tax_states")
+    inp = StateInput(
         year=case["year"],
         wages_cents=case["wagesCents"],
         periods_per_year=case["periodsPerYear"],
         w4=case["w4"],
-        state_w4=case["stateW4"],
+        cert={**DEFAULT_STATE_W4, **case["stateW4"]},
     )
+    lines = state_taxes(_rules(case["year"], case["state"]), case["state"], inp)
+    income = next((line for line in lines if line["code"] == "sit"), None)
+    if income is None:
+        result: dict[str, Any] = {"kind": "none"}
+    elif income["typed"]:
+        result = {"kind": "manual"}
+    else:
+        result = {"kind": "amount", "cents": income["cents"]}
     assert result == case["expected"]
 
 
 @pytest.mark.parametrize("case", cases("taxLines"))
 def test_tax_lines(case: dict[str, Any]) -> None:
-    assert apply_taxes(case["input"], case["context"]) == case["expected"]
+    context = dict(case["context"])
+    state = work_state(context["profile"], context["businessState"])
+    sit = next((line for line in case["expected"]["lines"] if line.get("taxCode") == "sit"), None)
+    kind = "none" if sit is None else "manual" if sit["source"] == "manual" else "amount"
+    if not _still_comparable(state, context["year"], kind):
+        pytest.skip("calculated by the server since the vectors were made; see tests/tax_states")
+    context["stateRules"] = _rules(context["year"], state)
+    assert apply_taxes(case["input"], context) == case["expected"]  # type: ignore[arg-type]
 
 
 @pytest.mark.parametrize("case", cases("nextStub"))

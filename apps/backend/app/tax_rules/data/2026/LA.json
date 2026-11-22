@@ -1,0 +1,41 @@
+{
+  "year": 2026,
+  "jurisdiction": "LA",
+  "rules": [
+    {
+      "tax": "income",
+      "method": "state",
+      "params": {
+        "ratePercent": "3.09",
+        "statuses": ["0", "1", "2"],
+        "defaultStatus": "0",
+        "standardDeductionCents": {
+          "0": 0,
+          "1": 1287500,
+          "2": 2575000
+        },
+        "round": "cent",
+        "certificate": {
+          "form": "L-4",
+          "fields": [
+            {
+              "key": "status",
+              "label": "Block A: standard deduction",
+              "kind": "choice",
+              "options": [
+                { "value": "0", "label": "0: No standard deduction" },
+                { "value": "1", "label": "1: Single or married filing separately" },
+                {
+                  "value": "2",
+                  "label": "2: Married filing jointly, qualifying surviving spouse or head of household"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "source": "https://dam.ldr.la.gov/taxforms/1306-1-26.pdf",
+      "revision": 2
+    }
+  ]
+}

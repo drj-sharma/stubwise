@@ -8,19 +8,18 @@ import {
   DEFAULT_TAX_PROFILE,
   formatCents,
   parseDollars,
-  stateRule,
-  stateTaxSupport,
   todayIso,
   usStateName,
 } from '@stubwise/domain';
 import * as Crypto from 'expo-crypto';
 import { router } from 'expo-router';
 import { useState } from 'react';
-import { Alert, Pressable, ScrollView, Switch, Text, TextInput, View } from 'react-native';
+import { ActionSheetIOS, Alert, Platform, Pressable, ScrollView, Switch, Text, TextInput, View } from 'react-native';
 import { isConflict } from '@/api';
 import { createWorker, deleteWorker, updateWorker } from '@/api/records';
+import { type CertificateField, useStateCoverage } from '@/api/taxCoverage';
 import type { NewWorker, Worker } from '@/db/types';
-import { Amount, Button, CardHeader, Field, Row, SectionLabel, Segmented, Sheet, StatTile, SubCard, TABULAR } from '@/ui/primitives';
+import { Amount, Button, CardHeader, Field, Icon, Row, SectionLabel, Segmented, Sheet, StatTile, SubCard, TABULAR } from '@/ui/primitives';
 import { useBusiness } from '@/state/business';
 import { AddLineSheet, AmountSheet, StateSheet } from '@/ui/sheets';
 import { alertError } from '@/ui/states';
@@ -53,16 +52,42 @@ export function WorkerForm({ existing, onConflict }: { existing: Worker | null; 
   const setW4 = (patch: Partial<W4>): void => setTax((current) => ({ ...current, w4: { ...current.w4, ...patch } }));
   const setStateW4 = (patch: Partial<StateW4>): void => setTax((current) => ({ ...current, stateW4: { ...current.stateW4, ...patch } }));
   const workState = tax.state ?? business.state;
-  const rule = workState ? stateRule(workState, year) : null;
+  // What the work state's certificate asks for, from the server's tax rules.
+  const coverage = useStateCoverage(workState, year);
+  const calculated = coverage?.support === 'calculated';
+  const certFields = calculated ? (coverage?.certificate?.fields ?? []) : [];
+  const certValue = (key: string): unknown => (key.startsWith('options.') ? tax.stateW4.options[key.slice(8)] : tax.stateW4[key as keyof StateW4]);
+  const setCert = (key: string, value: string | number | boolean | null): void => {
+    if (key.startsWith('options.')) {
+      const name = key.slice(8);
+      setTax((current) => {
+        const options = { ...current.stateW4.options };
+        if (value === null) delete options[name];
+        else options[name] = value;
+        return { ...current, stateW4: { ...current.stateW4, options } };
+      });
+    } else {
+      setStateW4({ [key]: value } as Partial<StateW4>);
+    }
+  };
+  const choose = (title: string, options: { value: string; label: string }[], onPick: (value: string | null) => void): void => {
+    const labels = [...options.map((option) => option.label), 'Not set', 'Cancel'];
+    if (Platform.OS === 'ios') {
+      ActionSheetIOS.showActionSheetWithOptions({ title, options: labels, cancelButtonIndex: labels.length - 1 }, (index) => {
+        if (index < options.length) onPick(options[index]!.value);
+        else if (index === options.length) onPick(null);
+      });
+    } else {
+      Alert.alert(title, undefined, [...options.slice(0, 2).map((option) => ({ text: option.label, onPress: () => onPick(option.value) })), { text: 'Cancel', style: 'cancel' }]);
+    }
+  };
   const [name, setName] = useState(existing?.name ?? '');
   const [address, setAddress] = useState(existing?.address ?? '');
   const [type, setType] = useState<Worker['type']>(existing?.type ?? 'employee');
   const [payType, setPayType] = useState<Worker['payType']>(existing?.payType ?? 'hourly');
   const [rate, setRate] = useState(existing ? (existing.rateCents / 100).toFixed(2) : '');
   const [deductions, setDeductions] = useState<Deduction[]>(existing?.defaultDeductions ?? []);
-  const [starting, setStarting] = useState<StartingLine[]>(
-    existing?.startingYtd?.year === year ? [...existing.startingYtd.lines] : [],
-  );
+  const [starting, setStarting] = useState<StartingLine[]>(existing?.startingYtd?.year === year ? [...existing.startingYtd.lines] : []);
   const [sheet, setSheet] = useState<
     | { kind: 'addDeduction' }
     | { kind: 'editDeduction'; index: number }
@@ -70,6 +95,7 @@ export function WorkerForm({ existing, onConflict }: { existing: Worker | null; 
     | { kind: 'editStarting'; index: number }
     | { kind: 'w4Amount'; index: number }
     | { kind: 'stateExtra' }
+    | { kind: 'certMoney'; key: string; label: string }
     | { kind: 'state' }
     | null
   >(null);
@@ -80,7 +106,7 @@ export function WorkerForm({ existing, onConflict }: { existing: Worker | null; 
 
   const save = async (): Promise<void> => {
     const rateCents = parseDollars(rate);
-    if (name.trim() === '') return Alert.alert('Name needed', 'Enter the worker\'s name as it should appear on stubs.');
+    if (name.trim() === '') return Alert.alert('Name needed', "Enter the worker's name as it should appear on stubs.");
     if (rateCents === null || rateCents === 0) {
       return Alert.alert('Pay rate needed', payType === 'hourly' ? 'Enter the hourly rate, for example 24.00.' : 'Enter the salary per pay period.');
     }
@@ -118,7 +144,7 @@ export function WorkerForm({ existing, onConflict }: { existing: Worker | null; 
         style: 'destructive',
         onPress: () => {
           deleteWorker(existing.id).then(
-            () => router.dismissTo('/workers'),
+            () => router.dismissAll(),
             (error: unknown) => alertError('Could not delete the worker', error),
           );
         },
@@ -128,9 +154,7 @@ export function WorkerForm({ existing, onConflict }: { existing: Worker | null; 
 
   return (
     <>
-      <ScrollView
-        keyboardShouldPersistTaps="handled"
-        contentContainerStyle={{ padding: 12, gap: 12, alignSelf: 'center', width: '100%', maxWidth: 560 }}>
+      <ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={{ padding: 12, gap: 12, alignSelf: 'center', width: '100%', maxWidth: 560 }}>
         <Sheet style={{ gap: 12 }}>
           <SubCard>
             <Field label="Full name" value={name} onChangeText={setName} autoCapitalize="words" autoCorrect={false} />
@@ -214,7 +238,14 @@ export function WorkerForm({ existing, onConflict }: { existing: Worker | null; 
               <Row
                 title="Calculate taxes on stubs"
                 subtitle="Federal income tax, Social Security, Medicare"
-                right={<Switch value={tax.calculate} onValueChange={(calculate) => setTax((current) => ({ ...current, calculate }))} trackColor={{ true: c.primary }} accessibilityLabel="Calculate taxes on stubs" />}
+                right={
+                  <Switch
+                    value={tax.calculate}
+                    onValueChange={(calculate) => setTax((current) => ({ ...current, calculate }))}
+                    trackColor={{ true: c.primary }}
+                    accessibilityLabel="Calculate taxes on stubs"
+                  />
+                }
                 minHeight={56}
                 last={!tax.calculate}
               />
@@ -236,7 +267,14 @@ export function WorkerForm({ existing, onConflict }: { existing: Worker | null; 
                     title="Two jobs, or spouse also works"
                     subtitle="Step 2(c) box is checked"
                     minHeight={56}
-                    right={<Switch value={tax.w4.multipleJobs} onValueChange={(multipleJobs) => setW4({ multipleJobs })} trackColor={{ true: c.primary }} accessibilityLabel="Step 2(c) box is checked" />}
+                    right={
+                      <Switch
+                        value={tax.w4.multipleJobs}
+                        onValueChange={(multipleJobs) => setW4({ multipleJobs })}
+                        trackColor={{ true: c.primary }}
+                        accessibilityLabel="Step 2(c) box is checked"
+                      />
+                    }
                   />
                   {W4_AMOUNTS.map((item, index) => (
                     <Row
@@ -252,47 +290,60 @@ export function WorkerForm({ existing, onConflict }: { existing: Worker | null; 
                     title="Exempt from federal income tax"
                     subtitle="Only if the worker claimed it on Form W-4"
                     minHeight={56}
-                    right={<Switch value={tax.w4.exempt} onValueChange={(exempt) => setW4({ exempt })} trackColor={{ true: c.primary }} accessibilityLabel="Exempt from federal income tax" />}
+                    right={
+                      <Switch
+                        value={tax.w4.exempt}
+                        onValueChange={(exempt) => setW4({ exempt })}
+                        trackColor={{ true: c.primary }}
+                        accessibilityLabel="Exempt from federal income tax"
+                      />
+                    }
                   />
                   <Row
                     title={workState ? usStateName(workState) : 'Choose a state'}
                     subtitle={
                       !workState
                         ? 'Work state'
-                        : stateTaxSupport(workState, year) === 'none'
-                          ? 'Work state · no state income tax on wages'
-                          : stateTaxSupport(workState, year) === 'calculated'
-                            ? 'Work state · state income tax is calculated'
-                            : 'Work state · state tax is typed in by hand for now'
+                        : coverage === undefined
+                          ? 'Work state'
+                          : coverage?.support === 'none'
+                            ? 'Work state · no state income tax on wages'
+                            : coverage?.support === 'calculated'
+                              ? 'Work state · state taxes are calculated'
+                              : 'Work state · state tax is typed in by hand for now'
                     }
                     minHeight={56}
                     strong
-                    last={!rule}
+                    last={!calculated && !coverage?.localities}
                     onPress={() => setSheet({ kind: 'state' })}
                   />
-                  {rule?.allowanceCents ? (
-                    <Row
-                      title={rule.certificate?.allowances ?? 'Allowances'}
-                      subtitle={`Form ${rule.certificate?.form ?? 'state certificate'}`}
-                      minHeight={56}
-                      right={<Stepper value={tax.stateW4.allowances} onChange={(allowances) => setStateW4({ allowances })} label={rule.certificate?.allowances ?? 'Allowances'} />}
+                  {certFields.map((field) => (
+                    <CertificateRow
+                      key={field.key}
+                      field={field}
+                      form={coverage?.certificate?.form}
+                      value={certValue(field.key)}
+                      onChange={(value) => setCert(field.key, value)}
+                      onChoose={() => field.options && choose(field.label, field.options, (value) => setCert(field.key, value))}
+                      onMoney={() => setSheet({ kind: 'certMoney', key: field.key, label: field.label })}
                     />
-                  ) : null}
-                  {rule?.additionalAllowanceCents ? (
+                  ))}
+                  {coverage?.localities ? (
                     <Row
-                      title={rule.certificate?.additionalAllowances ?? 'Additional allowances'}
-                      subtitle={`Form ${rule.certificate?.form ?? 'state certificate'}`}
+                      title={coverage.localities.options.find((option) => option.code === tax.stateW4.localities[0])?.name ?? `Choose ${coverage.localities.choose.toLowerCase()}`}
+                      subtitle={`${coverage.localities.choose} for local tax`}
                       minHeight={56}
-                      right={
-                        <Stepper
-                          value={tax.stateW4.additionalAllowances}
-                          onChange={(additionalAllowances) => setStateW4({ additionalAllowances })}
-                          label={rule.certificate?.additionalAllowances ?? 'Additional allowances'}
-                        />
+                      right={<Icon name="chevron.down" size={14} color={c.muted} />}
+                      onPress={() =>
+                        choose(
+                          coverage.localities!.choose,
+                          coverage.localities!.options.map((option) => ({ value: option.code, label: option.name })),
+                          (value) => setStateW4({ localities: value ? [value] : [] }),
+                        )
                       }
                     />
                   ) : null}
-                  {rule ? (
+                  {calculated ? (
                     <>
                       <Row
                         title="Extra state withholding"
@@ -306,7 +357,14 @@ export function WorkerForm({ existing, onConflict }: { existing: Worker | null; 
                         subtitle="Only if claimed on the state certificate"
                         minHeight={56}
                         last
-                        right={<Switch value={tax.stateW4.exempt} onValueChange={(exempt) => setStateW4({ exempt })} trackColor={{ true: c.primary }} accessibilityLabel="Exempt from state income tax" />}
+                        right={
+                          <Switch
+                            value={tax.stateW4.exempt}
+                            onValueChange={(exempt) => setStateW4({ exempt })}
+                            trackColor={{ true: c.primary }}
+                            accessibilityLabel="Exempt from state income tax"
+                          />
+                        }
                       />
                     </>
                   ) : null}
@@ -407,6 +465,17 @@ export function WorkerForm({ existing, onConflict }: { existing: Worker | null; 
         }}
       />
       <AmountSheet
+        visible={sheet?.kind === 'certMoney'}
+        title={sheet?.kind === 'certMoney' ? sheet.label : ''}
+        initialCents={sheet?.kind === 'certMoney' ? Number(tax.stateW4.options[sheet.key.slice(8)] ?? 0) : 0}
+        onClose={() => setSheet(null)}
+        onSave={(cents) => {
+          if (sheet?.kind !== 'certMoney') return;
+          setCert(sheet.key, cents);
+          setSheet(null);
+        }}
+      />
+      <AmountSheet
         visible={sheet?.kind === 'w4Amount'}
         title={sheet?.kind === 'w4Amount' ? (W4_AMOUNTS[sheet.index]?.title ?? '') : ''}
         note={sheet?.kind === 'w4Amount' ? `Form W-4, ${W4_AMOUNTS[sheet.index]?.step ?? ''}` : undefined}
@@ -478,5 +547,53 @@ function Stepper({ value, onChange, label }: { value: number; onChange: (next: n
       </Text>
       {button('+', value + 1, 'More')}
     </View>
+  );
+}
+
+/** One line of a state's withholding certificate, drawn from the server's description of it. */
+function CertificateRow({
+  field,
+  form,
+  value,
+  onChange,
+  onChoose,
+  onMoney,
+}: {
+  field: CertificateField;
+  form?: string;
+  value: unknown;
+  onChange: (value: number | boolean | null) => void;
+  onChoose: () => void;
+  onMoney: () => void;
+}) {
+  const c = useTheme();
+  const subtitle = form && form !== 'none' ? `Form ${form}` : 'State certificate';
+  if (field.kind === 'count') {
+    const count = typeof value === 'number' ? value : Number(value ?? 0) || 0;
+    return <Row title={field.label} subtitle={subtitle} minHeight={56} right={<Stepper value={count} onChange={onChange} label={field.label} />} />;
+  }
+  if (field.kind === 'switch') {
+    return (
+      <Row
+        title={field.label}
+        subtitle={subtitle}
+        minHeight={56}
+        right={<Switch value={value === true} onValueChange={onChange} trackColor={{ true: c.primary }} accessibilityLabel={field.label} />}
+      />
+    );
+  }
+  if (field.kind === 'money') {
+    return <Row title={field.label} subtitle={subtitle} minHeight={56} right={<Amount value={formatCents(Number(value ?? 0) || 0)} />} onPress={onMoney} />;
+  }
+  const chosen = field.options?.find((option) => option.value === value);
+  return (
+    <Row
+      title={chosen?.label ?? 'Not set'}
+      subtitle={`${field.label} · ${subtitle}`}
+      minHeight={56}
+      strong={Boolean(chosen)}
+      right={<Icon name="chevron.down" size={14} color={c.muted} />}
+      onPress={onChoose}
+    />
   );
 }

@@ -1,0 +1,26 @@
+{
+  "year": 2026,
+  "jurisdiction": "MO",
+  "rules": [
+    {
+      "tax": "income",
+      "method": "manual",
+      "source": "https://dor.mo.gov/forms/Withholding%20Formula_2026.pdf",
+      "revision": 2
+    },
+    {
+      "tax": "local",
+      "method": "local_rate",
+      "params": {
+        "choose": "City",
+        "label": "{name} earnings tax",
+        "localities": {
+          "KCMO": { "name": "Kansas City", "ratePercent": "1" },
+          "STL": { "name": "St. Louis", "ratePercent": "1" }
+        }
+      },
+      "source": "https://www.kcmo.gov/city-hall/departments/finance/earnings-tax ; https://www.stlouis-mo.gov/government/departments/collector/earnings-tax/payroll-tax-info.cfm",
+      "revision": 1
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "year": 2026,
+  "jurisdiction": "IN",
+  "rules": [
+    {
+      "tax": "income",
+      "method": "manual",
+      "params": {
+        "note": "Not calculated: Departmental Notice #1 (2026) could not be read from in.gov to confirm the state rate, exemption amounts and every county rate."
+      },
+      "source": "https://www.in.gov/dor/files/dn01.pdf",
+      "revision": 2
+    },
+    {
+      "tax": "local",
+      "method": "manual",
+      "params": {
+        "label": "Indiana county tax"
+      },
+      "source": "https://www.in.gov/dor/files/dn01.pdf",
+      "revision": 1
+    }
+  ]
+}

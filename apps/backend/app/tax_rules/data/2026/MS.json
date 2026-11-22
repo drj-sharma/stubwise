@@ -1,0 +1,49 @@
+{
+  "year": 2026,
+  "jurisdiction": "MS",
+  "rules": [
+    {
+      "tax": "income",
+      "method": "state",
+      "params": {
+        "statuses": ["S", "M", "B", "H"],
+        "defaultStatus": "S",
+        "standardDeductionCents": {
+          "S": 230000,
+          "M": 460000,
+          "B": 230000,
+          "H": 340000
+        },
+        "exemptionOption": "exemptionCents",
+        "brackets": [
+          [0, "0"],
+          [1000000, "4"]
+        ],
+        "round": "dollar",
+        "certificate": {
+          "form": "89-350",
+          "fields": [
+            {
+              "key": "status",
+              "label": "Marital status",
+              "kind": "choice",
+              "options": [
+                { "value": "S", "label": "Single" },
+                { "value": "M", "label": "Married, spouse not employed" },
+                { "value": "B", "label": "Married, spouse employed" },
+                { "value": "H", "label": "Head of family" }
+              ]
+            },
+            {
+              "key": "options.exemptionCents",
+              "label": "Line 6: total exemption claimed",
+              "kind": "money"
+            }
+          ]
+        }
+      },
+      "source": "https://www.dor.ms.gov/sites/default/files/business/Computer%20Payroll%20Flowchart%20-%20updated%208-13-25.pdf",
+      "revision": 2
+    }
+  ]
+}

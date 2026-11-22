@@ -1,0 +1,51 @@
+{
+  "year": 2026,
+  "jurisdiction": "CO",
+  "rules": [
+    {
+      "tax": "income",
+      "method": "state",
+      "params": {
+        "ratePercent": "4.40",
+        "allowanceFromFederalCents": {
+          "married": 1100000,
+          "*": 550000
+        },
+        "round": "cent",
+        "certificate": {
+          "form": "DR 0004",
+          "fields": [
+            {
+              "key": "options.annualAllowanceCents",
+              "label": "Line 2 annual withholding allowance (leave blank to use the W-4)",
+              "kind": "money"
+            }
+          ]
+        }
+      },
+      "source": "https://tax.colorado.gov/sites/default/files/documents/DR_1098_Colorado_Withholding_Worksheet_for_Employees.pdf",
+      "revision": 2
+    },
+    {
+      "tax": "pfml",
+      "method": "capped_rate",
+      "params": {
+        "ratePercent": "0.44",
+        "wageBaseCents": 18450000,
+        "label": "Colorado FAMLI",
+        "optional": true
+      },
+      "source": "https://famli.colorado.gov/employers",
+      "revision": 1
+    },
+    {
+      "tax": "local",
+      "method": "manual",
+      "params": {
+        "label": "Colorado city occupational tax"
+      },
+      "source": "https://www.denvergov.org/files/assets/public/v/2/finance/documents/treasury/tax-guides/taxguidetopic61_occupationalprivilegetaxes.pdf",
+      "revision": 1
+    }
+  ]
+}

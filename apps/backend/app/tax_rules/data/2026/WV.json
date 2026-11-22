@@ -1,0 +1,94 @@
+{
+  "year": 2026,
+  "jurisdiction": "WV",
+  "rules": [
+    {
+      "tax": "income",
+      "method": "state",
+      "params": {
+        "statuses": [
+          "two",
+          "one"
+        ],
+        "defaultStatus": "two",
+        "perField": {
+          "allowances": 200000
+        },
+        "brackets": {
+          "two": [
+            [
+              0,
+              "2.11"
+            ],
+            [
+              750000,
+              "2.81"
+            ],
+            [
+              1875000,
+              "3.16"
+            ],
+            [
+              3000000,
+              "4.22"
+            ],
+            [
+              4500000,
+              "4.58"
+            ]
+          ],
+          "one": [
+            [
+              0,
+              "2.11"
+            ],
+            [
+              1000000,
+              "2.81"
+            ],
+            [
+              2500000,
+              "3.16"
+            ],
+            [
+              4000000,
+              "4.22"
+            ],
+            [
+              6000000,
+              "4.58"
+            ]
+          ]
+        },
+        "round": "dollar",
+        "certificate": {
+          "form": "WV/IT-104",
+          "fields": [
+            {
+              "key": "status",
+              "label": "Withholding table",
+              "kind": "choice",
+              "options": [
+                {
+                  "value": "two",
+                  "label": "Two earners or two or more jobs (standard)"
+                },
+                {
+                  "value": "one",
+                  "label": "One earner, one job: lower rate (line 5 checked)"
+                }
+              ]
+            },
+            {
+              "key": "allowances",
+              "label": "Total exemptions (line 4)",
+              "kind": "count"
+            }
+          ]
+        }
+      },
+      "source": "https://tax.wv.gov/Documents/Withholding/it100.2a.pdf",
+      "revision": 2
+    }
+  ]
+}

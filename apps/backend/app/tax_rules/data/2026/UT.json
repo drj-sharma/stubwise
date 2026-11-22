@@ -1,0 +1,180 @@
+{
+  "year": 2026,
+  "jurisdiction": "UT",
+  "rules": [
+    {
+      "tax": "income",
+      "method": "state",
+      "params": {
+        "ratePercent": "4.45",
+        "phaseOutRatePercent": "1.3",
+        "statusFromFederal": {
+          "single": "single",
+          "married": "married",
+          "head": "single"
+        },
+        "defaultStatus": "single",
+        "schedules": {
+          "52": {
+            "single": {
+              "baseAllowanceCents": 900,
+              "phaseOutOverCents": 18000
+            },
+            "married": {
+              "baseAllowanceCents": 1900,
+              "phaseOutOverCents": 36000
+            }
+          },
+          "26": {
+            "single": {
+              "baseAllowanceCents": 1900,
+              "phaseOutOverCents": 36000
+            },
+            "married": {
+              "baseAllowanceCents": 3700,
+              "phaseOutOverCents": 71900
+            }
+          },
+          "24": {
+            "single": {
+              "baseAllowanceCents": 2000,
+              "phaseOutOverCents": 39000
+            },
+            "married": {
+              "baseAllowanceCents": 4000,
+              "phaseOutOverCents": 77900
+            }
+          },
+          "12": {
+            "single": {
+              "baseAllowanceCents": 4000,
+              "phaseOutOverCents": 77900
+            },
+            "married": {
+              "baseAllowanceCents": 8100,
+              "phaseOutOverCents": 155800
+            }
+          },
+          "4": {
+            "single": {
+              "baseAllowanceCents": 12100,
+              "phaseOutOverCents": 233700
+            },
+            "married": {
+              "baseAllowanceCents": 24300,
+              "phaseOutOverCents": 467400
+            }
+          },
+          "2": {
+            "single": {
+              "baseAllowanceCents": 24300,
+              "phaseOutOverCents": 467400
+            },
+            "married": {
+              "baseAllowanceCents": 48500,
+              "phaseOutOverCents": 934800
+            }
+          },
+          "1": {
+            "single": {
+              "baseAllowanceCents": 48500,
+              "phaseOutOverCents": 934800
+            },
+            "married": {
+              "baseAllowanceCents": 97000,
+              "phaseOutOverCents": 1869600
+            }
+          }
+        },
+        "round": "dollar-each-line",
+        "certificate": {
+          "form": "Federal W-4 (Utah has no state form)",
+          "fields": []
+        },
+        "earlier": [
+          {
+            "until": "2026-05-31",
+            "source": "Publication 14 Rev. 4/25 (effective June 1, 2025), https://files.tax.utah.gov/tax/forms/pubs/pub-14.pdf",
+            "params": {
+              "ratePercent": "4.5",
+              "schedules": {
+                "52": {
+                  "single": {
+                    "baseAllowanceCents": 900,
+                    "phaseOutOverCents": 17500
+                  },
+                  "married": {
+                    "baseAllowanceCents": 1700,
+                    "phaseOutOverCents": 35000
+                  }
+                },
+                "26": {
+                  "single": {
+                    "baseAllowanceCents": 1700,
+                    "phaseOutOverCents": 35000
+                  },
+                  "married": {
+                    "baseAllowanceCents": 3500,
+                    "phaseOutOverCents": 70100
+                  }
+                },
+                "24": {
+                  "single": {
+                    "baseAllowanceCents": 1900,
+                    "phaseOutOverCents": 37900
+                  },
+                  "married": {
+                    "baseAllowanceCents": 3800,
+                    "phaseOutOverCents": 75900
+                  }
+                },
+                "12": {
+                  "single": {
+                    "baseAllowanceCents": 3800,
+                    "phaseOutOverCents": 75900
+                  },
+                  "married": {
+                    "baseAllowanceCents": 7500,
+                    "phaseOutOverCents": 151800
+                  }
+                },
+                "4": {
+                  "single": {
+                    "baseAllowanceCents": 11300,
+                    "phaseOutOverCents": 227700
+                  },
+                  "married": {
+                    "baseAllowanceCents": 22500,
+                    "phaseOutOverCents": 455300
+                  }
+                },
+                "2": {
+                  "single": {
+                    "baseAllowanceCents": 22500,
+                    "phaseOutOverCents": 455400
+                  },
+                  "married": {
+                    "baseAllowanceCents": 45000,
+                    "phaseOutOverCents": 910700
+                  }
+                },
+                "1": {
+                  "single": {
+                    "baseAllowanceCents": 45000,
+                    "phaseOutOverCents": 910700
+                  },
+                  "married": {
+                    "baseAllowanceCents": 90000,
+                    "phaseOutOverCents": 1821300
+                  }
+                }
+              }
+            }
+          }
+        ]
+      },
+      "source": "https://files.tax.utah.gov/tax/forms/pubs/pub-14.pdf",
+      "revision": 3
+    }
+  ]
+}

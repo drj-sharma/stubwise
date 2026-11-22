@@ -6,7 +6,7 @@ import { PAY_PERIODS_PER_YEAR, federalIncomeTax, federalTaxData, medicareTax, so
 import { stateIncomeTax } from './state';
 import type { TaxCode, TaxProfile } from './types';
 
-export const TAX_LABELS: Record<Exclude<TaxCode, 'sit'>, string> = {
+export const TAX_LABELS: Record<'fit' | 'ss' | 'medicare', string> = {
   fit: 'Federal income tax',
   ss: 'Social Security',
   medicare: 'Medicare',

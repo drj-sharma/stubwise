@@ -1,0 +1,85 @@
+{
+  "year": 2026,
+  "jurisdiction": "AL",
+  "rules": [
+    {
+      "tax": "income",
+      "method": "state",
+      "params": {
+        "statuses": ["0", "S", "MS", "M", "H"],
+        "defaultStatus": "0",
+        "standardDeduction": {
+          "0": { "fullCents": 300000, "phaseOutOverCents": 2599900, "stepCents": 50000, "reduceCents": 2500, "minCents": 250000 },
+          "S": { "fullCents": 300000, "phaseOutOverCents": 2599900, "stepCents": 50000, "reduceCents": 2500, "minCents": 250000 },
+          "MS": { "fullCents": 425000, "phaseOutOverCents": 1299900, "stepCents": 25000, "reduceCents": 8800, "minCents": 250000 },
+          "M": { "fullCents": 850000, "phaseOutOverCents": 2599900, "stepCents": 50000, "reduceCents": 17500, "minCents": 500000 },
+          "H": { "fullCents": 520000, "phaseOutOverCents": 2599900, "stepCents": 50000, "reduceCents": 13500, "minCents": 250000 }
+        },
+        "subtractFederalTax": true,
+        "personalExemptionCents": {
+          "0": 0,
+          "S": 150000,
+          "MS": 150000,
+          "M": 300000,
+          "H": 300000
+        },
+        "dependentCents": [
+          [0, 100000],
+          [5000000, 50000],
+          [10000000, 30000]
+        ],
+        "brackets": {
+          "M": [
+            [0, "2"],
+            [100000, "4"],
+            [600000, "5"]
+          ],
+          "*": [
+            [0, "2"],
+            [50000, "4"],
+            [300000, "5"]
+          ]
+        },
+        "round": "cent",
+        "certificate": {
+          "form": "A-4",
+          "fields": [
+            {
+              "key": "status",
+              "label": "Personal exemption",
+              "kind": "choice",
+              "options": [
+                { "value": "0", "label": "0: None claimed" },
+                { "value": "S", "label": "S: Single" },
+                { "value": "MS", "label": "MS: Married filing separately" },
+                { "value": "M", "label": "M: Married" },
+                { "value": "H", "label": "H: Head of family" }
+              ]
+            },
+            {
+              "key": "dependents",
+              "label": "Dependents",
+              "kind": "count"
+            }
+          ]
+        }
+      },
+      "source": "https://www.revenue.alabama.gov/wp-content/uploads/2026/01/whbooklet_0126.pdf",
+      "revision": 2
+    },
+    {
+      "tax": "local",
+      "method": "local_rate",
+      "params": {
+        "choose": "City",
+        "label": "{name} occupational tax",
+        "localities": {
+          "BHM": { "name": "Birmingham", "ratePercent": "1" },
+          "AUBURN": { "name": "Auburn", "ratePercent": "1" }
+        }
+      },
+      "source": "https://www.birminghamal.gov/government/city-departments/parks-recreation/legion-field/magic-city-classic-2025/how-become-vendor-magic-city-classic ; https://www.auburnal.gov/revenue/tax-information/occupational-license-fee",
+      "revision": 1
+    }
+  ]
+}

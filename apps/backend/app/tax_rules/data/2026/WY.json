@@ -1,0 +1,12 @@
+{
+  "year": 2026,
+  "jurisdiction": "WY",
+  "rules": [
+    {
+      "tax": "income",
+      "method": "none",
+      "source": "",
+      "revision": 1
+    }
+  ]
+}

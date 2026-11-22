@@ -1,0 +1,53 @@
+{
+  "year": 2026,
+  "jurisdiction": "VA",
+  "rules": [
+    {
+      "tax": "income",
+      "method": "state",
+      "params": {
+        "standardDeductionCents": 875000,
+        "perField": {
+          "allowances": 93000,
+          "additionalAllowances": 80000
+        },
+        "brackets": [
+          [
+            0,
+            "2"
+          ],
+          [
+            300000,
+            "3"
+          ],
+          [
+            500000,
+            "5"
+          ],
+          [
+            1700000,
+            "5.75"
+          ]
+        ],
+        "round": "annual-dollar",
+        "certificate": {
+          "form": "VA-4",
+          "fields": [
+            {
+              "key": "allowances",
+              "label": "Personal exemptions (line 1a)",
+              "kind": "count"
+            },
+            {
+              "key": "additionalAllowances",
+              "label": "Exemptions for age and blindness (line 1b)",
+              "kind": "count"
+            }
+          ]
+        }
+      },
+      "source": "https://www.tax.virginia.gov/sites/default/files/vatax-pdf/employer-withholding-instructions.pdf",
+      "revision": 2
+    }
+  ]
+}

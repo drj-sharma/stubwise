@@ -220,6 +220,43 @@ class StubLine(Base):
     tax_code: Mapped[str | None] = mapped_column(String(20))
 
 
+# ---- Tax rules ----------------------------------------------------------------
+
+
+class TaxRule(Base):
+    """One tax on wages that a state (or places in it) charges, for one year.
+
+    ``tax`` names which: ``income`` (every state and DC has exactly one income
+    row, even the states without the tax), ``sdi`` (disability insurance),
+    ``fli`` (family leave insurance), ``pfml`` (paid family and medical leave),
+    ``ui`` (unemployment, where workers pay a share), ``ltc`` (long-term care),
+    ``transit`` and ``local`` (county and city taxes).
+
+    ``method`` says how it is worked out: ``none`` (no such tax), ``manual``
+    (the state has it but the server does not calculate it yet, so the employer
+    types it), ``state`` (that state's own formula in app/domain/tax/states,
+    reading its figures from ``params``), ``capped_rate`` or ``local_rate``
+    (shared formulas, figures in ``params``).
+
+    Rows are seeded from app/tax_rules/data/<year>/<state>.json; the database
+    is what the calculations read. A seed only replaces a row whose
+    ``revision`` is lower, so a correction made here is not undone by a deploy.
+    """
+
+    __tablename__ = "tax_rules"
+    __table_args__ = (UniqueConstraint("year", "jurisdiction", "tax"),)
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_id)
+    year: Mapped[int] = mapped_column(Integer)
+    jurisdiction: Mapped[str] = mapped_column(String(12))
+    tax: Mapped[str] = mapped_column(String(20))
+    method: Mapped[str] = mapped_column(String(30))
+    params: Mapped[dict[str, Any]] = mapped_column(JSON, default=dict)
+    source: Mapped[str] = mapped_column(Text, default="")
+    revision: Mapped[int] = mapped_column(Integer, default=1)
+    updated_at: Mapped[datetime] = mapped_column(Timestamp, default=utcnow)
+
+
 # ---- Filing (parked; see README) ----------------------------------------------
 
 

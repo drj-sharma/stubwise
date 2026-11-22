@@ -8,6 +8,7 @@ from sqlalchemy import text
 
 from app.domain.tax.apply_taxes import apply_taxes
 from app.domain.tax.types import DEFAULT_TAX_PROFILE
+from app.tax_rules.store import seed_files
 
 from .conftest import FakeIdentityProviders, Outbound, make_client, new_user
 
@@ -153,7 +154,14 @@ def test_worker_lifecycle(client: TestClient, auth: dict[str, str]) -> None:
         "calculate": True,
         "state": "IL",
         "w4": {**DEFAULT_TAX_PROFILE["w4"], "filingStatus": "married", "dependentsCents": 200000},
-        "stateW4": {"allowances": 2, "additionalAllowances": 1, "extraWithholdingCents": 500, "exempt": False},
+        "stateW4": {
+            **DEFAULT_TAX_PROFILE["stateW4"],
+            "allowances": 2,
+            "additionalAllowances": 1,
+            "extraWithholdingCents": 500,
+            "localities": ["MONTGOMERY"],
+            "options": {"rate": "2.0"},
+        },
     }
     starting = {"year": 2026, "lines": [{"kind": "earning", "label": "Regular", "amountCents": 3571200}]}
     patched = client.patch(
@@ -412,6 +420,7 @@ def test_the_first_stub_is_drafted_with_taxes(client: TestClient, auth: dict[str
         ("Social Security", "ss", "calculated"),
         ("Medicare", "medicare", "calculated"),
         ("Pennsylvania income tax", "sit", "calculated"),
+        ("Pennsylvania unemployment", "ui", "calculated"),
         ("Health insurance", None, "manual"),
     ]
     assert stub["taxStatus"] == "calculated"
@@ -442,6 +451,9 @@ def test_replacing_lines_recalculates_pay_and_taxes(client: TestClient, auth: di
             "year": 2026,
             "schedule": "biweekly",
             "priorYtdGrossCents": 0,
+            "stateRules": [
+                dict(rule) for rule in seed_files() if rule["jurisdiction"] == "PA" and rule["year"] == 2026
+            ],
         },
     )["lines"]
     returned = [{k: v for k, v in line.items() if k not in ("id", "taxOverride")} for line in stub["lines"]]
@@ -602,18 +614,14 @@ def test_the_state_certificate_changes_state_tax(client: TestClient, auth: dict[
     # IL-700-T: 4.95% x ($1,920.00 x 26 - 2 x $2,925) / 26 = $83.90
     assert amounts(stub)["Illinois income tax"] == 8390
 
-    # A state whose formula is not in yet gets an empty line to type into.
-    client.patch("/v1/business", headers=auth, json={"state": "CA"})
+    # A state whose formula is not in yet (DC publishes none) gets an empty line to type into.
+    client.patch("/v1/business", headers=auth, json={"state": "DC"})
     stub = client.put(
         f"/v1/stubs/{stub['id']}/lines", headers=auth, json={"lines": [hourly("Regular", 4800, 2400)]}
     ).json()
-    california = next(line for line in stub["lines"] if line["taxCode"] == "sit")
-    assert (california["label"], california["amountCents"], california["source"]) == (
-        "California income tax",
-        0,
-        "manual",
-    )
-    assert california["taxOverride"] is False
+    typed = next(line for line in stub["lines"] if line["taxCode"] == "sit")
+    assert (typed["label"], typed["amountCents"], typed["source"]) == ("District of Columbia income tax", 0, "manual")
+    assert typed["taxOverride"] is False
 
 
 def test_batch_makes_this_periods_stub_for_everyone_without_one(client: TestClient, auth: dict[str, str]) -> None:

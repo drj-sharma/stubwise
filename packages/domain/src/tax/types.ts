@@ -54,14 +54,31 @@ export interface StateW4 {
   allowances: number;
   /** A second kind of allowance, on certificates that have one (Illinois Line 2). */
   additionalAllowances: number;
+  /** Dependents, on certificates that count them separately. */
+  dependents: number;
+  /** The certificate's own filing status code, for states that have one; null uses the federal W-4's. */
+  status: string | null;
+  /** County, city or school district codes the worker owes local tax to (from the server's tax coverage). */
+  localities: string[];
+  /** Answers particular to one state's certificate (Arizona's chosen percentage, say). */
+  options: Record<string, string | number | boolean>;
   /** Extra state withholding, per pay period. */
   extraWithholdingCents: Cents;
   /** Claimed exempt from state income tax withholding. */
   exempt: boolean;
 }
 
-/** With no state certificate on file: no allowances, nothing extra. */
-export const DEFAULT_STATE_W4: StateW4 = { allowances: 0, additionalAllowances: 0, extraWithholdingCents: 0, exempt: false };
+/** With no state certificate on file: no allowances, nothing extra. Which fields a state asks for comes from the server. */
+export const DEFAULT_STATE_W4: StateW4 = {
+  allowances: 0,
+  additionalAllowances: 0,
+  dependents: 0,
+  status: null,
+  localities: [],
+  options: {},
+  extraWithholdingCents: 0,
+  exempt: false,
+};
 
 export const DEFAULT_TAX_PROFILE: TaxProfile = { calculate: true, w4: DEFAULT_W4, state: null, stateW4: DEFAULT_STATE_W4 };
 
@@ -78,11 +95,16 @@ export interface FederalTaxData {
   medicare: { rateBasisPoints: number; additionalRateBasisPoints: number; additionalThresholdCents: Cents };
 }
 
-/** Identifies a tax line on a stub, whatever its label says. */
-export type TaxCode = 'fit' | 'ss' | 'medicare' | 'sit';
-export const TAX_CODES: readonly TaxCode[] = ['fit', 'ss', 'medicare', 'sit'];
+/**
+ * Identifies a tax line on a stub, whatever its label says: federal income tax,
+ * Social Security, Medicare, state income tax, state contributions (disability,
+ * family leave, paid leave, unemployment, long-term care, transit), or a local
+ * tax as `local:<place>`. The server decides which apply.
+ */
+export type TaxCode = 'fit' | 'ss' | 'medicare' | 'sit' | 'sdi' | 'fli' | 'pfml' | 'ui' | 'ltc' | 'transit' | `local:${string}` | 'local';
+export const TAX_CODES: readonly TaxCode[] = ['fit', 'ss', 'medicare', 'sit', 'sdi', 'fli', 'pfml', 'ui', 'ltc', 'transit', 'local'];
 export function isTaxCode(value: unknown): value is TaxCode {
-  return typeof value === 'string' && (TAX_CODES as readonly string[]).includes(value);
+  return typeof value === 'string' && ((TAX_CODES as readonly string[]).includes(value) || /^local:[A-Za-z0-9-]{1,14}$/.test(value));
 }
 
 const isCents = (value: unknown): value is Cents => typeof value === 'number' && Number.isSafeInteger(value) && value >= 0;
@@ -101,6 +123,20 @@ export function normalizeTaxProfile(value: unknown): TaxProfile {
     stateW4: {
       allowances: count(stateW4.allowances),
       additionalAllowances: count(stateW4.additionalAllowances),
+      dependents: count(stateW4.dependents),
+      status: typeof stateW4.status === 'string' && stateW4.status.length > 0 && stateW4.status.length <= 20 ? stateW4.status : null,
+      localities: Array.isArray(stateW4.localities)
+        ? stateW4.localities.filter((code): code is string => typeof code === 'string' && code.length > 0 && code.length <= 20).slice(0, 4)
+        : [],
+      options:
+        typeof stateW4.options === 'object' && stateW4.options !== null && !Array.isArray(stateW4.options)
+          ? Object.fromEntries(
+              Object.entries(stateW4.options as Record<string, unknown>).filter(
+                (entry): entry is [string, string | number | boolean] =>
+                  entry[0].length <= 30 && ['string', 'number', 'boolean'].includes(typeof entry[1]) && String(entry[1]).length <= 30,
+              ),
+            )
+          : {},
       extraWithholdingCents: isCents(stateW4.extraWithholdingCents) ? stateW4.extraWithholdingCents : 0,
       exempt: stateW4.exempt === true,
     },

@@ -91,7 +91,9 @@ Logo = Annotated[str, AfterValidator(_logo)]
 OvertimePct = Annotated[int, Field(ge=100, le=400)]
 LineKind = Literal["earning", "deduction"]
 LineSource = Literal["manual", "calculated"]
-TaxCode = Literal["fit", "ss", "medicare", "sit"]
+TaxCode = Annotated[
+    str, StringConstraints(pattern=r"^(fit|ss|medicare|sit|sdi|fli|pfml|ui|ltc|transit|local(:[A-Za-z0-9-]{1,14})?)$")
+]
 PaySchedule = Literal["weekly", "biweekly", "semimonthly", "monthly"]
 TemplateId = Literal["classic", "modern", "compact", "ledger"]
 Appearance = Literal["automatic", "light", "dark"]
@@ -157,11 +159,23 @@ class W4(Model):
     exempt: bool = False
 
 
+TaxCodeText = Annotated[str, StringConstraints(min_length=1, max_length=20)]
+OptionValue = Annotated[str, StringConstraints(max_length=30)] | int | bool
+
+
 class StateW4(Model):
-    """Answers from the work state's own withholding certificate, where it has one."""
+    """Answers from the work state's own withholding certificate, where it has one.
+
+    Which of these a state asks for, and what it calls them, is in that state's
+    rule (GET /v1/meta/tax-coverage, ``certificate``).
+    """
 
     allowances: Count = 0
     additionalAllowances: Count = 0
+    dependents: Count = 0
+    status: TaxCodeText | None = None
+    localities: Annotated[list[TaxCodeText], Field(max_length=4)] = []
+    options: Annotated[dict[Annotated[str, StringConstraints(max_length=30)], OptionValue], Field(max_length=12)] = {}
     extraWithholdingCents: Cents = 0
     exempt: bool = False
 

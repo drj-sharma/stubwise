@@ -1,0 +1,57 @@
+{
+  "year": 2026,
+  "jurisdiction": "AZ",
+  "rules": [
+    {
+      "tax": "income",
+      "method": "state",
+      "params": {
+        "rates": ["0.5", "1.0", "1.5", "2.0", "2.5", "3.0", "3.5"],
+        "defaultRatePercent": "2.0",
+        "round": "cent",
+        "certificate": {
+          "form": "A-4",
+          "fields": [
+            {
+              "key": "options.rate",
+              "label": "Percentage of gross taxable wages (box 1)",
+              "kind": "choice",
+              "options": [
+                {
+                  "value": "0.5",
+                  "label": "0.5%"
+                },
+                {
+                  "value": "1.0",
+                  "label": "1.0%"
+                },
+                {
+                  "value": "1.5",
+                  "label": "1.5%"
+                },
+                {
+                  "value": "2.0",
+                  "label": "2.0%"
+                },
+                {
+                  "value": "2.5",
+                  "label": "2.5%"
+                },
+                {
+                  "value": "3.0",
+                  "label": "3.0%"
+                },
+                {
+                  "value": "3.5",
+                  "label": "3.5%"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "source": "https://azdor.gov/sites/default/files/document/FORMS_WITHHOLDING_2026_A-4_f.pdf",
+      "revision": 2
+    }
+  ]
+}

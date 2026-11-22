@@ -3,16 +3,16 @@
 from __future__ import annotations
 
 from collections.abc import Sequence
-from typing import Literal, TypedDict
+from typing import Any, Literal, NotRequired, TypedDict
 
 from ..calc_stub import StubLine, calc_stub
 from ..money import Cents
 from ..pay_period import PaySchedule
-from ..us_states import us_state_name
 from .data import PAY_PERIODS_PER_YEAR
 from .federal import federal_income_tax, federal_tax_data, medicare_tax, social_security_tax
-from .state import state_income_tax
-from .types import TaxProfile
+from .state import calculated_codes, state_taxes
+from .states._common import StateInput
+from .types import DEFAULT_STATE_W4, TaxProfile
 
 TAX_LABELS = {"fit": "Federal income tax", "ss": "Social Security", "medicare": "Medicare"}
 
@@ -31,6 +31,10 @@ class TaxContext(TypedDict):
     schedule: PaySchedule
     priorYtdGrossCents: Cents
     """Gross pay this calendar year before this stub, including pay entered as "before the app"."""
+    stateRules: list[dict[str, Any]]
+    """The tax_rules rows for the work state and the pay date's year (empty: that year is not loaded)."""
+    payDate: NotRequired[str | None]
+    """The stub's pay date: picks the figures in force when a state changed them mid-year."""
 
 
 class TaxedLines(TypedDict):
@@ -38,8 +42,11 @@ class TaxedLines(TypedDict):
     status: TaxStatus
 
 
-def state_tax_label(state: str) -> str:
-    return f"{us_state_name(state)} income tax"
+def work_state(profile: TaxProfile | None, business_state: str | None) -> str | None:
+    """Where the work is done: the worker's own state, or the business's."""
+    if profile and profile["state"] is not None:
+        return profile["state"]
+    return business_state
 
 
 def apply_taxes(lines: Sequence[StubLine], context: TaxContext) -> TaxedLines:
@@ -85,21 +92,21 @@ def apply_taxes(lines: Sequence[StubLine], context: TaxContext) -> TaxedLines:
         ("medicare", TAX_LABELS["medicare"], medicare, False),
     ]
 
-    state = profile["state"] if profile["state"] is not None else context["businessState"]
+    state = work_state(profile, context["businessState"])
     if state:
-        result = state_income_tax(
-            state=state,
+        inp = StateInput(
             year=context["year"],
             wages_cents=wages,
             periods_per_year=periods,
             w4=w4,
-            state_w4=profile.get("stateW4"),
+            cert={**DEFAULT_STATE_W4, **(profile.get("stateW4") or {})},
+            federal_tax_cents=fit,
+            prior_ytd_wages_cents=prior,
+            fica_cents=ss + medicare,
+            pay_date=context.get("payDate"),
         )
-        if result["kind"] == "amount":
-            computed.append(("sit", state_tax_label(state), result["cents"], False))
-        elif result["kind"] == "manual":
-            # Not calculated yet for this state: leave a line for the employer to type the figure into.
-            computed.append(("sit", state_tax_label(state), 0, True))
+        for line in state_taxes(context.get("stateRules") or [], state, inp):
+            computed.append((line["code"], line["label"], line["cents"], line["typed"]))
 
     tax_lines: list[StubLine] = []
     for tax_code, label, amount, typed in computed:
@@ -120,16 +127,13 @@ def apply_taxes(lines: Sequence[StubLine], context: TaxContext) -> TaxedLines:
     return {"lines": [*earnings, *tax_lines, *overrides.values(), *other_deductions], "status": "calculated"}
 
 
-def is_tax_override(line: StubLine, *, profile: TaxProfile | None, business_state: str | None, year: int) -> bool:
+def is_tax_override(
+    line: StubLine, *, profile: TaxProfile | None, year: int, state_rules: list[dict[str, Any]]
+) -> bool:
     """True when the user typed over a figure that would otherwise be calculated."""
-    if not line.get("taxCode") or line["source"] != "manual":
+    code = line.get("taxCode")
+    if not code or line["source"] != "manual":
         return False
     if not profile or not profile["calculate"] or not federal_tax_data(year):
         return False
-    if line.get("taxCode") != "sit":
-        return True
-    state = profile["state"] if profile["state"] is not None else business_state
-    if state is None:
-        return False
-    result = state_income_tax(state=state, year=year, wages_cents=0, periods_per_year=1, w4=profile["w4"])
-    return result["kind"] == "amount"
+    return code in ("fit", "ss", "medicare") or code in calculated_codes(state_rules)

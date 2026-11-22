@@ -8,13 +8,14 @@ from sqlalchemy.orm import Session
 
 from ..config import API_VERSION, MIN_APP_VERSION
 from ..db import get_session
-from ..domain.tax.data import FEDERAL_DATA, NO_WAGE_INCOME_TAX_STATES, STATE_RULES
-from ..domain.tax.state import state_rule, state_tax_support
+from ..domain.tax.data import FEDERAL_DATA
+from ..domain.tax.state import state_tax_support
 from ..domain.us_states import US_STATES
 from ..errors import ApiError
 from ..filing import CONSENT_VERSION
 from ..filing_schemas import SUPPORTED_TAX_YEARS
 from ..schemas import TEMPLATES
+from ..tax_rules.store import RULES
 
 router = APIRouter(tags=["Service"])
 
@@ -55,27 +56,46 @@ def meta(request: Request) -> dict[str, Any]:
     }
 
 
-@router.get("/v1/meta/tax-coverage", summary="Which tax years and states are calculated")
-def tax_coverage() -> dict[str, Any]:
-    """For each loaded tax year, how every state is handled.
+@router.get("/v1/meta/tax-coverage", summary="Which tax years and states are calculated, and what each asks for")
+def tax_coverage(db: Session = Depends(get_session)) -> dict[str, Any]:
+    """For each tax year, how every state is handled, from the tax_rules table.
 
-    `none`: the state does not tax wages. `calculated`: worked out by the
-    server and the app. `manual`: the state taxes wages but its formula has not
-    been added, so the employer types the figure. For a calculated state,
-    `certificate` names the state's withholding form and what its allowance
-    lines are called, when it has one.
+    ``support`` is the state income tax: ``none`` (the state does not tax
+    wages), ``calculated`` (worked out by the server) or ``manual`` (the
+    employer types it). ``taxes`` lists every tax the state has on wages, with
+    its method. ``certificate`` describes the state's withholding form: its
+    name and the fields to ask the worker for (see StateW4). ``localities``
+    lists the counties or cities a worker can owe local tax to, when the state
+    has a calculated local tax.
     """
-    years = sorted(set(FEDERAL_DATA) | set(STATE_RULES))
+    years = sorted(set(FEDERAL_DATA) | set(RULES.years(db)))
     coverage = []
     for year in years:
+        by_state = RULES.all_for_year(db, year)
         states = {}
         for state in US_STATES:
             code = state["code"]
-            entry: dict[str, Any] = {"name": state["name"], "support": state_tax_support(code, year)}
-            rule = state_rule(code, year)
-            if entry["support"] == "calculated" and rule:
-                entry["certificate"] = rule.get("certificate")
-                entry["source"] = rule.get("source")
+            rules = by_state.get(code, [])
+            entry: dict[str, Any] = {
+                "name": state["name"],
+                "support": state_tax_support(rules) if rules else "manual",
+                "taxes": [{"tax": rule["tax"], "method": rule["method"]} for rule in rules],
+            }
+            income = next((rule for rule in rules if rule["tax"] == "income"), None)
+            if income and income["method"] == "state":
+                entry["certificate"] = income["params"].get("certificate")
+                entry["source"] = income["source"]
+            local = next((rule for rule in rules if rule["tax"] == "local" and rule["method"] == "local_rate"), None)
+            if local:
+                entry["localities"] = {
+                    "choose": local["params"].get("choose", "Locality"),
+                    "options": [
+                        {"code": key, "name": place["name"]}
+                        for key, place in local["params"].get("localities", {}).items()
+                    ],
+                }
+            if income and income["method"] == "state" and income["params"].get("localities"):
+                entry["localities"] = income["params"]["localities"]
             states[code] = entry
         coverage.append({"year": year, "federal": year in FEDERAL_DATA, "states": states})
-    return {"years": coverage, "noWageIncomeTaxStates": list(NO_WAGE_INCOME_TAX_STATES)}
+    return {"years": coverage}

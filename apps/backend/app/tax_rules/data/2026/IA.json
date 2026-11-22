@@ -1,0 +1,46 @@
+{
+  "year": 2026,
+  "jurisdiction": "IA",
+  "rules": [
+    {
+      "tax": "income",
+      "method": "state",
+      "params": {
+        "statuses": ["other", "head", "mfj"],
+        "defaultStatus": "other",
+        "standardDeductionCents": {
+          "other": 1300000,
+          "head": 1950000,
+          "mfj": 2600000
+        },
+        "ratePercent": "3.8",
+        "creditPerField": {
+          "allowanceCents": 1
+        },
+        "round": "cent",
+        "certificate": {
+          "form": "IA W-4",
+          "fields": [
+            {
+              "key": "status",
+              "label": "Filing status",
+              "kind": "choice",
+              "options": [
+                { "value": "other", "label": "Other (including single), or married filing jointly and spouse has earned income" },
+                { "value": "head", "label": "Head of household" },
+                { "value": "mfj", "label": "Married filing jointly or qualifying surviving spouse, spouse has no earned income" }
+              ]
+            },
+            {
+              "key": "options.allowanceCents",
+              "label": "Line 7 total allowances (dollars)",
+              "kind": "money"
+            }
+          ]
+        }
+      },
+      "source": "https://revenue.iowa.gov/media/53/download",
+      "revision": 2
+    }
+  ]
+}

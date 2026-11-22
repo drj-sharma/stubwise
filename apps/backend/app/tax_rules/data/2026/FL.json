@@ -1,0 +1,12 @@
+{
+  "year": 2026,
+  "jurisdiction": "FL",
+  "rules": [
+    {
+      "tax": "income",
+      "method": "none",
+      "source": "",
+      "revision": 1
+    }
+  ]
+}
