@@ -28,7 +28,7 @@ from .logs import configure_logging
 log = logging.getLogger("stubwise.migrate")
 
 ROOT = Path(__file__).resolve().parents[1]
-# An arbitrary constant that identifies "Stubwise schema migration" among Postgres advisory locks.
+# An arbitrary constant that identifies "CrewStub schema migration" among Postgres advisory locks.
 _LOCK_ID = 7_283_649_101
 
 

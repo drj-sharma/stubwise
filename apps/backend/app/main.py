@@ -27,7 +27,7 @@ from .taxbandits import TaxBanditsClient
 log = logging.getLogger(__name__)
 
 DESCRIPTION = """
-The Stubwise API: accounts, a small business's workers and pay stubs, and the
+The CrewStub API: accounts, a small business's workers and pay stubs, and the
 pay calculations behind them.
 
 Money is integer cents, worked time is whole minutes, dates are `YYYY-MM-DD`.
@@ -63,7 +63,7 @@ def create_app(settings: Settings | None = None, *, outbound_transport: httpx.Ba
 
     docs = settings.docs_enabled
     app = FastAPI(
-        title="Stubwise API",
+        title="CrewStub API",
         version=API_VERSION,
         description=DESCRIPTION,
         lifespan=lifespan,

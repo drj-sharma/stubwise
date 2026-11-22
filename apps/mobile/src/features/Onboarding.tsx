@@ -17,6 +17,9 @@ import { Button, CircleButton, Field, Icon, Row, Screen, SectionLabel, Segmented
 import { StateSheet } from '@/ui/sheets';
 import { initials, useTheme } from '@/ui/theme';
 
+/** The app icon, shown beside the name on the first and last screens. */
+const APP_ICON = require('../../assets/images/icon.png');
+
 const STEPS = ['welcome', 'secure', 'name', 'contact', 'pay', 'template', 'worker', 'done'] as const;
 type Step = (typeof STEPS)[number];
 
@@ -145,13 +148,13 @@ export function Onboarding() {
     case 'secure':
       animation = 'secure';
       title = 'Your records stay private';
-      subtitle = 'Pay records are sensitive. Here is exactly how Stubwise handles them.';
+      subtitle = 'Pay records are sensitive. Here is exactly how CrewStub handles them.';
       body = (
         <View style={{ gap: 4 }}>
           <Point tone="success" icon="iphone" title="Kept on this device" text="Workers, pay and stubs are saved here, not on our servers. There is no account to create." />
-          <Point tone="success" icon="lock.fill" title="Encrypted when your device is locked" text="iOS encrypts Stubwise’s data with your passcode. Keep a passcode set to stay protected." />
+          <Point tone="success" icon="lock.fill" title="Encrypted when your device is locked" text="iOS encrypts CrewStub’s data with your passcode. Keep a passcode set to stay protected." />
           <Point tone="success" icon="icloud.slash" title="Nothing is uploaded" text="A stub leaves this device only when you share or print it yourself." />
-          <Point tone="success" icon="hand.raised.fill" title="We never ask for bank details" text="Stubwise makes stubs and keeps records. It does not move money or file taxes." />
+          <Point tone="success" icon="hand.raised.fill" title="We never ask for bank details" text="CrewStub makes stubs and keeps records. It does not move money or file taxes." />
         </View>
       );
       primary = { title: 'Sounds good', onPress: next };
@@ -169,7 +172,7 @@ export function Onboarding() {
               <Image source={{ uri: logo }} style={{ width: 38, height: 38, borderRadius: 10 }} accessibilityLabel="Business logo" />
             ) : (
               <View style={{ width: 38, height: 38, borderRadius: 10, backgroundColor: c.mark, alignItems: 'center', justifyContent: 'center' }}>
-                <Text style={{ fontSize: 13, fontWeight: '700', color: c.onMark }}>{initials(name || 'Stubwise')}</Text>
+                <Text style={{ fontSize: 13, fontWeight: '700', color: c.onMark }}>{initials(name || 'CrewStub')}</Text>
               </View>
             )}
             <View style={{ flex: 1 }}>
@@ -211,7 +214,7 @@ export function Onboarding() {
     case 'pay':
       animation = 'schedule';
       title = 'How often do you pay?';
-      subtitle = 'Stubwise uses this to work out each next pay period for you.';
+      subtitle = 'CrewStub uses this to work out each next pay period for you.';
       body = (
         <View style={{ gap: 12 }}>
           <View style={{ gap: 8 }}>
@@ -346,10 +349,8 @@ export function Onboarding() {
             </>
           ) : (
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, marginLeft: 4 }}>
-              <View style={{ width: 36, height: 36, borderRadius: 11, backgroundColor: c.primary, alignItems: 'center', justifyContent: 'center' }}>
-                <Icon name="doc.text" color={c.onPrimary} />
-              </View>
-              <Text style={{ fontSize: 15, fontWeight: '600', color: c.text }}>Stubwise</Text>
+              <Image source={APP_ICON} style={{ width: 36, height: 36, borderRadius: 9 }} accessibilityIgnoresInvertColors accessible={false} />
+              <Text style={{ fontSize: 15, fontWeight: '600', color: c.text }}>CrewStub</Text>
             </View>
           )}
         </View>

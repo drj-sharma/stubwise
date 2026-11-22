@@ -154,7 +154,7 @@ def test_cors_is_off_unless_origins_are_listed(client: TestClient, outbound: Out
 def test_openapi_documents_the_api(client: TestClient, outbound: Outbound) -> None:
     assert client.get("/docs").status_code == 200
     schema = client.get("/openapi.json").json()
-    assert schema["info"]["title"] == "Stubwise API"
+    assert schema["info"]["title"] == "CrewStub API"
     tags = {tag for path in schema["paths"].values() for operation in path.values() for tag in operation["tags"]}
     assert {"Sign-in and sessions", "Account", "Business", "Workers", "Stubs", "Calculations", "Service"} <= tags
     assert not any("filing" in tag.lower() for tag in tags)

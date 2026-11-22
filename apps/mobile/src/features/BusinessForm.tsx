@@ -87,7 +87,7 @@ export function BusinessForm({
               <Image source={{ uri: logo }} style={{ width: 38, height: 38, borderRadius: 10 }} accessibilityLabel="Business logo" />
             ) : (
               <View style={{ width: 38, height: 38, borderRadius: 10, backgroundColor: c.mark, alignItems: 'center', justifyContent: 'center' }}>
-                <Text style={{ fontSize: 13, fontWeight: '700', color: c.onMark }}>{initials(name || 'Stubwise')}</Text>
+                <Text style={{ fontSize: 13, fontWeight: '700', color: c.onMark }}>{initials(name || 'CrewStub')}</Text>
               </View>
             )}
             <View style={{ flex: 1 }}>

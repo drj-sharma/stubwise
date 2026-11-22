@@ -1,7 +1,7 @@
-# Stubwise
+# CrewStub
 
 Pay stubs and pay records for US employers with one to five workers.
-Stubwise makes pay stub PDFs and keeps records. It never pays workers and never files taxes.
+CrewStub makes pay stub PDFs and keeps records. It never pays workers and never files taxes.
 
 ## What is in this repository
 

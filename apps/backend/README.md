@@ -1,6 +1,6 @@
-# Stubwise backend
+# CrewStub backend
 
-The server for Stubwise, a pay stub app for US employers with 1–5 workers. Python 3.11, FastAPI, SQLAlchemy 2, Postgres in production (SQLite for development and tests).
+The server for CrewStub, a pay stub app for US employers with 1–5 workers. Python 3.11, FastAPI, SQLAlchemy 2, Postgres in production (SQLite for development and tests).
 
 It does four things:
 

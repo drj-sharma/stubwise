@@ -109,7 +109,7 @@ export default function Settings() {
       </View>
 
       <Text style={{ fontSize: 12, lineHeight: 18, color: c.muted, marginHorizontal: 6, marginTop: 6 }}>
-        Your records stay on this device unless you share a PDF. Stubwise makes pay stubs; it does not pay workers or file taxes.
+        Your records stay on this device unless you share a PDF. CrewStub makes pay stubs; it does not pay workers or file taxes.
       </Text>
     </Sheet>
   );

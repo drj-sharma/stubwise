@@ -2,7 +2,7 @@
   "name": "@stubwise/api",
   "version": "0.1.0",
   "private": true,
-  "description": "Stubwise API: stub calculation and rendering endpoints, and opt-in cloud backup.",
+  "description": "CrewStub API (TypeScript, superseded by apps/backend): stub calculation and rendering endpoints, and opt-in cloud backup.",
   "type": "commonjs",
   "scripts": {
     "dev": "tsx watch --env-file-if-exists=.env src/server.ts",

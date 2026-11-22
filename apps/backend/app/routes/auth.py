@@ -115,13 +115,13 @@ def _sign_in(
 
 @router.post("/google", response_model=TokenPair, dependencies=[Depends(auth_rate_limit)])
 def sign_in_with_google(body: GoogleSignIn, request: Request, db: Session = Depends(get_session)) -> Any:
-    """Exchanges a Google ID token for a Stubwise session, creating the account on first use."""
+    """Exchanges a Google ID token for a CrewStub session, creating the account on first use."""
     return _sign_in(request, db, "google", body.idToken, body.nonce, None)
 
 
 @router.post("/apple", response_model=TokenPair, dependencies=[Depends(auth_rate_limit)])
 def sign_in_with_apple(body: AppleSignIn, request: Request, db: Session = Depends(get_session)) -> Any:
-    """Exchanges an Apple identity token for a Stubwise session, creating the account on first use."""
+    """Exchanges an Apple identity token for a CrewStub session, creating the account on first use."""
     name = f"{body.fullName.givenName} {body.fullName.familyName}".strip() if body.fullName else None
     return _sign_in(request, db, "apple", body.identityToken, body.nonce, name or None)
 

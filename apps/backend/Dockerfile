@@ -1,4 +1,4 @@
-# Stubwise backend. Build context is this folder (apps/backend).
+# CrewStub backend. Build context is this folder (apps/backend).
 FROM python:3.11-slim
 
 ENV PYTHONDONTWRITEBYTECODE=1 \

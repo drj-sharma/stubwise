@@ -83,7 +83,7 @@ def build_w2(request: W2FilingRequest) -> dict[str, Any]:
     returns = []
     for sequence, employee in enumerate(request.recipients, start=1):
         # UNVERIFIED: for tax year 2026 the docs do not mark "TTOC1" (tipped
-        # occupation code) optional on Form W-2. It is not sent; Stubwise has no
+        # occupation code) optional on Form W-2. It is not sent; CrewStub has no
         # tip reporting.
         form = _without_none(
             {

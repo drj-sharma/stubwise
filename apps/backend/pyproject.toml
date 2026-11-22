@@ -1,7 +1,7 @@
 [project]
 name = "stubwise-backend"
 version = "0.1.0"
-description = "Stubwise backend: device auth, opt-in backup, and year-end tax form e-filing through TaxBandits."
+description = "CrewStub backend: accounts with Google and Apple sign-in, records, pay and tax calculation, backup, and parked tax form filing."
 requires-python = ">=3.11"
 dependencies = [
     "alembic>=1.14",

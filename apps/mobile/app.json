@@ -1,22 +1,23 @@
 {
   "expo": {
-    "name": "Stubwise",
-    "slug": "stubwise",
+    "name": "CrewStub",
+    "slug": "crewstub",
     "version": "1.0.0",
     "orientation": "default",
     "icon": "./assets/images/icon.png",
-    "scheme": "stubwise",
+    "scheme": "crewstub",
     "userInterfaceStyle": "automatic",
     "ios": {
       "icon": "./assets/expo.icon",
-      "bundleIdentifier": "co.stubwise.app",
+      "bundleIdentifier": "com.crewstub.app",
       "supportsTablet": true,
       "infoPlist": {
-        "NSPhotoLibraryUsageDescription": "Stubwise uses a photo you choose as your business logo on pay stubs."
-      }
+        "NSPhotoLibraryUsageDescription": "CrewStub uses a photo you choose as your business logo on pay stubs."
+      },
+      "usesAppleSignIn": true
     },
     "android": {
-      "package": "co.stubwise.app",
+      "package": "com.crewstub.app",
       "adaptiveIcon": {
         "backgroundColor": "#EDEDEE",
         "foregroundImage": "./assets/images/android-icon-foreground.png",
@@ -44,7 +45,7 @@
       [
         "expo-image-picker",
         {
-          "photosPermission": "Stubwise uses a photo you choose as your business logo on pay stubs.",
+          "photosPermission": "CrewStub uses a photo you choose as your business logo on pay stubs.",
           "cameraPermission": false,
           "microphonePermission": false
         }

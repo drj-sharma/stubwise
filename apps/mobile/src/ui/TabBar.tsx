@@ -105,7 +105,7 @@ export function BusinessHeader({ right }: { right?: React.ReactNode }) {
         <Text style={{ fontSize: 15, fontWeight: '600', color: c.text }} numberOfLines={1}>
           {business.name}
         </Text>
-        <Text style={{ fontSize: 12, color: c.muted }}>Stubwise</Text>
+        <Text style={{ fontSize: 12, color: c.muted }}>CrewStub</Text>
       </View>
       {right}
     </View>
