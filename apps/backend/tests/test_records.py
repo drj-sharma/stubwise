@@ -81,7 +81,7 @@ def test_business_lifecycle(client: TestClient, auth: dict[str, str]) -> None:
     assert {key: business[key] for key in BUSINESS} == BUSINESS
     # Defaults match the app's.
     assert (business["templateId"], business["accent"], business["overtimePct"]) == ("classic", "#3F3D9E", 150)
-    assert (business["appearance"], business["showEmployerId"], business["logoDataUri"]) == ("automatic", True, None)
+    assert (business["appearance"], business["showEmployerId"], business["logoDataUri"]) == ("light", True, None)
     assert business["version"] == 1
 
     assert client.post("/v1/business", headers=auth, json=BUSINESS).json()["error"]["code"] == "business_exists"

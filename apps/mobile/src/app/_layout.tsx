@@ -30,7 +30,7 @@ function Themed() {
   }, [decided]);
 
   return (
-    <ThemeProvider appearance={business?.appearance ?? 'automatic'}>
+    <ThemeProvider appearance={business?.appearance ?? 'light'}>
       <Navigator />
     </ThemeProvider>
   );

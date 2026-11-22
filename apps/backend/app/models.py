@@ -159,7 +159,7 @@ class Business(Base):
     template_id: Mapped[str] = mapped_column(String(20), default="classic")
     accent: Mapped[str] = mapped_column(String(7), default="#3F3D9E")
     overtime_pct: Mapped[int] = mapped_column(Integer, default=150)
-    appearance: Mapped[str] = mapped_column(String(10), default="automatic")
+    appearance: Mapped[str] = mapped_column(String(10), default="light")
     version: Mapped[int] = mapped_column(Integer, default=1)
     created_at: Mapped[datetime] = mapped_column(Timestamp, default=utcnow)
     updated_at: Mapped[datetime] = mapped_column(Timestamp, default=utcnow)

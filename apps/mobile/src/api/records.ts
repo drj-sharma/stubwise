@@ -39,7 +39,7 @@ export function toBusiness(row: BusinessOut): Business {
     templateId: isTemplateId(row.templateId) ? row.templateId : DEFAULT_TEMPLATE_ID,
     accent: row.accent,
     overtimePct: row.overtimePct,
-    appearance: APPEARANCES.includes(row.appearance as Appearance) ? (row.appearance as Appearance) : 'automatic',
+    appearance: APPEARANCES.includes(row.appearance as Appearance) ? (row.appearance as Appearance) : 'light',
     version: row.version,
   };
 }

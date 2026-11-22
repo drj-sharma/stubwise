@@ -219,7 +219,7 @@ class BusinessCreate(Model):
     templateId: TemplateId = "classic"
     accent: Accent = "#3F3D9E"
     overtimePct: OvertimePct = 150
-    appearance: Appearance = "automatic"
+    appearance: Appearance = "light"
 
 
 class BusinessPatch(Model):
@@ -462,7 +462,7 @@ class BackupBusiness(Model):
     templateId: TemplateId
     accent: Accent
     overtimePct: OvertimePct = 150
-    appearance: Appearance = "automatic"
+    appearance: Appearance = "light"
 
 
 class Snapshot(Model):
