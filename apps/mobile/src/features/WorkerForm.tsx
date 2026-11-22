@@ -2,11 +2,13 @@ import {
   type Cents,
   type FilingStatus,
   type LineKind,
+  type StateW4,
   type TaxProfile,
   type W4,
   DEFAULT_TAX_PROFILE,
   formatCents,
   parseDollars,
+  stateRule,
   stateTaxSupport,
   todayIso,
   usStateName,
@@ -14,7 +16,7 @@ import {
 import { router } from 'expo-router';
 import { useSQLiteContext } from 'expo-sqlite';
 import { useState } from 'react';
-import { Alert, ScrollView, Switch, Text, TextInput, View } from 'react-native';
+import { Alert, Pressable, ScrollView, Switch, Text, TextInput, View } from 'react-native';
 import { createWorker, deleteWorker, updateWorker } from '@/db/repo';
 import type { NewWorker, Worker } from '@/db/types';
 import { Amount, Button, CardHeader, Field, Row, SectionLabel, Segmented, Sheet, StatTile, SubCard, TABULAR } from '@/ui/primitives';
@@ -42,10 +44,13 @@ export function WorkerForm({ existing }: { existing: Worker | null }) {
   const c = useTheme();
   const db = useSQLiteContext();
   const business = useBusiness();
+  const year = Number(todayIso().slice(0, 4));
+
   const [tax, setTax] = useState<TaxProfile>(existing?.taxProfile ?? DEFAULT_TAX_PROFILE);
   const setW4 = (patch: Partial<W4>): void => setTax((current) => ({ ...current, w4: { ...current.w4, ...patch } }));
+  const setStateW4 = (patch: Partial<StateW4>): void => setTax((current) => ({ ...current, stateW4: { ...current.stateW4, ...patch } }));
   const workState = tax.state ?? business.state;
-  const year = Number(todayIso().slice(0, 4));
+  const rule = workState ? stateRule(workState, year) : null;
   const [name, setName] = useState(existing?.name ?? '');
   const [address, setAddress] = useState(existing?.address ?? '');
   const [type, setType] = useState<Worker['type']>(existing?.type ?? 'employee');
@@ -61,6 +66,7 @@ export function WorkerForm({ existing }: { existing: Worker | null }) {
     | { kind: 'addStarting'; lineKind: LineKind }
     | { kind: 'editStarting'; index: number }
     | { kind: 'w4Amount'; index: number }
+    | { kind: 'stateExtra' }
     | { kind: 'state' }
     | null
   >(null);
@@ -251,9 +257,49 @@ export function WorkerForm({ existing }: { existing: Worker | null }) {
                     }
                     minHeight={56}
                     strong
-                    last
+                    last={!rule}
                     onPress={() => setSheet({ kind: 'state' })}
                   />
+                  {rule?.allowanceCents ? (
+                    <Row
+                      title={rule.certificate?.allowances ?? 'Allowances'}
+                      subtitle={`Form ${rule.certificate?.form ?? 'state certificate'}`}
+                      minHeight={56}
+                      right={<Stepper value={tax.stateW4.allowances} onChange={(allowances) => setStateW4({ allowances })} label={rule.certificate?.allowances ?? 'Allowances'} />}
+                    />
+                  ) : null}
+                  {rule?.additionalAllowanceCents ? (
+                    <Row
+                      title={rule.certificate?.additionalAllowances ?? 'Additional allowances'}
+                      subtitle={`Form ${rule.certificate?.form ?? 'state certificate'}`}
+                      minHeight={56}
+                      right={
+                        <Stepper
+                          value={tax.stateW4.additionalAllowances}
+                          onChange={(additionalAllowances) => setStateW4({ additionalAllowances })}
+                          label={rule.certificate?.additionalAllowances ?? 'Additional allowances'}
+                        />
+                      }
+                    />
+                  ) : null}
+                  {rule ? (
+                    <>
+                      <Row
+                        title="Extra state withholding"
+                        subtitle="Each pay period"
+                        minHeight={56}
+                        right={<Amount value={formatCents(tax.stateW4.extraWithholdingCents)} />}
+                        onPress={() => setSheet({ kind: 'stateExtra' })}
+                      />
+                      <Row
+                        title="Exempt from state income tax"
+                        subtitle="Only if claimed on the state certificate"
+                        minHeight={56}
+                        last
+                        right={<Switch value={tax.stateW4.exempt} onValueChange={(exempt) => setStateW4({ exempt })} trackColor={{ true: c.primary }} accessibilityLabel="Exempt from state income tax" />}
+                      />
+                    </>
+                  ) : null}
                 </>
               ) : null}
             </SubCard>
@@ -363,6 +409,17 @@ export function WorkerForm({ existing }: { existing: Worker | null }) {
           setSheet(null);
         }}
       />
+      <AmountSheet
+        visible={sheet?.kind === 'stateExtra'}
+        title="Extra state withholding"
+        note="An extra amount to withhold for state income tax each pay period."
+        initialCents={tax.stateW4.extraWithholdingCents}
+        onClose={() => setSheet(null)}
+        onSave={(extraWithholdingCents) => {
+          setStateW4({ extraWithholdingCents });
+          setSheet(null);
+        }}
+      />
       <StateSheet
         visible={sheet?.kind === 'state'}
         selected={tax.state}
@@ -378,5 +435,38 @@ export function WorkerForm({ existing }: { existing: Worker | null }) {
         }}
       />
     </>
+  );
+}
+
+/** A small − / + counter for allowance counts. */
+function Stepper({ value, onChange, label }: { value: number; onChange: (next: number) => void; label: string }) {
+  const c = useTheme();
+  const button = (symbol: string, next: number, name: string) => (
+    <Pressable
+      onPress={() => onChange(Math.max(0, Math.min(99, next)))}
+      hitSlop={8}
+      accessibilityRole="button"
+      accessibilityLabel={`${name} ${label}`}
+      style={({ pressed }) => ({
+        width: 34,
+        height: 34,
+        borderRadius: 17,
+        borderWidth: 1,
+        borderColor: c.fieldBorder,
+        alignItems: 'center',
+        justifyContent: 'center',
+        opacity: pressed ? 0.6 : 1,
+      })}>
+      <Text style={{ fontSize: 18, lineHeight: 20, fontWeight: '500', color: c.text }}>{symbol}</Text>
+    </Pressable>
+  );
+  return (
+    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+      {button('−', value - 1, 'Fewer')}
+      <Text style={[{ minWidth: 20, textAlign: 'center', fontSize: 15, fontWeight: '600', color: c.text }, TABULAR]} accessibilityLabel={`${label}: ${value}`}>
+        {value}
+      </Text>
+      {button('+', value + 1, 'More')}
+    </View>
   );
 }

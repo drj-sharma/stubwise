@@ -84,8 +84,8 @@ from the official publications named at the top of each file.
 | Federal income tax | IRS Pub. 15-T (2026) percentage method, 2020-or-later Form W-4. Tested against the IRS wage bracket table. |
 | Social Security, Medicare | 2026 rates, the $184,500 wage base, and Additional Medicare Tax past $200,000. |
 | States with no wage income tax | AK, FL, NV, NH, SD, TN, TX, WA, WY: no state line. |
-| States calculated | PA (flat rate). |
-| All other states and DC | Not built yet. The stub gets a state tax line to fill in by hand. |
+| States calculated | IL, KY, NC, PA. Each is tested against the worked example in that state's own 2026 guide (PA has only a flat rate). |
+| The other 37 states and DC | Not built yet. The stub gets a state tax line to fill in by hand. |
 
 Not handled: tax years other than 2026, Forms W-4 from 2019 or earlier,
 pre-tax deductions (taxable wages are gross pay), local taxes, other

@@ -6,7 +6,7 @@ import { applyTaxes, isTaxOverride } from './applyTaxes';
 import { FEDERAL_2026 } from './data/federal-2026';
 import { federalIncomeTax, federalTaxData, medicareTax, socialSecurityTax } from './federal';
 import { stateIncomeTax } from './state';
-import { DEFAULT_TAX_PROFILE, DEFAULT_W4, type FilingStatus, type W4 } from './types';
+import { DEFAULT_STATE_W4, DEFAULT_TAX_PROFILE, DEFAULT_W4, type FilingStatus, type W4 } from './types';
 
 const data = FEDERAL_2026;
 const w4 = (over: Partial<W4> = {}): W4 => ({ ...DEFAULT_W4, ...over });
@@ -114,6 +114,36 @@ describe('state income tax', () => {
     expect(stateIncomeTax({ state: 'PA', year: 2026, wagesCents: 1_842_00, periodsPerYear: 26, w4: w4() })).toEqual({ kind: 'amount', cents: 56_55 });
     // No Pennsylvania figures for a year that has not been added.
     expect(stateIncomeTax({ state: 'PA', year: 2027, wagesCents: 1_842_00, periodsPerYear: 26, w4: w4() })).toEqual({ kind: 'manual' });
+  });
+
+  it('matches Illinois Booklet IL-700-T’s automated payroll example', () => {
+    // "You pay Alice $800 every week ... Two allowances are claimed on Form IL-W-4, Line 1, and two
+    // allowances are claimed on Form IL-W-4, Line 2. You withhold $32.13 from her pay."
+    const result = stateIncomeTax({ state: 'IL', year: 2026, wagesCents: 800_00, periodsPerYear: 52, w4: w4(), stateW4: { ...DEFAULT_STATE_W4, allowances: 2, additionalAllowances: 2 } });
+    expect(result).toEqual({ kind: 'amount', cents: 32_13 });
+  });
+
+  it('matches the Kentucky 2026 formula’s monthly example', () => {
+    // Monthly wages $3,270: $39,240 − $3,360 = $35,880; × 3.5% = $1,255.80; ÷ 12 = $104.65.
+    expect(stateIncomeTax({ state: 'KY', year: 2026, wagesCents: 3_270_00, periodsPerYear: 12, w4: w4() })).toEqual({ kind: 'amount', cents: 104_65 });
+  });
+
+  it('matches North Carolina NC-30’s annualized method example, rounded to the dollar', () => {
+    // "An unmarried employee is paid $450.00 weekly ... single with two withholding allowances": $4.00.
+    const single = stateIncomeTax({ state: 'NC', year: 2026, wagesCents: 450_00, periodsPerYear: 52, w4: w4(), stateW4: { ...DEFAULT_STATE_W4, allowances: 2 } });
+    expect(single).toEqual({ kind: 'amount', cents: 4_00 });
+    // Head of household uses the $19,125 deduction: (52,000 − 19,125) × .0409 ÷ 52 = 25.86 → $26.
+    const head = stateIncomeTax({ state: 'NC', year: 2026, wagesCents: 1_000_00, periodsPerYear: 52, w4: w4({ filingStatus: 'head' }) });
+    expect(head).toEqual({ kind: 'amount', cents: 26_00 });
+  });
+
+  it('adds extra state withholding, and withholds nothing when exempt or unpaid', () => {
+    const base = { state: 'IL' as const, year: 2026, periodsPerYear: 52, w4: w4() };
+    expect(stateIncomeTax({ ...base, wagesCents: 800_00, stateW4: { ...DEFAULT_STATE_W4, extraWithholdingCents: 10_00 } })).toEqual({ kind: 'amount', cents: 49_60 });
+    expect(stateIncomeTax({ ...base, wagesCents: 800_00, stateW4: { ...DEFAULT_STATE_W4, exempt: true, extraWithholdingCents: 10_00 } })).toEqual({ kind: 'amount', cents: 0 });
+    expect(stateIncomeTax({ ...base, wagesCents: 0, stateW4: { ...DEFAULT_STATE_W4, extraWithholdingCents: 10_00 } })).toEqual({ kind: 'amount', cents: 0 });
+    // Allowances worth more than the pay leave nothing to tax.
+    expect(stateIncomeTax({ ...base, wagesCents: 50_00, stateW4: { ...DEFAULT_STATE_W4, allowances: 5 } })).toEqual({ kind: 'amount', cents: 0 });
   });
 
   it('reports a state it cannot calculate yet instead of guessing', () => {

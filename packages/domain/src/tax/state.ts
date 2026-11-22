@@ -1,7 +1,7 @@
 import { type Cents, divRoundHalfUp } from '../money';
 import { type UsStateCode } from '../usStates';
 import { STATE_RULES_2026, type StateRule } from './data/states-2026';
-import type { W4 } from './types';
+import { DEFAULT_STATE_W4, type StateW4, type W4 } from './types';
 
 const STATE_RULES: Readonly<Record<number, Partial<Record<UsStateCode, StateRule>>>> = { 2026: STATE_RULES_2026 };
 
@@ -31,12 +31,35 @@ export function stateIncomeTax(input: {
   year: number;
   wagesCents: Cents;
   periodsPerYear: number;
+  /** The federal Form W-4: states that have no status of their own use its filing status. */
   w4: W4;
+  stateW4?: StateW4;
 }): StateTaxResult {
   if (NO_WAGE_INCOME_TAX.has(input.state)) return { kind: 'none' };
   const rule = STATE_RULES[input.year]?.[input.state];
   if (!rule) return { kind: 'manual' };
-  return { kind: 'amount', cents: divRoundHalfUp(Math.max(0, input.wagesCents) * rule.rateBasisPoints, 10_000) };
+  const stateW4 = input.stateW4 ?? DEFAULT_STATE_W4;
+  if (stateW4.exempt) return { kind: 'amount', cents: 0 };
+
+  const { periodsPerYear } = input;
+  const annualWages = Math.max(0, input.wagesCents) * periodsPerYear;
+  const subtract =
+    (rule.standardDeductionCents?.[input.w4.filingStatus] ?? 0) +
+    stateW4.allowances * (rule.allowanceCents ?? 0) +
+    stateW4.additionalAllowances * (rule.additionalAllowanceCents ?? 0);
+  const taxable = Math.max(0, annualWages - subtract);
+  // One division at the end, so nothing is lost to rounding along the way.
+  const perPeriod =
+    rule.round === 'dollar'
+      ? divRoundHalfUp(taxable * rule.rateBasisPoints, 10_000 * periodsPerYear * 100) * 100
+      : divRoundHalfUp(taxable * rule.rateBasisPoints, 10_000 * periodsPerYear);
+  // Nothing is withheld on a pay period with no pay, extra amount included.
+  return { kind: 'amount', cents: input.wagesCents > 0 ? perPeriod + stateW4.extraWithholdingCents : 0 };
+}
+
+/** The rule the app applies for a state and year, when it calculates that state. */
+export function stateRule(state: UsStateCode, year: number): StateRule | null {
+  return STATE_RULES[year]?.[state] ?? null;
 }
 
 /** How the app handles each state today, for showing people what to expect. */

@@ -42,9 +42,28 @@ export interface TaxProfile {
   w4: W4;
   /** Where the work is done. Null falls back to the business's state. */
   state: UsStateCode | null;
+  /** Answers from the work state's own withholding certificate, where it has one. */
+  stateW4: StateW4;
 }
 
-export const DEFAULT_TAX_PROFILE: TaxProfile = { calculate: true, w4: DEFAULT_W4, state: null };
+/**
+ * What an employee wrote on their state's withholding certificate. States
+ * name these lines differently; the rule for each state says which it uses.
+ */
+export interface StateW4 {
+  allowances: number;
+  /** A second kind of allowance, on certificates that have one (Illinois Line 2). */
+  additionalAllowances: number;
+  /** Extra state withholding, per pay period. */
+  extraWithholdingCents: Cents;
+  /** Claimed exempt from state income tax withholding. */
+  exempt: boolean;
+}
+
+/** With no state certificate on file: no allowances, nothing extra. */
+export const DEFAULT_STATE_W4: StateW4 = { allowances: 0, additionalAllowances: 0, extraWithholdingCents: 0, exempt: false };
+
+export const DEFAULT_TAX_PROFILE: TaxProfile = { calculate: true, w4: DEFAULT_W4, state: null, stateW4: DEFAULT_STATE_W4 };
 
 /** [at least (whole dollars), tentative amount (cents), percent of the excess]. */
 export type BracketRow = readonly [atLeastDollars: number, baseCents: Cents, percent: number];
@@ -71,12 +90,20 @@ const isCents = (value: unknown): value is Cents => typeof value === 'number' &&
 /** Reads a stored tax profile, falling back to the defaults for anything missing or malformed. */
 export function normalizeTaxProfile(value: unknown): TaxProfile {
   if (typeof value !== 'object' || value === null) return DEFAULT_TAX_PROFILE;
-  const raw = value as { calculate?: unknown; state?: unknown; w4?: Record<string, unknown> };
+  const raw = value as { calculate?: unknown; state?: unknown; w4?: Record<string, unknown>; stateW4?: Record<string, unknown> };
+  const stateW4 = typeof raw.stateW4 === 'object' && raw.stateW4 !== null ? raw.stateW4 : {};
+  const count = (v: unknown): number => (typeof v === 'number' && Number.isInteger(v) && v >= 0 && v <= 99 ? v : 0);
   const w4 = typeof raw.w4 === 'object' && raw.w4 !== null ? raw.w4 : {};
   const status = w4.filingStatus;
   return {
     calculate: raw.calculate !== false,
     state: isUsStateCode(raw.state) ? raw.state : null,
+    stateW4: {
+      allowances: count(stateW4.allowances),
+      additionalAllowances: count(stateW4.additionalAllowances),
+      extraWithholdingCents: isCents(stateW4.extraWithholdingCents) ? stateW4.extraWithholdingCents : 0,
+      exempt: stateW4.exempt === true,
+    },
     w4: {
       filingStatus: status === 'married' || status === 'head' ? status : 'single',
       multipleJobs: w4.multipleJobs === true,

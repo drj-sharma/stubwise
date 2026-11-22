@@ -276,9 +276,53 @@
  },
  "states": {
   "2026": {
+   "IL": {
+    "kind": "flat",
+    "rateBasisPoints": 495,
+    "allowanceCents": 292500,
+    "additionalAllowanceCents": 100000,
+    "round": "cent",
+    "certificate": {
+     "form": "IL-W-4",
+     "allowances": "Line 1 allowances",
+     "additionalAllowances": "Line 2 allowances"
+    },
+    "source": "https://tax.illinois.gov/content/dam/soi/en/web/tax/forms/withholding/documents/currentyear/il-700-t.pdf",
+    "readOn": "2026-11-22"
+   },
+   "KY": {
+    "kind": "flat",
+    "rateBasisPoints": 350,
+    "standardDeductionCents": {
+     "single": 336000,
+     "married": 336000,
+     "head": 336000
+    },
+    "round": "cent",
+    "source": "https://revenue.ky.gov/Forms/2026%20Withholding%20Formula.pdf",
+    "readOn": "2026-11-22"
+   },
+   "NC": {
+    "kind": "flat",
+    "rateBasisPoints": 409,
+    "standardDeductionCents": {
+     "single": 1275000,
+     "married": 1275000,
+     "head": 1912500
+    },
+    "allowanceCents": 250000,
+    "round": "dollar",
+    "certificate": {
+     "form": "NC-4",
+     "allowances": "Allowances"
+    },
+    "source": "https://www.ncdor.gov/income-tax-withholding-tables-and-instructions-employers/open",
+    "readOn": "2026-11-22"
+   },
    "PA": {
     "kind": "flat",
     "rateBasisPoints": 307,
+    "round": "cent",
     "source": "https://www.pa.gov/agencies/revenue/resources/tax-types-and-information/employer-withholding",
     "readOn": "2026-11-22"
    }

@@ -7,7 +7,7 @@ import { FEDERAL_2026 } from '../tax/data/federal-2026';
 import { STATE_RULES_2026 } from '../tax/data/states-2026';
 import { PAY_PERIODS_PER_YEAR, federalIncomeTax, medicareTax, socialSecurityTax } from '../tax/federal';
 import { NO_WAGE_INCOME_TAX_STATES, stateIncomeTax } from '../tax/state';
-import { DEFAULT_W4, type FilingStatus, type TaxProfile, type W4 } from '../tax/types';
+import { DEFAULT_STATE_W4, DEFAULT_W4, type FilingStatus, type StateW4, type TaxProfile, type W4 } from '../tax/types';
 import { overtimeRateCents, payForMinutes } from '../time';
 import { US_STATES, type UsStateCode } from '../usStates';
 import { type YtdStub, computeYtd, priorYtdGross } from '../ytd';
@@ -56,6 +56,13 @@ export function buildVectors() {
     otherIncomeCents: random() < 0.7 ? 0 : int(0, 20_000_00),
     deductionsCents: random() < 0.7 ? 0 : int(0, 15_000_00),
     extraWithholdingCents: random() < 0.7 ? 0 : int(0, 200_00),
+    exempt: random() < 0.05,
+  });
+
+  const randomStateW4 = (): StateW4 => ({
+    allowances: random() < 0.5 ? 0 : int(0, 6),
+    additionalAllowances: random() < 0.7 ? 0 : int(0, 3),
+    extraWithholdingCents: random() < 0.8 ? 0 : int(0, 50_00),
     exempt: random() < 0.05,
   });
 
@@ -179,16 +186,19 @@ export function buildVectors() {
   });
 
   const state = US_STATES.flatMap(({ code }) =>
-    [2026, 2027].map((year) => {
+    [2026, 2026, 2026, 2027].map((year, index) => {
       const wagesCents = int(0, 800_000);
-      return { state: code, year, wagesCents, periodsPerYear: 26, w4: DEFAULT_W4, expected: stateIncomeTax({ state: code, year, wagesCents, periodsPerYear: 26, w4: DEFAULT_W4 }) };
+      const periodsPerYear = PAY_PERIODS_PER_YEAR[pick(PAY_SCHEDULES)];
+      const w4 = randomW4();
+      const stateW4 = index === 0 ? DEFAULT_STATE_W4 : randomStateW4();
+      return { state: code, year, wagesCents, periodsPerYear, w4, stateW4, expected: stateIncomeTax({ state: code, year, wagesCents, periodsPerYear, w4, stateW4 }) };
     }),
   );
 
   const stateCodes = US_STATES.map((entry) => entry.code);
   const taxLines = Array.from({ length: 120 }, () => {
     const profile: TaxProfile | null =
-      random() < 0.1 ? null : { calculate: random() < 0.9, w4: randomW4(), state: random() < 0.5 ? null : pick<UsStateCode>(stateCodes) };
+      random() < 0.1 ? null : { calculate: random() < 0.9, w4: randomW4(), state: random() < 0.5 ? null : pick<UsStateCode>(stateCodes), stateW4: randomStateW4() };
     const context = {
       profile,
       businessState: random() < 0.2 ? null : pick<UsStateCode>(stateCodes),
@@ -223,8 +233,8 @@ export function buildVectors() {
     const overtimePct = pick([150, 200]);
     const first = draftNextStub(worker, schedule, null, today, overtimePct);
     const withTaxes = applyTaxes(first.lines, {
-      profile: worker.type === 'contractor' ? null : { calculate: true, w4: DEFAULT_W4, state: null },
-      businessState: pick<UsStateCode>(['TN', 'CA', 'PA']),
+      profile: worker.type === 'contractor' ? null : { calculate: true, w4: DEFAULT_W4, state: null, stateW4: DEFAULT_STATE_W4 },
+      businessState: pick<UsStateCode>(['TN', 'CA', 'PA', 'IL', 'NC', 'KY']),
       year: 2026,
       schedule,
       priorYtdGrossCents: 0,

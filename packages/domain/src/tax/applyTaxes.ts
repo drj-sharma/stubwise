@@ -73,7 +73,7 @@ export function applyTaxes(lines: readonly StubLine[], context: TaxContext): { l
 
   const state = profile.state ?? context.businessState;
   if (state) {
-    const result = stateIncomeTax({ state, year: context.year, wagesCents, periodsPerYear, w4: profile.w4 });
+    const result = stateIncomeTax({ state, year: context.year, wagesCents, periodsPerYear, w4: profile.w4, stateW4: profile.stateW4 });
     if (result.kind === 'amount') computed.push({ taxCode: 'sit', label: stateTaxLabel(state), amountCents: result.cents });
     // Not calculated yet for this state: leave a line for the employer to type the figure into.
     else if (result.kind === 'manual') computed.push({ taxCode: 'sit', label: stateTaxLabel(state), amountCents: 0, typed: true });
