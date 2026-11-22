@@ -15,9 +15,9 @@ const FPS = 60;
 
 const hex = (h) => [1, 3, 5].map((i) => Math.round((parseInt(h.slice(i, i + 2), 16) / 255) * 1000) / 1000).concat(1);
 const C = {
-  primary: hex('#3F3D9E'),
-  primaryLight: hex('#8E8CE0'),
-  soft: hex('#E7E6FA'),
+  primary: hex('#D6336C'),
+  primaryLight: hex('#F28BAE'),
+  soft: hex('#DCF1FA'),
   white: hex('#FFFFFF'),
   line: hex('#D5D6E4'),
   ink: hex('#16171D'),
@@ -25,7 +25,7 @@ const C = {
   greenDark: hex('#146C3C'),
   greenSoft: hex('#DDF3E6'),
   amber: hex('#F2A33A'),
-  pink: hex('#E8618C'),
+  pink: hex('#4FB3DF'),
 };
 
 // ---- Properties -------------------------------------------------------------

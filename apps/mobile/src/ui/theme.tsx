@@ -2,8 +2,10 @@ import { createContext, useContext, type ReactNode } from 'react';
 import { useColorScheme } from 'react-native';
 
 /**
- * "Style 1" from the approved designs: white cards on a lightly tinted grey
- * ground, thin borders, one indigo accent, coloured status pills.
+ * "Style 1" from the approved designs, in the app icon's colours: white cards
+ * on a neutral grey ground with a sky-blue wash, thin borders, a pink accent
+ * (deepened from the icon's pink so white text on it stays readable), coloured
+ * status pills.
  * Every colour used by a screen comes from here, so the dark theme is a
  * second palette and nothing else.
  */
@@ -40,23 +42,23 @@ export interface Palette {
 
 export const light: Palette = {
   scheme: 'light',
-  bg: '#F4F5F8',
-  bgTint: '#E4E1FA',
+  bg: '#F3F4F6',
+  bgTint: '#DCF1FA',
   sheet: '#FFFFFF',
-  border: '#ECEEF3',
-  inner: '#FAFAFC',
-  innerStrong: '#F6F7FA',
-  segment: '#F1F2F6',
+  border: '#ECEDF1',
+  inner: '#FAFAFB',
+  innerStrong: '#F5F6F8',
+  segment: '#EFF0F3',
   segmentOn: '#FFFFFF',
-  fieldBorder: '#E0E2EA',
+  fieldBorder: '#E1E3E8',
   text: '#16171D',
-  muted: '#62657A',
-  faint: '#8A8DA0',
-  primary: '#3F3D9E',
+  muted: '#60636F',
+  faint: '#8A8D99',
+  primary: '#D6336C',
   onPrimary: '#FFFFFF',
-  onPrimaryMuted: '#E0DFFA',
-  primarySoft: '#E7E6FA',
-  primaryText: '#3F3D9E',
+  onPrimaryMuted: '#FFDCE8',
+  primarySoft: '#FDE8F0',
+  primaryText: '#B0225A',
   successBg: '#E3F4EA',
   successText: '#146C3C',
   successDot: '#1E9E57',
@@ -71,7 +73,7 @@ export const light: Palette = {
 export const dark: Palette = {
   scheme: 'dark',
   bg: '#0F1014',
-  bgTint: '#211F45',
+  bgTint: '#12303D',
   sheet: '#17181D',
   border: '#272830',
   inner: '#1D1E25',
@@ -82,11 +84,11 @@ export const dark: Palette = {
   text: '#F2F3F7',
   muted: '#A0A3B5',
   faint: '#7C7F92',
-  primary: '#5B58D6',
+  primary: '#D23A70',
   onPrimary: '#FFFFFF',
-  onPrimaryMuted: '#DEDDFB',
-  primarySoft: '#25244A',
-  primaryText: '#C4C2FB',
+  onPrimaryMuted: '#FFDCE8',
+  primarySoft: '#3A1D2A',
+  primaryText: '#FF9EC0',
   successBg: '#12301F',
   successText: '#7FDBA4',
   successDot: '#3CC57A',
@@ -115,14 +117,16 @@ export function useTheme(): Palette {
 /** Soft avatar tints, picked by a stable hash of the worker's id. */
 const AVATAR_TINTS = {
   light: [
-    { bg: '#E7E6FA', fg: '#3F3D9E' },
+    { bg: '#FDE8F0', fg: '#B0225A' },
+    { bg: '#E2F4FB', fg: '#1B6E98' },
     { bg: '#FCE9DA', fg: '#9A4A0B' },
     { bg: '#DDF1EE', fg: '#0F5F57' },
     { bg: '#E4ECFB', fg: '#24489A' },
     { bg: '#F6E3F1', fg: '#8A2A6E' },
   ],
   dark: [
-    { bg: '#25244A', fg: '#C4C2FB' },
+    { bg: '#3A1D2A', fg: '#FF9EC0' },
+    { bg: '#102A36', fg: '#8FD6F3' },
     { bg: '#3A2410', fg: '#F5B26B' },
     { bg: '#10302C', fg: '#7FD6C8' },
     { bg: '#16264A', fg: '#9DB8F5' },

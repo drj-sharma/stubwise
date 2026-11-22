@@ -6,7 +6,7 @@ import { WebView } from 'react-native-webview';
 import { Button, CircleButton, Icon, SectionLabel } from '@/ui/primitives';
 import { useTheme } from '@/ui/theme';
 
-export const ACCENTS = ['#3F3D9E', '#0A6B57', '#1D4ED8', '#B4232C', '#7A4300', '#16171D'] as const;
+export const ACCENTS = ['#B0225A', '#1B6E98', '#3F3D9E', '#0A6B57', '#1D4ED8', '#B4232C', '#7A4300', '#16171D'] as const;
 
 export interface TemplateSampleBusiness {
   name: string;
@@ -127,7 +127,7 @@ export function TemplatePicker({
       {selected?.usesAccent ? (
         <View style={{ gap: 8 }}>
           <SectionLabel>Accent colour</SectionLabel>
-          <View style={{ flexDirection: 'row', gap: 10 }}>
+          <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 10 }}>
             {ACCENTS.map((option) => {
               const on = option.toLowerCase() === accent.toLowerCase();
               return (
