@@ -64,7 +64,9 @@ export function draftNextStub(
         lines.push({ ...line, amountCents: worker.rateCents });
       }
       // Other flat earnings (bonus, tips, reimbursements) are one-offs: not repeated.
-    } else {
+    } else if (!line.taxCode || (line.taxCode === 'sit' && line.source === 'manual')) {
+      // Calculated taxes are worked out afresh for the new stub, and a one-off
+      // typed-over figure is not repeated. Hand-entered state tax carries over.
       lines.push({ ...line });
     }
   }

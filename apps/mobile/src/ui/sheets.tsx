@@ -102,6 +102,8 @@ export function AmountSheet({
   initialCents,
   onSave,
   onDelete,
+  deleteLabel,
+  note,
   onClose,
 }: {
   visible: boolean;
@@ -109,23 +111,41 @@ export function AmountSheet({
   initialCents: Cents;
   onSave: (cents: Cents) => void;
   onDelete?: () => void;
+  /** Wording for the second button; defaults to "Remove". */
+  deleteLabel?: string;
+  /** A short explanation shown above the amount. */
+  note?: string;
   onClose: () => void;
 }) {
   return (
     <BottomSheet visible={visible} title={title} onClose={onClose}>
-      {() => <AmountBody initialCents={initialCents} onSave={onSave} onDelete={onDelete} />}
+      {() => <AmountBody initialCents={initialCents} onSave={onSave} onDelete={onDelete} deleteLabel={deleteLabel} note={note} />}
     </BottomSheet>
   );
 }
 
-function AmountBody({ initialCents, onSave, onDelete }: { initialCents: Cents; onSave: (cents: Cents) => void; onDelete?: () => void }) {
+function AmountBody({
+  initialCents,
+  onSave,
+  onDelete,
+  deleteLabel = 'Remove',
+  note,
+}: {
+  initialCents: Cents;
+  onSave: (cents: Cents) => void;
+  onDelete?: () => void;
+  deleteLabel?: string;
+  note?: string;
+}) {
+  const c = useTheme();
   const [text, setText] = useState(() => centsToText(initialCents));
   const cents = text.trim() === '' ? 0 : parseDollars(text);
   return (
     <>
+      {note ? <Text style={{ fontSize: 13, lineHeight: 19, color: c.muted }}>{note}</Text> : null}
       <BigInput initial={centsToText(initialCents)} onChangeText={setText} label="Amount" keyboardType="decimal-pad" autoFocus prefix="$" />
       <View style={{ flexDirection: 'row', gap: 8 }}>
-        {onDelete ? <Button title="Remove" variant="danger" onPress={onDelete} style={{ flex: 1 }} /> : null}
+        {onDelete ? <Button title={deleteLabel} variant={deleteLabel === 'Remove' ? 'danger' : 'secondary'} onPress={onDelete} style={{ flex: 1.3 }} /> : null}
         <Button title="Save" onPress={() => cents !== null && onSave(cents)} disabled={cents === null} style={{ flex: 2 }} />
       </View>
     </>
@@ -268,11 +288,16 @@ export function StateSheet({
   visible,
   selected,
   onSelect,
+  noneLabel,
+  onSelectNone,
   onClose,
 }: {
   visible: boolean;
   selected: UsStateCode | null;
   onSelect: (code: UsStateCode) => void;
+  /** With this, the list starts with a choice that clears the state. */
+  noneLabel?: string;
+  onSelectNone?: () => void;
   onClose: () => void;
 }) {
   const c = useTheme();
@@ -280,6 +305,24 @@ export function StateSheet({
     <BottomSheet visible={visible} title="Choose your state" onClose={onClose}>
       {() => (
         <ScrollView style={{ maxHeight: 420 }} contentContainerStyle={{ paddingBottom: 4 }}>
+          {noneLabel && onSelectNone ? (
+            <Pressable
+              onPress={onSelectNone}
+              accessibilityRole="radio"
+              accessibilityState={{ selected: selected === null }}
+              style={({ pressed }) => ({
+                minHeight: 46,
+                paddingHorizontal: 12,
+                borderRadius: 12,
+                flexDirection: 'row',
+                alignItems: 'center',
+                backgroundColor: selected === null ? c.primarySoft : 'transparent',
+                opacity: pressed ? 0.6 : 1,
+              })}>
+              <Text style={{ flex: 1, fontSize: 15, fontWeight: selected === null ? '600' : '400', color: selected === null ? c.primaryText : c.text }}>{noneLabel}</Text>
+              {selected === null ? <Icon name="checkmark" size={15} color={c.primaryText} /> : null}
+            </Pressable>
+          ) : null}
           {US_STATES.map((state) => {
             const on = state.code === selected;
             return (

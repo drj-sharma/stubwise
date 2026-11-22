@@ -11,6 +11,10 @@ import {
 import type { SQLiteDatabase } from 'expo-sqlite';
 import { createStub, listAllStubs, listStubsForWorker, listWorkers } from '@/db/repo';
 import type { Business, Stub, Worker } from '@/db/types';
+import { withTaxes } from './taxes';
+
+/** Stands in for a stub that is about to be saved, so it sorts after every stub already on record. */
+const unsaved = (payDate: IsoDate) => ({ id: 'unsaved', payDate, createdAt: new Date().toISOString() });
 
 /** The pay period the business is in today, following on from the newest stub on record. */
 export function businessCurrentPeriod(business: Business, allStubs: readonly Stub[], today: IsoDate = todayIso()): PayPeriod {
@@ -27,9 +31,11 @@ export function businessCurrentPeriod(business: Business, allStubs: readonly Stu
  * Returns the new stub's id.
  */
 export async function createNextStub(db: SQLiteDatabase, business: Business, worker: Worker): Promise<string> {
-  const previous = (await listStubsForWorker(db, worker.id))[0] ?? null;
+  const stubs = await listStubsForWorker(db, worker.id);
+  const previous = stubs[0] ?? null;
   const draft = draftNextStub(worker, business.paySchedule, previous, todayIso(), business.overtimePct);
-  return createStub(db, { workerId: worker.id, period: draft.period, payDate: draft.payDate, lines: draft.lines });
+  const lines = withTaxes(draft.lines, business, worker, unsaved(draft.payDate), stubs);
+  return createStub(db, { workerId: worker.id, period: draft.period, payDate: draft.payDate, lines });
 }
 
 /** A stub for a specific period, used by the home list and by batch creation. */
@@ -39,11 +45,13 @@ export async function createStubForPeriod(
   worker: Worker,
   period: PayPeriod,
 ): Promise<string> {
-  const previous = (await listStubsForWorker(db, worker.id))[0] ?? null;
+  const stubs = await listStubsForWorker(db, worker.id);
+  const previous = stubs[0] ?? null;
   const draft = draftNextStub(worker, business.paySchedule, previous, todayIso(), business.overtimePct);
   // Keep this worker's usual gap between period end and pay date.
   const payDate = previous ? addDays(period.end, diffDays(previous.period.end, previous.payDate)) : defaultPayDate(period);
-  return createStub(db, { workerId: worker.id, period, payDate, lines: draft.lines });
+  const lines = withTaxes(draft.lines, business, worker, unsaved(payDate), stubs);
+  return createStub(db, { workerId: worker.id, period, payDate, lines });
 }
 
 /**

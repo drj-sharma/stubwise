@@ -1,12 +1,13 @@
 import { type Cents, assertCents, sumCents } from './money';
+import type { TaxCode } from './tax/types';
 import { type Minutes, payForMinutes } from './time';
 
 export type LineKind = 'earning' | 'deduction';
 
 /**
- * `manual` lines carry an amount the user typed. `calculated` is reserved for
- * amounts the app works out itself (taxes, in a later release) so they can be
- * recomputed without touching what the user entered.
+ * `manual` lines carry an amount the user typed. `calculated` lines are tax
+ * amounts the app works out itself, so they can be recomputed without
+ * touching what the user entered.
  */
 export type LineSource = 'manual' | 'calculated';
 
@@ -19,6 +20,11 @@ export interface StubLine {
   rateCents: Cents | null;
   amountCents: Cents;
   source: LineSource;
+  /**
+   * Set on tax deductions. With source `calculated` the app worked the amount
+   * out; with `manual` the user typed over it and it is left alone.
+   */
+  taxCode?: TaxCode | null;
 }
 
 export interface StubTotals {

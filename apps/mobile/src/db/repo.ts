@@ -1,4 +1,4 @@
-import { type IsoDate, type PayPeriod, type PaySchedule, type StartingYtd, type StubLine, type UsStateCode, isUsStateCode } from '@stubwise/domain';
+import { type IsoDate, type PayPeriod, type PaySchedule, type StartingYtd, type StubLine, type UsStateCode, isTaxCode, isUsStateCode, normalizeTaxProfile } from '@stubwise/domain';
 import { DEFAULT_ACCENT, DEFAULT_TEMPLATE_ID, type TemplateId, isTemplateId } from '@stubwise/templates';
 import * as Crypto from 'expo-crypto';
 import type { SQLiteDatabase } from 'expo-sqlite';
@@ -114,6 +114,7 @@ interface WorkerRow {
   rate_cents: number;
   default_deductions: string;
   starting_ytd: string | null;
+  tax_profile: string | null;
   created_at: string;
 }
 
@@ -127,6 +128,7 @@ function toWorker(row: WorkerRow): Worker {
     rateCents: row.rate_cents,
     defaultDeductions: parseJson<Worker['defaultDeductions']>(row.default_deductions, []),
     startingYtd: row.starting_ytd ? parseJson<StartingYtd | null>(row.starting_ytd, null) : null,
+    taxProfile: normalizeTaxProfile(row.tax_profile ? parseJson<unknown>(row.tax_profile, null) : null),
     createdAt: row.created_at,
   };
 }
@@ -143,8 +145,8 @@ export async function getWorker(db: SQLiteDatabase, id: string): Promise<Worker 
 export async function createWorker(db: SQLiteDatabase, worker: NewWorker): Promise<string> {
   const id = Crypto.randomUUID();
   await db.runAsync(
-    `INSERT INTO worker (id, name, address, type, pay_type, rate_cents, default_deductions, starting_ytd, created_at)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+    `INSERT INTO worker (id, name, address, type, pay_type, rate_cents, default_deductions, starting_ytd, tax_profile, created_at)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
     id,
     worker.name,
     worker.address,
@@ -153,6 +155,7 @@ export async function createWorker(db: SQLiteDatabase, worker: NewWorker): Promi
     worker.rateCents,
     JSON.stringify(worker.defaultDeductions),
     worker.startingYtd ? JSON.stringify(worker.startingYtd) : null,
+    JSON.stringify(worker.taxProfile),
     new Date().toISOString(),
   );
   return id;
@@ -160,7 +163,7 @@ export async function createWorker(db: SQLiteDatabase, worker: NewWorker): Promi
 
 export async function updateWorker(db: SQLiteDatabase, id: string, worker: NewWorker): Promise<void> {
   await db.runAsync(
-    `UPDATE worker SET name = ?, address = ?, type = ?, pay_type = ?, rate_cents = ?, default_deductions = ?, starting_ytd = ?
+    `UPDATE worker SET name = ?, address = ?, type = ?, pay_type = ?, rate_cents = ?, default_deductions = ?, starting_ytd = ?, tax_profile = ?
      WHERE id = ?`,
     worker.name,
     worker.address,
@@ -169,6 +172,7 @@ export async function updateWorker(db: SQLiteDatabase, id: string, worker: NewWo
     worker.rateCents,
     JSON.stringify(worker.defaultDeductions),
     worker.startingYtd ? JSON.stringify(worker.startingYtd) : null,
+    JSON.stringify(worker.taxProfile),
     id,
   );
 }
@@ -198,6 +202,7 @@ interface LineRow {
   rate_cents: number | null;
   amount_cents: number;
   source: StubLine['source'];
+  tax_code: string | null;
 }
 
 function attachLines(stubs: StubRow[], lines: LineRow[]): Stub[] {
@@ -212,6 +217,7 @@ function attachLines(stubs: StubRow[], lines: LineRow[]): Stub[] {
       rateCents: line.rate_cents,
       amountCents: line.amount_cents,
       source: line.source,
+      taxCode: isTaxCode(line.tax_code) ? line.tax_code : null,
     });
     byStub.set(line.stub_id, list);
   }
@@ -297,8 +303,8 @@ export async function deleteStub(db: SQLiteDatabase, id: string): Promise<void> 
 async function insertLines(db: SQLiteDatabase, stubId: string, lines: readonly StubLine[]): Promise<void> {
   for (const [position, line] of lines.entries()) {
     await db.runAsync(
-      `INSERT INTO stub_line (id, stub_id, position, kind, label, minutes, rate_cents, amount_cents, source)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      `INSERT INTO stub_line (id, stub_id, position, kind, label, minutes, rate_cents, amount_cents, source, tax_code)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       Crypto.randomUUID(),
       stubId,
       position,
@@ -308,6 +314,7 @@ async function insertLines(db: SQLiteDatabase, stubId: string, lines: readonly S
       line.rateCents,
       line.amountCents,
       line.source,
+      line.taxCode ?? null,
     );
   }
 }

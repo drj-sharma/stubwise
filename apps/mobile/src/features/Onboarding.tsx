@@ -1,4 +1,4 @@
-import { PAY_SCHEDULES, PAY_SCHEDULE_LABELS, type PaySchedule, type UsStateCode, parseDollars, usStateName } from '@stubwise/domain';
+import { PAY_SCHEDULES, PAY_SCHEDULE_LABELS, type PaySchedule, type UsStateCode, DEFAULT_TAX_PROFILE, parseDollars, usStateName } from '@stubwise/domain';
 import { DEFAULT_ACCENT, DEFAULT_TEMPLATE_ID, type TemplateId } from '@stubwise/templates';
 import * as ImagePicker from 'expo-image-picker';
 import { router } from 'expo-router';
@@ -100,6 +100,7 @@ export function Onboarding() {
           rateCents,
           defaultDeductions: [],
           startingYtd: null,
+          taxProfile: DEFAULT_TAX_PROFILE,
         });
         setFirstWorkerId(id);
       }

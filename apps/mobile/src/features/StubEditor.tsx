@@ -3,6 +3,7 @@ import {
   type IsoDate,
   type LineKind,
   type StubLine,
+  applyTaxes,
   calcStub,
   computeYtd,
   formatCents,
@@ -10,9 +11,11 @@ import {
   formatPeriod,
   formatShortDate,
   isHourlyLine,
+  isTaxOverride,
   lineAmount,
   todayIso,
   withComputedAmount,
+  yearOf,
 } from '@stubwise/domain';
 import { router } from 'expo-router';
 import { useSQLiteContext } from 'expo-sqlite';
@@ -20,13 +23,15 @@ import { useState } from 'react';
 import { Alert, Modal, Pressable, ScrollView, Text, View } from 'react-native';
 import { deleteStub, getStub, getWorker, listStubsForWorker, replaceStubLines, updateStubDates } from '@/db/repo';
 import type { Stub } from '@/db/types';
+import { taxContextFor } from '@/services/taxes';
+import { useBusiness } from '@/state/business';
 import { useQuery } from '@/state/useQuery';
 import { Amount, Avatar, Button, CardHeader, Pill, Row, Sheet, SubCard, TABULAR } from '@/ui/primitives';
 import { AddLineSheet, AmountSheet, TimeSheet } from '@/ui/sheets';
 import { useTheme } from '@/ui/theme';
 
 const EARNING_SUGGESTIONS = ['Bonus', 'Tips', 'Commission', 'Reimbursement', 'Holiday pay'];
-const DEDUCTION_SUGGESTIONS = ['Federal income tax', 'Social Security', 'Medicare', 'State income tax', 'Health insurance', 'Retirement'];
+const DEDUCTION_SUGGESTIONS = ['Health insurance', 'Retirement', 'Garnishment', 'Uniform', 'Advance repayment'];
 
 type OpenSheet = { kind: 'time'; index: number } | { kind: 'amount'; index: number } | { kind: 'add'; lineKind: LineKind } | { kind: 'dates' } | null;
 
@@ -38,6 +43,7 @@ type OpenSheet = { kind: 'time'; index: number } | { kind: 'amount'; index: numb
 export function StubEditor({ stubId, onChanged, footer }: { stubId: string; onChanged?: () => void; footer?: React.ReactNode }) {
   const c = useTheme();
   const db = useSQLiteContext();
+  const business = useBusiness();
   const [sheet, setSheet] = useState<OpenSheet>(null);
   const { data, reload } = useQuery(
     async (database) => {
@@ -64,8 +70,12 @@ export function StubEditor({ stubId, onChanged, footer }: { stubId: string; onCh
   const earnings = stub.lines.map((line, index) => ({ line, index })).filter((entry) => entry.line.kind === 'earning');
   const deductions = stub.lines.map((line, index) => ({ line, index })).filter((entry) => entry.line.kind === 'deduction');
 
+  const taxContext = taxContextFor(business, worker, stub, workerStubs);
+  const taxStatus = applyTaxes(stub.lines, taxContext).status;
+
+  // Every change to the lines brings the calculated taxes back in step with the pay.
   const saveLines = async (lines: StubLine[]): Promise<void> => {
-    await replaceStubLines(db, stub.id, lines.map(withComputedAmount));
+    await replaceStubLines(db, stub.id, applyTaxes(lines.map(withComputedAmount), taxContext).lines);
     setSheet(null);
     await reload();
     onChanged?.();
@@ -109,8 +119,23 @@ export function StubEditor({ stubId, onChanged, footer }: { stubId: string; onCh
         title={line.label}
         strong={line.kind === 'earning'}
         last={last}
+        subtitle={
+          !line.taxCode
+            ? undefined
+            : line.source === 'calculated'
+              ? 'Calculated'
+              : isTaxOverride(line, taxContext)
+                ? 'Typed by hand'
+                : 'Enter by hand'
+        }
+        minHeight={line.taxCode ? 52 : undefined}
         onPress={() => setSheet({ kind: 'amount', index })}
-        right={<Amount value={formatCents(line.amountCents)} />}
+        right={
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+            {isTaxOverride(line, taxContext) ? <Pill tone="warn" label="Edited" /> : null}
+            <Amount value={formatCents(line.amountCents)} />
+          </View>
+        }
       />
     );
 
@@ -148,6 +173,11 @@ export function StubEditor({ stubId, onChanged, footer }: { stubId: string; onCh
               <Row title="None" subtitle={worker.type === 'contractor' ? 'Nothing is withheld for a 1099 contractor' : 'Add taxes or other deductions'} last />
             ) : null}
           </SubCard>
+          {taxStatus === 'no-data-for-year' ? (
+            <Text style={{ fontSize: 12, lineHeight: 18, color: c.warnText, marginHorizontal: 4 }}>
+              The {yearOf(stub.payDate)} tax tables are not in the app yet, so taxes are not calculated for this pay date. Enter them by hand.
+            </Text>
+          ) : null}
 
           <View style={{ padding: 12, borderRadius: 14, backgroundColor: c.innerStrong, gap: 8 }}>
             <SummaryLine label="Gross pay" value={formatCents(totals.grossCents)} />
@@ -178,8 +208,20 @@ export function StubEditor({ stubId, onChanged, footer }: { stubId: string; onCh
         title={active?.label ?? ''}
         initialCents={active?.amountCents ?? 0}
         onClose={() => setSheet(null)}
-        onSave={(amountCents) => sheet?.kind === 'amount' && void patchLine(sheet.index, { amountCents })}
-        onDelete={() => sheet?.kind === 'amount' && void removeLine(sheet.index)}
+        note={
+          active?.taxCode && active.source === 'calculated'
+            ? 'The app calculated this. If you type a different amount it is kept as typed and marked Edited.'
+            : undefined
+        }
+        // Typing over a tax keeps it as typed; removing the typed figure brings the calculated one back.
+        onSave={(amountCents) => {
+          if (sheet?.kind !== 'amount') return;
+          // Saving the calculated figure unchanged is not an edit.
+          if (active?.taxCode && active.source === 'calculated' && amountCents === active.amountCents) return setSheet(null);
+          void patchLine(sheet.index, active?.taxCode ? { amountCents, source: 'manual' } : { amountCents });
+        }}
+        onDelete={active?.taxCode && active.source === 'calculated' ? undefined : () => sheet?.kind === 'amount' && void removeLine(sheet.index)}
+        deleteLabel={active && isTaxOverride(active, taxContext) ? 'Use calculated' : undefined}
       />
       <AddLineSheet
         visible={sheet?.kind === 'add'}
@@ -194,6 +236,9 @@ export function StubEditor({ stubId, onChanged, footer }: { stubId: string; onCh
         onClose={() => setSheet(null)}
         onSave={async (period, payDate) => {
           await updateStubDates(db, stub.id, period, payDate);
+          // A different pay date can change the tax year and the pay counted before this stub.
+          const moved = { ...stub, payDate };
+          await replaceStubLines(db, stub.id, applyTaxes(stub.lines, taxContextFor(business, worker, moved, workerStubs)).lines);
           setSheet(null);
           await reload();
           onChanged?.();

@@ -1,4 +1,4 @@
-import type { Cents, IsoDate, PayPeriod, PaySchedule, StartingYtd, StubLine, UsStateCode } from '@stubwise/domain';
+import type { Cents, IsoDate, PayPeriod, PaySchedule, StartingYtd, StubLine, TaxProfile, UsStateCode } from '@stubwise/domain';
 import type { TemplateId } from '@stubwise/templates';
 import type { Appearance } from '@/ui/theme';
 
@@ -30,6 +30,8 @@ export interface Worker {
   rateCents: Cents;
   defaultDeductions: { label: string; amountCents: Cents }[];
   startingYtd: StartingYtd | null;
+  /** W-4 answers and work state. Ignored for contractors, who have nothing withheld. */
+  taxProfile: TaxProfile;
   createdAt: string;
 }
 

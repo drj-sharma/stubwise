@@ -61,6 +61,9 @@ const MIGRATIONS: readonly string[] = [
   `,
   // The state the business operates in: the default work state for its workers.
   `ALTER TABLE business ADD COLUMN state TEXT;`,
+  // Tax settings per worker (W-4 answers, work state) and a marker on tax lines.
+  `ALTER TABLE worker ADD COLUMN tax_profile TEXT;
+   ALTER TABLE stub_line ADD COLUMN tax_code TEXT;`,
 ];
 
 export async function migrateDatabase(db: SQLiteDatabase): Promise<void> {

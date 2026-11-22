@@ -74,3 +74,15 @@ function isAtOrBefore(stub: YtdStub, target: YtdStub): boolean {
   if (stub.payDate !== target.payDate) return stub.payDate < target.payDate;
   return stub.createdAt <= target.createdAt;
 }
+
+/**
+ * Gross pay this calendar year before `target`: starting balances plus every
+ * earlier stub. Social Security's wage base and Additional Medicare Tax depend on it.
+ */
+export function priorYtdGross(
+  target: Pick<YtdStub, 'id' | 'payDate' | 'createdAt'>,
+  workerStubs: readonly YtdStub[],
+  startingYtd: StartingYtd | null,
+): Cents {
+  return computeYtd({ ...target, lines: [] }, workerStubs, startingYtd).grossCents;
+}

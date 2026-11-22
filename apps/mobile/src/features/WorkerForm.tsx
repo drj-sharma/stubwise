@@ -1,12 +1,25 @@
-import { type Cents, type LineKind, formatCents, parseDollars, todayIso } from '@stubwise/domain';
+import {
+  type Cents,
+  type FilingStatus,
+  type LineKind,
+  type TaxProfile,
+  type W4,
+  DEFAULT_TAX_PROFILE,
+  formatCents,
+  parseDollars,
+  stateTaxSupport,
+  todayIso,
+  usStateName,
+} from '@stubwise/domain';
 import { router } from 'expo-router';
 import { useSQLiteContext } from 'expo-sqlite';
 import { useState } from 'react';
-import { Alert, ScrollView, Text, TextInput, View } from 'react-native';
+import { Alert, ScrollView, Switch, Text, TextInput, View } from 'react-native';
 import { createWorker, deleteWorker, updateWorker } from '@/db/repo';
 import type { NewWorker, Worker } from '@/db/types';
 import { Amount, Button, CardHeader, Field, Row, SectionLabel, Segmented, Sheet, StatTile, SubCard, TABULAR } from '@/ui/primitives';
-import { AddLineSheet, AmountSheet } from '@/ui/sheets';
+import { useBusiness } from '@/state/business';
+import { AddLineSheet, AmountSheet, StateSheet } from '@/ui/sheets';
 import { useTheme } from '@/ui/theme';
 
 type Deduction = { label: string; amountCents: Cents };
@@ -16,10 +29,22 @@ const DEDUCTION_SUGGESTIONS = ['Health insurance', 'Retirement', 'Garnishment', 
 const TAX_SUGGESTIONS = ['Federal income tax', 'Social Security', 'Medicare', 'State income tax', 'Health insurance'];
 const EARNING_SUGGESTIONS = ['Regular', 'Overtime', 'Salary', 'Bonus', 'Tips'];
 
+/** The dollar entries on Form W-4, in the order they appear on the form. */
+const W4_AMOUNTS: { key: 'dependentsCents' | 'otherIncomeCents' | 'deductionsCents' | 'extraWithholdingCents'; title: string; step: string }[] = [
+  { key: 'dependentsCents', title: 'Dependents and other credits', step: 'Step 3 · per year' },
+  { key: 'otherIncomeCents', title: 'Other income', step: 'Step 4(a) · per year' },
+  { key: 'deductionsCents', title: 'Deductions', step: 'Step 4(b) · per year' },
+  { key: 'extraWithholdingCents', title: 'Extra withholding', step: 'Step 4(c) · each pay period' },
+];
+
 /** Add or edit a worker: who they are, how they are paid, what comes off every stub, and what they were paid before the app. */
 export function WorkerForm({ existing }: { existing: Worker | null }) {
   const c = useTheme();
   const db = useSQLiteContext();
+  const business = useBusiness();
+  const [tax, setTax] = useState<TaxProfile>(existing?.taxProfile ?? DEFAULT_TAX_PROFILE);
+  const setW4 = (patch: Partial<W4>): void => setTax((current) => ({ ...current, w4: { ...current.w4, ...patch } }));
+  const workState = tax.state ?? business.state;
   const year = Number(todayIso().slice(0, 4));
   const [name, setName] = useState(existing?.name ?? '');
   const [address, setAddress] = useState(existing?.address ?? '');
@@ -35,6 +60,8 @@ export function WorkerForm({ existing }: { existing: Worker | null }) {
     | { kind: 'editDeduction'; index: number }
     | { kind: 'addStarting'; lineKind: LineKind }
     | { kind: 'editStarting'; index: number }
+    | { kind: 'w4Amount'; index: number }
+    | { kind: 'state' }
     | null
   >(null);
   const [saving, setSaving] = useState(false);
@@ -57,6 +84,7 @@ export function WorkerForm({ existing }: { existing: Worker | null }) {
       // Contractors have nothing withheld, so stored defaults would only confuse a later switch back.
       defaultDeductions: type === 'contractor' ? [] : deductions,
       startingYtd: starting.length > 0 ? { year, lines: starting } : null,
+      taxProfile: tax,
     };
     setSaving(true);
     try {
@@ -164,6 +192,76 @@ export function WorkerForm({ existing }: { existing: Worker | null }) {
             </SubCard>
           ) : null}
 
+          {type === 'employee' ? (
+            <SubCard>
+              <CardHeader title="Taxes" />
+              <Row
+                title="Calculate taxes on stubs"
+                subtitle="Federal income tax, Social Security, Medicare"
+                right={<Switch value={tax.calculate} onValueChange={(calculate) => setTax((current) => ({ ...current, calculate }))} trackColor={{ true: c.primary }} accessibilityLabel="Calculate taxes on stubs" />}
+                minHeight={56}
+                last={!tax.calculate}
+              />
+              {tax.calculate ? (
+                <>
+                  <View style={{ padding: 10, gap: 6, borderBottomWidth: 1, borderBottomColor: c.border }}>
+                    <Text style={{ fontSize: 12, color: c.muted, marginHorizontal: 2 }}>Filing status (Form W-4, Step 1c)</Text>
+                    <Segmented<FilingStatus>
+                      value={tax.w4.filingStatus}
+                      onChange={(filingStatus) => setW4({ filingStatus })}
+                      options={[
+                        { value: 'single', label: 'Single' },
+                        { value: 'married', label: 'Married' },
+                        { value: 'head', label: 'Head of house' },
+                      ]}
+                    />
+                  </View>
+                  <Row
+                    title="Two jobs, or spouse also works"
+                    subtitle="Step 2(c) box is checked"
+                    minHeight={56}
+                    right={<Switch value={tax.w4.multipleJobs} onValueChange={(multipleJobs) => setW4({ multipleJobs })} trackColor={{ true: c.primary }} accessibilityLabel="Step 2(c) box is checked" />}
+                  />
+                  {W4_AMOUNTS.map((item, index) => (
+                    <Row
+                      key={item.key}
+                      title={item.title}
+                      subtitle={item.step}
+                      minHeight={56}
+                      right={<Amount value={formatCents(tax.w4[item.key])} />}
+                      onPress={() => setSheet({ kind: 'w4Amount', index })}
+                    />
+                  ))}
+                  <Row
+                    title="Exempt from federal income tax"
+                    subtitle="Only if the worker claimed it on Form W-4"
+                    minHeight={56}
+                    right={<Switch value={tax.w4.exempt} onValueChange={(exempt) => setW4({ exempt })} trackColor={{ true: c.primary }} accessibilityLabel="Exempt from federal income tax" />}
+                  />
+                  <Row
+                    title={workState ? usStateName(workState) : 'Choose a state'}
+                    subtitle={
+                      !workState
+                        ? 'Work state'
+                        : stateTaxSupport(workState) === 'none'
+                          ? 'Work state · no state income tax on wages'
+                          : 'Work state · state tax is typed in by hand for now'
+                    }
+                    minHeight={56}
+                    strong
+                    last
+                    onPress={() => setSheet({ kind: 'state' })}
+                  />
+                </>
+              ) : null}
+            </SubCard>
+          ) : null}
+          {type === 'employee' && tax.calculate ? (
+            <Text style={{ fontSize: 12, lineHeight: 18, color: c.muted, marginHorizontal: 2 }}>
+              Copy these from the worker’s Form W-4. With no form on file, leave them as they are: the IRS rule is to withhold as single with no adjustments.
+            </Text>
+          ) : null}
+
           <SubCard>
             <CardHeader title={`Paid in ${year} before this app (optional)`} />
             {starting.map((line, index) => (
@@ -247,6 +345,33 @@ export function WorkerForm({ existing }: { existing: Worker | null }) {
         onDelete={() => {
           if (sheet?.kind !== 'editStarting') return;
           setStarting((list) => list.filter((_, i) => i !== sheet.index));
+          setSheet(null);
+        }}
+      />
+      <AmountSheet
+        visible={sheet?.kind === 'w4Amount'}
+        title={sheet?.kind === 'w4Amount' ? (W4_AMOUNTS[sheet.index]?.title ?? '') : ''}
+        note={sheet?.kind === 'w4Amount' ? `Form W-4, ${W4_AMOUNTS[sheet.index]?.step ?? ''}` : undefined}
+        initialCents={sheet?.kind === 'w4Amount' ? tax.w4[W4_AMOUNTS[sheet.index]?.key ?? 'dependentsCents'] : 0}
+        onClose={() => setSheet(null)}
+        onSave={(cents) => {
+          if (sheet?.kind !== 'w4Amount') return;
+          const item = W4_AMOUNTS[sheet.index];
+          if (item) setW4({ [item.key]: cents });
+          setSheet(null);
+        }}
+      />
+      <StateSheet
+        visible={sheet?.kind === 'state'}
+        selected={tax.state}
+        noneLabel={business.state ? `Same as the business (${usStateName(business.state)})` : 'Same as the business'}
+        onSelectNone={() => {
+          setTax((current) => ({ ...current, state: null }));
+          setSheet(null);
+        }}
+        onClose={() => setSheet(null)}
+        onSelect={(state) => {
+          setTax((current) => ({ ...current, state }));
           setSheet(null);
         }}
       />
