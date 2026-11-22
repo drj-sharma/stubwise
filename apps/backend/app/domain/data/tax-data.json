@@ -1,0 +1,554 @@
+{
+ "federal": {
+  "2026": {
+   "year": 2026,
+   "standardAdjustmentCents": {
+    "married": 1290000,
+    "single": 860000,
+    "head": 860000
+   },
+   "standard": {
+    "married": [
+     [
+      0,
+      0,
+      0
+     ],
+     [
+      19300,
+      0,
+      10
+     ],
+     [
+      44100,
+      248000,
+      12
+     ],
+     [
+      120100,
+      1160000,
+      22
+     ],
+     [
+      230700,
+      3593200,
+      24
+     ],
+     [
+      422850,
+      8204800,
+      32
+     ],
+     [
+      531750,
+      11689600,
+      35
+     ],
+     [
+      788000,
+      20658350,
+      37
+     ]
+    ],
+    "single": [
+     [
+      0,
+      0,
+      0
+     ],
+     [
+      7500,
+      0,
+      10
+     ],
+     [
+      19900,
+      124000,
+      12
+     ],
+     [
+      57900,
+      580000,
+      22
+     ],
+     [
+      113200,
+      1796600,
+      24
+     ],
+     [
+      209275,
+      4102400,
+      32
+     ],
+     [
+      263725,
+      5844800,
+      35
+     ],
+     [
+      648100,
+      19297925,
+      37
+     ]
+    ],
+    "head": [
+     [
+      0,
+      0,
+      0
+     ],
+     [
+      15550,
+      0,
+      10
+     ],
+     [
+      33250,
+      177000,
+      12
+     ],
+     [
+      83000,
+      774000,
+      22
+     ],
+     [
+      121250,
+      1615500,
+      24
+     ],
+     [
+      217300,
+      3920700,
+      32
+     ],
+     [
+      271750,
+      5663100,
+      35
+     ],
+     [
+      656150,
+      19117100,
+      37
+     ]
+    ]
+   },
+   "step2Checkbox": {
+    "married": [
+     [
+      0,
+      0,
+      0
+     ],
+     [
+      16100,
+      0,
+      10
+     ],
+     [
+      28500,
+      124000,
+      12
+     ],
+     [
+      66500,
+      580000,
+      22
+     ],
+     [
+      121800,
+      1796600,
+      24
+     ],
+     [
+      217875,
+      4102400,
+      32
+     ],
+     [
+      272325,
+      5844800,
+      35
+     ],
+     [
+      400450,
+      10329175,
+      37
+     ]
+    ],
+    "single": [
+     [
+      0,
+      0,
+      0
+     ],
+     [
+      8050,
+      0,
+      10
+     ],
+     [
+      14250,
+      62000,
+      12
+     ],
+     [
+      33250,
+      290000,
+      22
+     ],
+     [
+      60900,
+      898300,
+      24
+     ],
+     [
+      108938,
+      2051200,
+      32
+     ],
+     [
+      136163,
+      2922400,
+      35
+     ],
+     [
+      328350,
+      9648963,
+      37
+     ]
+    ],
+    "head": [
+     [
+      0,
+      0,
+      0
+     ],
+     [
+      12075,
+      0,
+      10
+     ],
+     [
+      20925,
+      88500,
+      12
+     ],
+     [
+      45800,
+      387000,
+      22
+     ],
+     [
+      64925,
+      807750,
+      24
+     ],
+     [
+      112950,
+      1960350,
+      32
+     ],
+     [
+      140175,
+      2831550,
+      35
+     ],
+     [
+      332375,
+      9558550,
+      37
+     ]
+    ]
+   },
+   "socialSecurity": {
+    "rateBasisPoints": 620,
+    "wageBaseCents": 18450000
+   },
+   "medicare": {
+    "rateBasisPoints": 145,
+    "additionalRateBasisPoints": 90,
+    "additionalThresholdCents": 20000000
+   }
+  }
+ },
+ "states": {
+  "2026": {
+   "IL": {
+    "kind": "flat",
+    "rateBasisPoints": 495,
+    "allowanceCents": 292500,
+    "additionalAllowanceCents": 100000,
+    "round": "cent",
+    "certificate": {
+     "form": "IL-W-4",
+     "allowances": "Line 1 allowances",
+     "additionalAllowances": "Line 2 allowances"
+    },
+    "source": "https://tax.illinois.gov/content/dam/soi/en/web/tax/forms/withholding/documents/currentyear/il-700-t.pdf",
+    "readOn": "2026-11-22"
+   },
+   "KY": {
+    "kind": "flat",
+    "rateBasisPoints": 350,
+    "standardDeductionCents": {
+     "single": 336000,
+     "married": 336000,
+     "head": 336000
+    },
+    "round": "cent",
+    "source": "https://revenue.ky.gov/Forms/2026%20Withholding%20Formula.pdf",
+    "readOn": "2026-11-22"
+   },
+   "NC": {
+    "kind": "flat",
+    "rateBasisPoints": 409,
+    "standardDeductionCents": {
+     "single": 1275000,
+     "married": 1275000,
+     "head": 1912500
+    },
+    "allowanceCents": 250000,
+    "round": "dollar",
+    "certificate": {
+     "form": "NC-4",
+     "allowances": "Allowances"
+    },
+    "source": "https://www.ncdor.gov/income-tax-withholding-tables-and-instructions-employers/open",
+    "readOn": "2026-11-22"
+   },
+   "PA": {
+    "kind": "flat",
+    "rateBasisPoints": 307,
+    "round": "cent",
+    "source": "https://www.pa.gov/agencies/revenue/resources/tax-types-and-information/employer-withholding",
+    "readOn": "2026-11-22"
+   }
+  }
+ },
+ "noWageIncomeTaxStates": [
+  "AK",
+  "FL",
+  "NV",
+  "NH",
+  "SD",
+  "TN",
+  "TX",
+  "WA",
+  "WY"
+ ],
+ "payPeriodsPerYear": {
+  "weekly": 52,
+  "biweekly": 26,
+  "semimonthly": 24,
+  "monthly": 12
+ },
+ "usStates": [
+  {
+   "code": "AL",
+   "name": "Alabama"
+  },
+  {
+   "code": "AK",
+   "name": "Alaska"
+  },
+  {
+   "code": "AZ",
+   "name": "Arizona"
+  },
+  {
+   "code": "AR",
+   "name": "Arkansas"
+  },
+  {
+   "code": "CA",
+   "name": "California"
+  },
+  {
+   "code": "CO",
+   "name": "Colorado"
+  },
+  {
+   "code": "CT",
+   "name": "Connecticut"
+  },
+  {
+   "code": "DE",
+   "name": "Delaware"
+  },
+  {
+   "code": "DC",
+   "name": "District of Columbia"
+  },
+  {
+   "code": "FL",
+   "name": "Florida"
+  },
+  {
+   "code": "GA",
+   "name": "Georgia"
+  },
+  {
+   "code": "HI",
+   "name": "Hawaii"
+  },
+  {
+   "code": "ID",
+   "name": "Idaho"
+  },
+  {
+   "code": "IL",
+   "name": "Illinois"
+  },
+  {
+   "code": "IN",
+   "name": "Indiana"
+  },
+  {
+   "code": "IA",
+   "name": "Iowa"
+  },
+  {
+   "code": "KS",
+   "name": "Kansas"
+  },
+  {
+   "code": "KY",
+   "name": "Kentucky"
+  },
+  {
+   "code": "LA",
+   "name": "Louisiana"
+  },
+  {
+   "code": "ME",
+   "name": "Maine"
+  },
+  {
+   "code": "MD",
+   "name": "Maryland"
+  },
+  {
+   "code": "MA",
+   "name": "Massachusetts"
+  },
+  {
+   "code": "MI",
+   "name": "Michigan"
+  },
+  {
+   "code": "MN",
+   "name": "Minnesota"
+  },
+  {
+   "code": "MS",
+   "name": "Mississippi"
+  },
+  {
+   "code": "MO",
+   "name": "Missouri"
+  },
+  {
+   "code": "MT",
+   "name": "Montana"
+  },
+  {
+   "code": "NE",
+   "name": "Nebraska"
+  },
+  {
+   "code": "NV",
+   "name": "Nevada"
+  },
+  {
+   "code": "NH",
+   "name": "New Hampshire"
+  },
+  {
+   "code": "NJ",
+   "name": "New Jersey"
+  },
+  {
+   "code": "NM",
+   "name": "New Mexico"
+  },
+  {
+   "code": "NY",
+   "name": "New York"
+  },
+  {
+   "code": "NC",
+   "name": "North Carolina"
+  },
+  {
+   "code": "ND",
+   "name": "North Dakota"
+  },
+  {
+   "code": "OH",
+   "name": "Ohio"
+  },
+  {
+   "code": "OK",
+   "name": "Oklahoma"
+  },
+  {
+   "code": "OR",
+   "name": "Oregon"
+  },
+  {
+   "code": "PA",
+   "name": "Pennsylvania"
+  },
+  {
+   "code": "RI",
+   "name": "Rhode Island"
+  },
+  {
+   "code": "SC",
+   "name": "South Carolina"
+  },
+  {
+   "code": "SD",
+   "name": "South Dakota"
+  },
+  {
+   "code": "TN",
+   "name": "Tennessee"
+  },
+  {
+   "code": "TX",
+   "name": "Texas"
+  },
+  {
+   "code": "UT",
+   "name": "Utah"
+  },
+  {
+   "code": "VT",
+   "name": "Vermont"
+  },
+  {
+   "code": "VA",
+   "name": "Virginia"
+  },
+  {
+   "code": "WA",
+   "name": "Washington"
+  },
+  {
+   "code": "WV",
+   "name": "West Virginia"
+  },
+  {
+   "code": "WI",
+   "name": "Wisconsin"
+  },
+  {
+   "code": "WY",
+   "name": "Wyoming"
+  }
+ ]
+}
