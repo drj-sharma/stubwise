@@ -179,7 +179,11 @@ importers:
         specifier: ~6.0.3
         version: 6.0.3
 
-  packages/domain: {}
+  packages/domain:
+    devDependencies:
+      '@types/node':
+        specifier: ^24.19.2
+        version: 24.19.2
 
   packages/templates:
     dependencies:

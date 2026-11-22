@@ -10,7 +10,8 @@ const STATE_RULES: Readonly<Record<number, Partial<Record<UsStateCode, StateRule
  * (Some of them have other worker-paid payroll taxes, such as Washington's
  * paid leave premium; those are not handled yet.)
  */
-const NO_WAGE_INCOME_TAX: ReadonlySet<UsStateCode> = new Set(['AK', 'FL', 'NV', 'NH', 'SD', 'TN', 'TX', 'WA', 'WY']);
+export const NO_WAGE_INCOME_TAX_STATES: readonly UsStateCode[] = ['AK', 'FL', 'NV', 'NH', 'SD', 'TN', 'TX', 'WA', 'WY'];
+const NO_WAGE_INCOME_TAX: ReadonlySet<UsStateCode> = new Set(NO_WAGE_INCOME_TAX_STATES);
 
 export type StateTaxResult =
   /** The state does not tax wages. */
