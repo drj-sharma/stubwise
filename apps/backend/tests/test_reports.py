@@ -65,7 +65,7 @@ def test_reports_download_as_csv(client: TestClient, auth: dict[str, str]) -> No
     assert response.status_code == 200
     assert response.headers["content-type"].startswith("text/csv")
     assert "attachment" in response.headers["content-disposition"]
-    assert response.text.splitlines()[1] == "Worker,Pay,Hours,Amount"
+    assert response.text.splitlines()[1] == "Worker,Pay,Hours,Quantity,Unit,Amount"
     deductions = client.get(
         "/v1/reports/deductions", headers=auth, params={"from": pay_date, "to": pay_date, "format": "csv"}
     )

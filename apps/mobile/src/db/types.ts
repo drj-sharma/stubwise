@@ -1,4 +1,4 @@
-import type { Cents, IsoDate, PayPeriod, PaySchedule, StartingYtd, StubLine, TaxProfile, UsStateCode } from '@stubwise/domain';
+import type { Cents, IsoDate, PayPeriod, PaySchedule, PayType, StartingYtd, StubLine, TaxProfile, UsStateCode } from '@stubwise/domain';
 import type { TemplateId } from '@stubwise/templates';
 import type { TaxStatus, Totals, YtdOut } from '@/api/types';
 import type { Appearance } from '@/ui/theme';
@@ -38,8 +38,8 @@ export interface Worker {
   /** Where "Send to worker" addresses the stub; empty when not given. */
   email: string;
   type: 'employee' | 'contractor';
-  payType: 'hourly' | 'salary';
-  /** Hourly rate, or salary per pay period, in cents. */
+  payType: PayType;
+  /** Hourly rate, salary per pay period, or rate per mile, load, day or piece, in cents. */
   rateCents: Cents;
   defaultDeductions: { label: string; amountCents: Cents }[];
   startingYtd: StartingYtd | null;
@@ -67,6 +67,8 @@ export interface Stub {
   totals: Totals;
   ytd: YtdOut;
   taxStatus: TaxStatus;
+  /** Plain-language notes on how the taxes were worked out, such as how bonus pay was taxed. */
+  taxNotes: string[];
 }
 
 export type NewWorker = Omit<Worker, 'id' | 'createdAt' | 'version'>;

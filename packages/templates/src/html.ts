@@ -1,4 +1,4 @@
-import { formatCents, formatClock, formatDateWithYear, formatPeriod } from '@stubwise/domain';
+import { formatCents, formatClock, formatQuantityWithUnit, formatDateWithYear, formatPeriod } from '@stubwise/domain';
 import type { StubDocument, StubDocumentRow } from './document';
 
 /** Everything typed by a person passes through here before reaching the HTML. */
@@ -35,12 +35,21 @@ export function logoHtml(document: StubDocument, className: string): string {
     : `<div class="${className} mono">${monogram(document.business.name)}</div>`;
 }
 
+/** Worked time as h:mm for an hourly line, or the units ("842.5 miles") for a per-unit line. */
 export function hoursCell(row: StubDocumentRow): string {
+  if (row.quantityMilli != null && row.unit != null) return formatQuantityWithUnit(row.quantityMilli, row.unit);
   return row.minutes === null ? '' : formatClock(row.minutes);
 }
 
+/** The hourly rate, or the rate per unit ("$0.62/mile"). */
 export function rateCell(row: StubDocumentRow): string {
-  return row.rateCents === null ? '' : money(row.rateCents);
+  if (row.rateCents === null) return '';
+  return row.quantityMilli != null && row.unit != null ? `${money(row.rateCents)}/${row.unit}` : money(row.rateCents);
+}
+
+/** True when the row shows worked time or units beside its rate. */
+export function hasQuantity(row: StubDocumentRow): boolean {
+  return row.minutes !== null || (row.quantityMilli ?? null) !== null;
 }
 
 export function periodText(document: StubDocument): string {

@@ -7,7 +7,7 @@ from collections.abc import Sequence
 from typing import Literal, NotRequired, TypedDict
 
 from .money import Cents, assert_cents, sum_cents
-from .time import Minutes, pay_for_minutes
+from .time import Minutes, pay_for_minutes, pay_for_quantity
 
 LineKind = Literal["earning", "deduction"]
 LineSource = Literal["manual", "calculated"]
@@ -30,6 +30,14 @@ class StubLine(TypedDict):
     amountCents: Cents
     source: LineSource
     taxCode: NotRequired[TaxCode | None]
+    quantityMilli: NotRequired[int | None]
+    """Units of work for a per-mile, per-load, per-day or per-piece earning, in thousandths of a unit
+    (12.5 miles is 12500). Set with ``rateCents`` (the rate per unit) and with ``minutes`` None."""
+    unit: NotRequired[str | None]
+    """What the quantity counts: "mile", "load", "day" or "piece"."""
+    supplemental: NotRequired[bool]
+    """Earnings only: True when federal income tax is withheld on the line at the flat supplemental
+    rate (a bonus or commission) instead of as ordinary pay. Absent or False: ordinary."""
 
 
 class StubTotals(TypedDict):
@@ -44,10 +52,28 @@ def is_hourly_line(line: StubLine) -> bool:
     return line["minutes"] is not None and line["rateCents"] is not None
 
 
+def is_quantity_line(line: StubLine) -> bool:
+    """True when the amount is a quantity of units multiplied by a rate per unit."""
+    return line["minutes"] is None and line["rateCents"] is not None and line.get("quantityMilli") is not None
+
+
+def is_supplemental_line(line: StubLine) -> bool:
+    """True for an earning line taxed at the flat supplemental rate."""
+    return line["kind"] == "earning" and line.get("supplemental") is True
+
+
+def default_supplemental(label: str) -> bool:
+    """Whether a new line with this label starts out as supplemental pay: only "Bonus" does."""
+    return js_trim(label).lower() == "bonus"
+
+
 def line_amount(line: StubLine) -> Cents:
-    """The amount a line should carry: time x rate for hourly lines, the typed amount otherwise."""
+    """The amount a line should carry: time x rate for hourly lines, quantity x rate for per-unit
+    lines, the typed amount otherwise."""
     if line["minutes"] is not None and line["rateCents"] is not None:
         return pay_for_minutes(line["minutes"], line["rateCents"])
+    if is_quantity_line(line):
+        return pay_for_quantity(line["quantityMilli"], line["rateCents"])  # type: ignore[typeddict-item, arg-type]
     assert_cents(line["amountCents"])
     return line["amountCents"]
 

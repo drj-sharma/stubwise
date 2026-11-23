@@ -88,4 +88,7 @@ export const FEDERAL_2026: FederalTaxData = {
   },
   socialSecurity: { rateBasisPoints: 620, wageBaseCents: 184_500_00 },
   medicare: { rateBasisPoints: 145, additionalRateBasisPoints: 90, additionalThresholdCents: 200_000_00 },
+  // Pub. 15 (2026), "Supplemental Wages": the flat rate for supplemental wages of up to $1 million in a year.
+  // (Supplemental wages above $1 million a year are withheld at the highest rate; that is not modelled.)
+  supplemental: { rateBasisPoints: 2200 },
 };

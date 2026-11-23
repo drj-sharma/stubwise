@@ -221,6 +221,11 @@ class StubLine(Base):
     amount_cents: Mapped[int] = mapped_column(BigInteger)
     source: Mapped[str] = mapped_column(String(10))
     tax_code: Mapped[str | None] = mapped_column(String(20))
+    # Per-mile, per-load, per-day and per-piece earnings: units in thousandths, and what they count.
+    quantity_milli: Mapped[int | None] = mapped_column(BigInteger)
+    unit: Mapped[str | None] = mapped_column(String(12))
+    # Earnings taxed at the flat federal supplemental rate; null on lines saved before this existed.
+    supplemental: Mapped[bool | None] = mapped_column(Boolean)
 
 
 # ---- Orders -------------------------------------------------------------------

@@ -1,7 +1,7 @@
 """worker email
 
 Revision ID: 0006
-Revises: 0004
+Revises: 0005
 
 Revision 0005 is taken by two other branches (first pay date, stub extras). When
 they merge, re-point ``down_revision`` at whichever of them lands last.
@@ -13,7 +13,7 @@ import sqlalchemy as sa
 from alembic import op
 
 revision = "0006"
-down_revision = "0004"
+down_revision = "0005"
 branch_labels = None
 depends_on = None
 

@@ -5,7 +5,7 @@ from __future__ import annotations
 from collections.abc import Sequence
 from typing import Literal, TypedDict
 
-from .calc_stub import StubLine, js_trim, with_computed_amount
+from .calc_stub import StubLine, is_quantity_line, js_trim, with_computed_amount
 from .money import Cents
 from .pay_period import (
     IsoDate,
@@ -17,6 +17,7 @@ from .pay_period import (
     next_period,
     period_containing,
 )
+from .pay_types import QUANTITY_PAY_WORDS, PayType, is_quantity_pay_type, pay_type_for_unit
 from .time import DEFAULT_OVERTIME_MULTIPLIER_PCT, overtime_rate_cents
 
 REGULAR_LABEL = "Regular"
@@ -30,9 +31,9 @@ class DefaultDeduction(TypedDict):
 
 
 class WorkerPayProfile(TypedDict):
-    payType: Literal["hourly", "salary"]
+    payType: PayType
     rateCents: Cents
-    """Hourly rate, or salary per pay period."""
+    """Hourly rate, salary per pay period, or rate per mile, load, day or piece."""
     type: Literal["employee", "contractor"]
     defaultDeductions: Sequence[DefaultDeduction]
 
@@ -87,12 +88,22 @@ def draft_next_stub(
         label = js_trim(line["label"]).lower()
         if line["kind"] == "earning":
             if line["minutes"] is not None and line["rateCents"] is not None:
-                rate = (
-                    overtime_rate_cents(worker["rateCents"], overtime_multiplier_pct)
-                    if label == OVERTIME_LABEL.lower()
-                    else worker["rateCents"]
-                )
+                if is_quantity_pay_type(worker["payType"]):
+                    # A per-unit worker's rate is not an hourly rate: hourly lines keep their own.
+                    rate = line["rateCents"]
+                elif label == OVERTIME_LABEL.lower():
+                    rate = overtime_rate_cents(worker["rateCents"], overtime_multiplier_pct)
+                else:
+                    rate = worker["rateCents"]
                 lines.append(with_computed_amount({**line, "rateCents": rate}))
+            elif is_quantity_line(line):
+                # Units carry over like hours. The worker's rate applies to their own unit; other units keep theirs.
+                same_unit = (
+                    is_quantity_pay_type(worker["payType"]) and pay_type_for_unit(line.get("unit")) == worker["payType"]
+                )
+                lines.append(
+                    with_computed_amount({**line, "rateCents": worker["rateCents"] if same_unit else line["rateCents"]})
+                )
             elif label == SALARY_LABEL.lower():
                 lines.append({**line, "amountCents": worker["rateCents"]})
             # Other flat earnings (bonus, tips, reimbursements) are one-offs: not repeated.
@@ -109,7 +120,21 @@ def draft_next_stub(
 
 def _first_lines(worker: WorkerPayProfile, overtime_multiplier_pct: int) -> list[StubLine]:
     lines: list[StubLine]
-    if worker["payType"] == "hourly":
+    if is_quantity_pay_type(worker["payType"]):
+        words = QUANTITY_PAY_WORDS[worker["payType"]]
+        lines = [
+            {
+                "kind": "earning",
+                "label": words["label"],
+                "minutes": None,
+                "rateCents": worker["rateCents"],
+                "quantityMilli": 0,
+                "unit": words["unit"],
+                "amountCents": 0,
+                "source": "manual",
+            }
+        ]
+    elif worker["payType"] == "hourly":
         lines = [
             _line("earning", REGULAR_LABEL, 0, minutes=0, rate_cents=worker["rateCents"]),
             _line(

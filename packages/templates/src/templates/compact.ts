@@ -1,5 +1,5 @@
 import type { StubDocument } from '../document';
-import { esc, hoursCell, money, page, payDateText, periodText, rateCell } from '../html';
+import { esc, hasQuantity, hoursCell, money, page, payDateText, periodText, rateCell } from '../html';
 import type { TemplateOptions } from '../registry';
 
 /**
@@ -27,7 +27,7 @@ tr.total td { border-bottom: 0; font-weight: 700; }
   const earnings = doc.earnings
     .map(
       (row) =>
-        `<tr><td>${esc(row.label)}${row.minutes !== null ? ` <span class="muted">${hoursCell(row)} × ${rateCell(row)}</span>` : ''}</td><td class="num">${money(row.currentCents)}</td><td class="num">${money(row.ytdCents)}</td></tr>`,
+        `<tr><td>${esc(row.label)}${hasQuantity(row) ? ` <span class="muted">${hoursCell(row)} × ${rateCell(row)}</span>` : ''}</td><td class="num">${money(row.currentCents)}</td><td class="num">${money(row.ytdCents)}</td></tr>`,
     )
     .join('\n');
   const deductions = doc.deductions

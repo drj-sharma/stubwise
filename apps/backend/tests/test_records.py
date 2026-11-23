@@ -480,8 +480,13 @@ def test_replacing_lines_recalculates_pay_and_taxes(client: TestClient, auth: di
             ],
         },
     )["lines"]
-    returned = [{k: v for k, v in line.items() if k not in ("id", "taxOverride")} for line in stub["lines"]]
+    # Lines saved before per-unit and supplemental pay existed read back with those fields empty.
+    returned = [
+        {k: v for k, v in line.items() if k not in ("id", "taxOverride", "quantityMilli", "unit", "supplemental")}
+        for line in stub["lines"]
+    ]
     assert returned == [{**line, "taxCode": line.get("taxCode")} for line in expected]
+    assert all(line["supplemental"] is False and line["quantityMilli"] is None for line in stub["lines"])
 
     gross = 184200 + 12600 + 7500
     assert stub["totals"]["grossCents"] == gross

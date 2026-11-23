@@ -62,6 +62,19 @@ def _legacy_federal_income_tax(data: FederalTaxData, wages_cents: Cents, periods
     return tentative + w4["extraWithholdingCents"]  # 4a, 4b
 
 
+def supplemental_income_tax(*, data: FederalTaxData, wages_cents: Cents, w4: W4) -> Cents:
+    """Federal income tax to withhold on supplemental wages (a bonus or commission).
+
+    The flat-rate method of Pub. 15, "Supplemental Wages": the flat rate on the
+    whole amount, with no W-4 adjustments. An employee who claimed exempt has
+    nothing withheld, as on regular pay.
+    """
+    assert_cents(wages_cents)
+    if w4["exempt"] or wages_cents <= 0:
+        return 0
+    return div_round_half_up(wages_cents * data["supplemental"]["rateBasisPoints"], 10_000)
+
+
 def tax_from_brackets(table: Sequence[BracketRow], amount_cents: Cents) -> Cents:
     """Lines 2b-2g: the row whose "at least" amount is the highest one not above the wage."""
     if not table:

@@ -1,4 +1,4 @@
-import type { IsoDate } from '@stubwise/domain';
+import { type IsoDate, formatDuration, formatQuantityWithUnit } from '@stubwise/domain';
 import { api } from './index';
 
 /**
@@ -15,7 +15,16 @@ export interface EarningsLine {
   key: string;
   label: string;
   minutes: number;
+  /** Units of work in thousandths, for per-mile, per-load, per-day and per-piece pay; null for other pay. */
+  quantityMilli?: number | null;
+  unit?: string | null;
   amountCents: number;
+}
+
+/** What the middle column of an earnings table shows for a line: hours worked, or the units done ("842.5 miles"). */
+export function hoursOrUnits(line: Pick<EarningsLine, 'minutes' | 'quantityMilli' | 'unit'>): string {
+  if (line.quantityMilli != null && line.unit) return formatQuantityWithUnit(line.quantityMilli, line.unit);
+  return line.minutes ? formatDuration(line.minutes) : '';
 }
 
 export interface EarningsSummary {

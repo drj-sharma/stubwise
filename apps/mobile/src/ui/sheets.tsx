@@ -1,6 +1,22 @@
-import { type Cents, US_STATES, type UsStateCode, formatCents, fromMinutes, parseDollars, payForMinutes, toMinutes } from '@stubwise/domain';
+import {
+  type Cents,
+  QUANTITY_PAY_TYPES,
+  QUANTITY_PAY_WORDS,
+  type QuantityPayType,
+  US_STATES,
+  type UsStateCode,
+  defaultSupplemental,
+  formatCents,
+  formatQuantity,
+  fromMinutes,
+  parseDollars,
+  parseQuantity,
+  payForMinutes,
+  payForQuantity,
+  toMinutes,
+} from '@stubwise/domain';
 import { useState, type ReactNode } from 'react';
-import { KeyboardAvoidingView, Modal, Platform, Pressable, ScrollView, Text, TextInput, View } from 'react-native';
+import { KeyboardAvoidingView, Modal, Platform, Pressable, ScrollView, Switch, Text, TextInput, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Button, Icon, TABULAR } from './primitives';
 import { useTheme } from './theme';
@@ -104,23 +120,41 @@ export function AmountSheet({
   onDelete,
   deleteLabel,
   note,
+  supplemental,
   onClose,
 }: {
   visible: boolean;
   title: string;
   initialCents: Cents;
-  onSave: (cents: Cents) => void;
+  /** `supplemental` is the toggle's value, passed only when `supplemental` was given. */
+  onSave: (cents: Cents, supplemental?: boolean) => void;
   onDelete?: () => void;
   /** Wording for the second button; defaults to "Remove". */
   deleteLabel?: string;
   /** A short explanation shown above the amount. */
   note?: string;
+  /** Shows the bonus-pay switch (earnings only), starting at this value. */
+  supplemental?: boolean;
   onClose: () => void;
 }) {
   return (
     <BottomSheet visible={visible} title={title} onClose={onClose}>
-      {() => <AmountBody initialCents={initialCents} onSave={onSave} onDelete={onDelete} deleteLabel={deleteLabel} note={note} />}
+      {() => <AmountBody initialCents={initialCents} onSave={onSave} onDelete={onDelete} deleteLabel={deleteLabel} note={note} supplemental={supplemental} />}
     </BottomSheet>
+  );
+}
+
+/** "Taxed at the flat bonus rate": federal income tax on this pay is withheld at the supplemental rate. */
+function SupplementalSwitch({ value, onChange }: { value: boolean; onChange: (next: boolean) => void }) {
+  const c = useTheme();
+  return (
+    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12, padding: 12, borderRadius: 14, backgroundColor: c.innerStrong }}>
+      <View style={{ flex: 1, gap: 2 }}>
+        <Text style={{ fontSize: 14, fontWeight: '600', color: c.text }}>Bonus pay</Text>
+        <Text style={{ fontSize: 12, lineHeight: 17, color: c.muted }}>Withhold federal income tax on this at the flat 22% supplemental rate instead of as regular pay.</Text>
+      </View>
+      <Switch value={value} onValueChange={onChange} trackColor={{ true: c.primary }} accessibilityLabel="Taxed at the flat bonus rate" />
+    </View>
   );
 }
 
@@ -130,23 +164,27 @@ function AmountBody({
   onDelete,
   deleteLabel = 'Remove',
   note,
+  supplemental,
 }: {
   initialCents: Cents;
-  onSave: (cents: Cents) => void;
+  onSave: (cents: Cents, supplemental?: boolean) => void;
   onDelete?: () => void;
   deleteLabel?: string;
   note?: string;
+  supplemental?: boolean;
 }) {
   const c = useTheme();
   const [text, setText] = useState(() => centsToText(initialCents));
+  const [bonus, setBonus] = useState(supplemental ?? false);
   const cents = text.trim() === '' ? 0 : parseDollars(text);
   return (
     <>
       {note ? <Text style={{ fontSize: 13, lineHeight: 19, color: c.muted }}>{note}</Text> : null}
       <BigInput initial={centsToText(initialCents)} onChangeText={setText} label="Amount" keyboardType="decimal-pad" autoFocus prefix="$" />
+      {supplemental !== undefined ? <SupplementalSwitch value={bonus} onChange={setBonus} /> : null}
       <View style={{ flexDirection: 'row', gap: 8 }}>
         {onDelete ? <Button title={deleteLabel} variant={deleteLabel === 'Remove' ? 'danger' : 'secondary'} onPress={onDelete} style={{ flex: 1.3 }} /> : null}
-        <Button title="Save" onPress={() => cents !== null && onSave(cents)} disabled={cents === null} style={{ flex: 2 }} />
+        <Button title="Save" onPress={() => cents !== null && onSave(cents, supplemental === undefined ? undefined : bonus)} disabled={cents === null} style={{ flex: 2 }} />
       </View>
     </>
   );
@@ -218,38 +256,149 @@ function TimeBody({ initialMinutes, rateCents, onSave }: { initialMinutes: numbe
   );
 }
 
-/** Adds a flat line: a label (with one-tap suggestions) and an amount. */
+/**
+ * Units of work (miles, loads, days, pieces) are typed as one number with up
+ * to three decimals. The pay shown underneath updates as you type.
+ */
+export function QuantitySheet({
+  visible,
+  title,
+  unit,
+  initialQuantityMilli,
+  rateCents,
+  onSave,
+  onClose,
+}: {
+  visible: boolean;
+  title: string;
+  unit: string;
+  initialQuantityMilli: number;
+  rateCents: Cents;
+  onSave: (quantityMilli: number) => void;
+  onClose: () => void;
+}) {
+  return (
+    <BottomSheet visible={visible} title={title} onClose={onClose}>
+      {() => <QuantityBody unit={unit} initialQuantityMilli={initialQuantityMilli} rateCents={rateCents} onSave={onSave} />}
+    </BottomSheet>
+  );
+}
+
+function QuantityBody({ unit, initialQuantityMilli, rateCents, onSave }: { unit: string; initialQuantityMilli: number; rateCents: Cents; onSave: (quantityMilli: number) => void }) {
+  const c = useTheme();
+  const initial = initialQuantityMilli === 0 ? '' : formatQuantity(initialQuantityMilli);
+  const [text, setText] = useState(initial);
+  const quantity = text.trim() === '' ? 0 : parseQuantity(text);
+  const valid = quantity !== null && quantity <= MAX_QUANTITY_MILLI;
+  return (
+    <>
+      <BigInput initial={initial} onChangeText={setText} label={`Number of ${unit}s`} keyboardType="decimal-pad" autoFocus />
+      <View style={{ padding: 12, borderRadius: 14, backgroundColor: c.innerStrong, flexDirection: 'row', justifyContent: 'space-between' }}>
+        <Text style={{ fontSize: 13, color: c.muted }}>{valid ? `at ${formatCents(rateCents)} per ${unit}` : 'Use a number up to 10,000, with at most 3 decimals'}</Text>
+        <Text style={[{ fontSize: 15, fontWeight: '700', color: c.text }, TABULAR]}>{valid ? formatCents(payForQuantity(quantity, rateCents)) : '—'}</Text>
+      </View>
+      <Button title="Save" onPress={() => valid && onSave(quantity)} disabled={!valid} />
+    </>
+  );
+}
+
+/** The server accepts up to 10,000 units on one line. */
+const MAX_QUANTITY_MILLI = 10_000_000;
+
+/** What AddLineSheet reports beyond the label and the amount. */
+export interface AddedLineExtra {
+  /** Earnings only: withhold federal income tax on it at the flat supplemental rate. */
+  supplemental?: boolean;
+  /** Set for a per-unit earning; the amount passed alongside is quantity × rate. */
+  perUnit?: { unit: string; quantityMilli: number; rateCents: Cents };
+}
+
+/**
+ * Adds a line: a label (with one-tap suggestions) and an amount. For pay,
+ * `perUnit` also offers a number of miles, loads, days or pieces at a rate, and
+ * a line named Bonus starts with the bonus-pay switch on.
+ */
 export function AddLineSheet({
   visible,
   title,
   suggestions,
+  perUnit,
   onSave,
   onClose,
 }: {
   visible: boolean;
   title: string;
   suggestions: readonly string[];
-  onSave: (label: string, cents: Cents) => void;
+  /** Earnings only: offer per-mile, per-load, per-day and per-piece pay, and the bonus-pay switch. */
+  perUnit?: boolean;
+  onSave: (label: string, cents: Cents, extra?: AddedLineExtra) => void;
   onClose: () => void;
 }) {
   return (
     <BottomSheet visible={visible} title={title} onClose={onClose}>
-      {() => <AddLineBody suggestions={suggestions} onSave={onSave} />}
+      {() => <AddLineBody suggestions={suggestions} earning={perUnit === true} onSave={onSave} />}
     </BottomSheet>
   );
 }
 
-function AddLineBody({ suggestions, onSave }: { suggestions: readonly string[]; onSave: (label: string, cents: Cents) => void }) {
+function AddLineBody({ suggestions, earning, onSave }: { suggestions: readonly string[]; earning: boolean; onSave: (label: string, cents: Cents, extra?: AddedLineExtra) => void }) {
   const c = useTheme();
   const [label, setLabel] = useState('');
   // Bumped when a suggestion is tapped, to remount the name field with the suggested text.
   const [labelSeed, setLabelSeed] = useState(0);
   const [text, setText] = useState('');
-  const cents = text.trim() === '' ? null : parseDollars(text);
+  // 'amount' for a typed figure, or the unit of a quantity × rate line.
+  const [basis, setBasis] = useState<'amount' | QuantityPayType>('amount');
+  const [quantityText, setQuantityText] = useState('');
+  const [rateText, setRateText] = useState('');
+  // The bonus switch follows the label until the person touches it.
+  const [bonusChoice, setBonusChoice] = useState<boolean | null>(null);
+  const bonus = bonusChoice ?? defaultSupplemental(label);
+
+  const quantityMilli = quantityText.trim() === '' ? null : parseQuantity(quantityText);
+  const rateCents = rateText.trim() === '' ? null : parseDollars(rateText);
+  const flat = text.trim() === '' ? null : parseDollars(text);
+  const perUnitPay = basis !== 'amount' && quantityMilli !== null && quantityMilli <= MAX_QUANTITY_MILLI && rateCents !== null ? payForQuantity(quantityMilli, rateCents) : null;
+  const cents = basis === 'amount' ? flat : perUnitPay;
   const ready = label.trim().length > 0 && cents !== null;
+
+  const chooseBasis = (next: 'amount' | QuantityPayType): void => {
+    setBasis(next);
+    // A per-unit line is named for its unit unless a name was already typed.
+    if (next !== 'amount' && (label.trim() === '' || QUANTITY_PAY_TYPES.some((type) => QUANTITY_PAY_WORDS[type].label === label))) {
+      setLabel(QUANTITY_PAY_WORDS[next].label);
+      setLabelSeed((seed) => seed + 1);
+    }
+  };
+
+  const save = (): void => {
+    if (!ready) return;
+    if (basis === 'amount') {
+      onSave(label.trim(), cents, earning ? { supplemental: bonus } : undefined);
+    } else if (quantityMilli !== null && rateCents !== null) {
+      onSave(label.trim(), cents, { perUnit: { unit: QUANTITY_PAY_WORDS[basis].unit, quantityMilli, rateCents } });
+    }
+  };
 
   return (
     <>
+      {earning ? (
+        <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
+          {(['amount', ...QUANTITY_PAY_TYPES] as const).map((option) => {
+            const on = option === basis;
+            return (
+              <Pressable
+                key={option}
+                onPress={() => chooseBasis(option)}
+                accessibilityRole="button"
+                accessibilityState={{ selected: on }}
+                style={{ minHeight: 34, paddingHorizontal: 12, borderRadius: 17, justifyContent: 'center', backgroundColor: on ? c.primary : c.innerStrong }}>
+                <Text style={{ fontSize: 13, fontWeight: '600', color: on ? c.onPrimary : c.text }}>{option === 'amount' ? 'Flat amount' : QUANTITY_PAY_WORDS[option].title}</Text>
+              </Pressable>
+            );
+          })}
+        </View>
+      ) : null}
       <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
         {suggestions.map((suggestion) => {
           const on = suggestion === label;
@@ -277,8 +426,24 @@ function AddLineBody({ suggestions, onSave }: { suggestions: readonly string[]; 
         })}
       </View>
       <BigInput key={labelSeed} initial={label} onChangeText={setLabel} label="Name on the stub" keyboardType="default" />
-      <BigInput initial="" onChangeText={setText} label="Amount" keyboardType="decimal-pad" prefix="$" />
-      <Button title="Add" onPress={() => ready && onSave(label.trim(), cents)} disabled={!ready} />
+      {basis === 'amount' ? (
+        <>
+          <BigInput initial="" onChangeText={setText} label="Amount" keyboardType="decimal-pad" prefix="$" />
+          {earning ? <SupplementalSwitch value={bonus} onChange={setBonusChoice} /> : null}
+        </>
+      ) : (
+        <>
+          <View style={{ flexDirection: 'row', gap: 10 }}>
+            <BigInput key={`q-${basis}`} initial="" onChangeText={setQuantityText} label={`Number of ${QUANTITY_PAY_WORDS[basis].unit}s`} keyboardType="decimal-pad" grow />
+            <BigInput key={`r-${basis}`} initial="" onChangeText={setRateText} label={`Rate ${QUANTITY_PAY_WORDS[basis].per}`} keyboardType="decimal-pad" prefix="$" grow />
+          </View>
+          <View style={{ padding: 12, borderRadius: 14, backgroundColor: c.innerStrong, flexDirection: 'row', justifyContent: 'space-between' }}>
+            <Text style={{ fontSize: 13, color: c.muted }}>Pay</Text>
+            <Text style={[{ fontSize: 15, fontWeight: '700', color: c.text }, TABULAR]}>{perUnitPay === null ? '—' : formatCents(perUnitPay)}</Text>
+          </View>
+        </>
+      )}
+      <Button title="Add" onPress={save} disabled={!ready} />
     </>
   );
 }

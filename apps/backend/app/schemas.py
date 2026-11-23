@@ -14,6 +14,7 @@ from typing import Annotated, Any, Literal
 
 from pydantic import AfterValidator, BaseModel, ConfigDict, Field, StringConstraints, model_validator
 
+from .domain.pay_types import PayType
 from .domain.phone import US_PHONE_EXAMPLE, normalize_us_phone
 from .domain.tax.types import DEFAULT_STATE_W4, DEFAULT_TAX_PROFILE, DEFAULT_W4
 from .domain.us_states import is_us_state_code
@@ -32,6 +33,9 @@ TEMPLATES = [
 
 MAX_LOGO_CHARS = 400_000
 """About 300 KB of image once base64-decoded: a logo, not a photo."""
+
+MAX_SAFE_INTEGER = 9_007_199_254_740_991
+"""The largest integer the app's JavaScript represents exactly."""
 
 _ISO_DATETIME = re.compile(r"^(\d{4}-\d{2}-\d{2})T(\d{2}):(\d{2})(?::(\d{2})(?:\.\d+)?)?Z$")
 _LOGO = re.compile(r"^data:image/(png|jpeg|webp);base64,[A-Za-z0-9+/]+={0,2}$")
@@ -105,6 +109,9 @@ UsPhone = Annotated[str, _text(40), AfterValidator(_us_phone)]
 EmployerId = Annotated[str, _text(20)]
 Cents = Annotated[int, Field(ge=0, le=1_000_000_000)]
 Minutes = Annotated[int, Field(ge=0, le=100_000)]
+QuantityMilli = Annotated[int, Field(ge=0, le=10_000_000)]
+"""Units of work in thousandths of a unit: at most 10,000 miles, loads, days or pieces on one line."""
+Unit = Annotated[str, _text(12, required=True)]
 Count = Annotated[int, Field(ge=0, le=99)]
 IsoDate = Annotated[str, AfterValidator(_real_date)]
 IsoDateTime = Annotated[str, AfterValidator(_utc_datetime)]
@@ -141,13 +148,26 @@ class StubLine(Model):
     amountCents: Cents
     source: LineSource
     taxCode: TaxCode | None = None
+    quantityMilli: QuantityMilli | None = None
+    unit: Unit | None = None
+    supplemental: bool | None = None
 
     @model_validator(mode="after")
-    def _hourly_or_flat(self) -> StubLine:
-        if (self.minutes is None) != (self.rateCents is None):
-            raise ValueError("minutes and rateCents must both be set (hourly line) or both be null (flat amount)")
-        if self.kind == "deduction" and self.minutes is not None:
-            raise ValueError("deductions are flat amounts and cannot carry hours")
+    def _hourly_per_unit_or_flat(self) -> StubLine:
+        if self.quantityMilli is None:
+            if (self.minutes is None) != (self.rateCents is None):
+                raise ValueError("minutes and rateCents must both be set (hourly line) or both be null (flat amount)")
+            if self.unit is not None:
+                raise ValueError("unit goes with quantityMilli")
+        else:
+            if self.minutes is not None or self.rateCents is None or self.unit is None:
+                raise ValueError("a per-unit line has quantityMilli, rateCents and unit, and no minutes")
+            if self.quantityMilli * self.rateCents > MAX_SAFE_INTEGER:
+                raise ValueError("quantity times rate is too large")
+        if self.kind == "deduction" and (self.minutes is not None or self.quantityMilli is not None):
+            raise ValueError("deductions are flat amounts and cannot carry hours or units")
+        if self.kind == "deduction" and self.supplemental is not None:
+            raise ValueError("only earnings can be supplemental pay")
         return self
 
     def as_domain(self) -> dict[str, Any]:
@@ -325,7 +345,7 @@ class WorkerCreate(Model):
     address: Address = ""
     email: Email = ""
     type: Literal["employee", "contractor"]
-    payType: Literal["hourly", "salary"]
+    payType: PayType
     rateCents: Cents
     defaultDeductions: Annotated[list[DefaultDeduction], Field(max_length=20)] = []
     startingYtd: StartingYtd | None = None
@@ -341,7 +361,7 @@ class WorkerPatch(Model):
     address: Address | None = None
     email: Email | None = None
     type: Literal["employee", "contractor"] | None = None
-    payType: Literal["hourly", "salary"] | None = None
+    payType: PayType | None = None
     rateCents: Cents | None = None
     defaultDeductions: Annotated[list[DefaultDeduction], Field(max_length=20)] | None = None
     startingYtd: StartingYtd | None = None
@@ -420,6 +440,13 @@ class StubLineOut(Out):
     amountCents: int
     source: LineSource
     taxCode: str | None
+    quantityMilli: int | None = Field(
+        None, description="Units of work for a per-mile, per-load, per-day or per-piece line, in thousandths."
+    )
+    unit: str | None = Field(None, description="What the quantity counts: mile, load, day or piece.")
+    supplemental: bool = Field(
+        False, description="True when federal income tax is withheld on the line at the flat supplemental rate."
+    )
     taxOverride: bool = Field(description="True when the user typed over a figure that would otherwise be calculated.")
 
 
@@ -446,6 +473,9 @@ class StubOut(Out):
     totals: Totals = Field(description="Computed from the lines on every read, never stored.")
     ytd: Ytd = Field(description="Computed from the worker's history on every read, never stored.")
     taxStatus: Literal["calculated", "off", "no-data-for-year"]
+    taxNotes: list[str] = Field(
+        [], description="Plain-language notes on how the taxes were worked out, such as bonus pay."
+    )
     version: int
     createdAt: str
     updatedAt: str
@@ -477,7 +507,7 @@ class BackupWorker(Model):
     address: Address
     email: Email = ""
     type: Literal["employee", "contractor"]
-    payType: Literal["hourly", "salary"]
+    payType: PayType
     rateCents: Cents
     defaultDeductions: Annotated[list[DefaultDeduction], Field(max_length=20)]
     startingYtd: StartingYtd | None

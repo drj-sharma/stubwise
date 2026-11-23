@@ -170,3 +170,50 @@ describe('template library', () => {
     expect(renderStubHtml(hostile, 'classic')).not.toContain('example.com');
   });
 });
+
+describe('per-unit pay', () => {
+  const miles = (quantityMilli: number): StubLine => ({
+    kind: 'earning',
+    label: 'Miles',
+    minutes: null,
+    rateCents: 62,
+    quantityMilli,
+    unit: 'mile',
+    amountCents: 0,
+    source: 'manual',
+  });
+  const perMile = (lines: StubLine[]): BuildStubDocumentInput => {
+    const base = input();
+    const stub = { ...base.stub, lines };
+    return { ...base, worker: { ...base.worker, payType: 'mile', rateCents: 62, startingYtd: null }, stub, workerStubs: [stub] };
+  };
+
+  it('gives a per-unit row its quantity, unit and rate, and not hours', () => {
+    const doc = buildStubDocument(perMile([miles(842_500)]));
+    expect(doc.earnings).toEqual([
+      { label: 'Miles', minutes: null, quantityMilli: 842_500, unit: 'mile', rateCents: 62, currentCents: 52_235, ytdCents: 52_235 },
+    ]);
+    expect(doc.worker.rateLabel).toBe('$0.62 per mile');
+    expect(doc.worker.typeLabel).toBe('Paid per mile');
+    expect(doc.totals.current).toMatchObject({ grossCents: 52_235, totalMinutes: 0 });
+  });
+
+  it('keeps a row with units but no pay yet, and leaves out one with nothing', () => {
+    expect(buildStubDocument(perMile([miles(0)])).earnings).toEqual([]);
+    expect(buildStubDocument(perMile([{ ...miles(10), rateCents: 0 }])).earnings).toHaveLength(1);
+  });
+
+  it.each(TEMPLATES.map((template) => template.id))('%s prints the units and the rate per unit', (id) => {
+    const html = renderStubHtml(buildStubDocument(perMile([miles(842_500), miles(1000)])), id);
+    expect(html).toContain('842.5 miles');
+    expect(html).toContain('1 mile');
+    expect(html).toContain('$0.62/mile');
+    expect(html).toContain('$522.35');
+  });
+
+  it('a contractor stays a 1099 contractor', () => {
+    const base = perMile([miles(1000)]);
+    const doc = buildStubDocument({ ...base, worker: { ...base.worker, type: 'contractor' } });
+    expect(doc.worker.typeLabel).toBe('1099 contractor');
+  });
+});

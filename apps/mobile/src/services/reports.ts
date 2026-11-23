@@ -2,7 +2,7 @@ import { type IsoDate, daysInMonth, formatCents, formatDuration, formatShortDate
 import { File, Paths } from 'expo-file-system';
 import * as Print from 'expo-print';
 import * as Sharing from 'expo-sharing';
-import { type DeductionsReport, type EarningsReport, type ReportKind, type ReportRange, getReportCsv } from '@/api/reports';
+import { type DeductionsReport, type EarningsReport, type ReportKind, type ReportRange, getReportCsv, hoursOrUnits } from '@/api/reports';
 
 /**
  * Choosing a report's dates, and sharing a report as a PDF or a spreadsheet.
@@ -84,14 +84,14 @@ function page(title: string, businessName: string, range: ReportRange, body: str
 export function earningsHtml(report: EarningsReport, businessName: string): string {
   const hours = (minutes: number) => (minutes ? formatDuration(minutes) : '');
   let body = `<h2>All workers</h2>${table(
-    ['Pay', 'Hours', 'Amount'],
-    report.totals.lines.map((line) => [line.label, hours(line.minutes), formatCents(line.amountCents)]),
+    ['Pay', 'Hours or units', 'Amount'],
+    report.totals.lines.map((line) => [line.label, hoursOrUnits(line), formatCents(line.amountCents)]),
     ['Gross pay', hours(report.totals.minutes), formatCents(report.totals.grossCents)],
   )}`;
   for (const worker of report.workers) {
     body += `<h2>${escape(worker.name)} · ${worker.stubCount} ${worker.stubCount === 1 ? 'stub' : 'stubs'}</h2>${table(
-      ['Pay', 'Hours', 'Amount'],
-      worker.lines.map((line) => [line.label, hours(line.minutes), formatCents(line.amountCents)]),
+      ['Pay', 'Hours or units', 'Amount'],
+      worker.lines.map((line) => [line.label, hoursOrUnits(line), formatCents(line.amountCents)]),
       ['Gross pay', hours(worker.minutes), formatCents(worker.grossCents)],
     )}`;
   }

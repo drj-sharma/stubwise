@@ -1,8 +1,8 @@
-import { type StubLine, calcStub } from '../calcStub';
+import { type StubLine, calcStub, isSupplementalLine } from '../calcStub';
 import type { Cents } from '../money';
 import type { PaySchedule } from '../payPeriod';
 import { type UsStateCode, usStateName } from '../usStates';
-import { PAY_PERIODS_PER_YEAR, federalIncomeTax, federalTaxData, medicareTax, socialSecurityTax } from './federal';
+import { PAY_PERIODS_PER_YEAR, federalIncomeTax, federalTaxData, medicareTax, socialSecurityTax, supplementalIncomeTax } from './federal';
 import { stateIncomeTax } from './state';
 import type { TaxCode, TaxProfile } from './types';
 
@@ -62,11 +62,20 @@ export function applyTaxes(lines: readonly StubLine[], context: TaxContext): { l
 
   // Taxable wages are gross pay: pre-tax deductions are not modelled yet.
   const wagesCents = calcStub(earnings).grossCents;
+  // Bonus and commission lines marked supplemental are withheld on at the flat federal rate;
+  // the rest of the pay goes through the percentage method on its own.
+  const supplementalWagesCents = calcStub(earnings.filter(isSupplementalLine)).grossCents;
   const periodsPerYear = PAY_PERIODS_PER_YEAR[context.schedule];
   const priorYtdWagesCents = context.priorYtdGrossCents;
 
   const computed: { taxCode: TaxCode; label: string; amountCents: Cents; typed?: boolean }[] = [
-    { taxCode: 'fit', label: TAX_LABELS.fit, amountCents: federalIncomeTax({ data, wagesCents, periodsPerYear, w4: profile.w4 }) },
+    {
+      taxCode: 'fit',
+      label: TAX_LABELS.fit,
+      amountCents:
+        federalIncomeTax({ data, wagesCents: wagesCents - supplementalWagesCents, periodsPerYear, w4: profile.w4 }) +
+        supplementalIncomeTax({ data, wagesCents: supplementalWagesCents, w4: profile.w4 }),
+    },
     { taxCode: 'ss', label: TAX_LABELS.ss, amountCents: socialSecurityTax({ data, wagesCents, priorYtdWagesCents }) },
     { taxCode: 'medicare', label: TAX_LABELS.medicare, amountCents: medicareTax({ data, wagesCents, priorYtdWagesCents }) },
   ];

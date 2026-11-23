@@ -1,5 +1,18 @@
 import DateTimePicker from '@react-native-community/datetimepicker';
-import { type IsoDate, type LineKind, type StubLine, formatCents, formatDuration, formatPeriod, formatShortDate, isHourlyLine, todayIso, yearOf } from '@stubwise/domain';
+import {
+  type IsoDate,
+  type LineKind,
+  type StubLine,
+  formatCents,
+  formatDuration,
+  formatPeriod,
+  formatQuantityWithUnit,
+  formatShortDate,
+  isHourlyLine,
+  isQuantityLine,
+  todayIso,
+  yearOf,
+} from '@stubwise/domain';
 import { router } from 'expo-router';
 import { useState } from 'react';
 import { ActivityIndicator, Alert, Modal, Pressable, ScrollView, Text, View } from 'react-native';
@@ -10,13 +23,13 @@ import type { Stub } from '@/db/types';
 import { useQuery } from '@/state/useQuery';
 import { ErrorState, Loading, Refresher, alertError } from '@/ui/states';
 import { Amount, Avatar, Button, CardHeader, Pill, Row, Sheet, SubCard, TABULAR } from '@/ui/primitives';
-import { AddLineSheet, AmountSheet, TimeSheet } from '@/ui/sheets';
+import { AddLineSheet, type AddedLineExtra, AmountSheet, QuantitySheet, TimeSheet } from '@/ui/sheets';
 import { useTheme } from '@/ui/theme';
 
 const EARNING_SUGGESTIONS = ['Bonus', 'Tips', 'Commission', 'Reimbursement', 'Holiday pay'];
 const DEDUCTION_SUGGESTIONS = ['Health insurance', 'Retirement', 'Garnishment', 'Uniform', 'Advance repayment'];
 
-type OpenSheet = { kind: 'time'; index: number } | { kind: 'amount'; index: number } | { kind: 'add'; lineKind: LineKind } | { kind: 'dates' } | null;
+type OpenSheet = { kind: 'time'; index: number } | { kind: 'quantity'; index: number } | { kind: 'amount'; index: number } | { kind: 'add'; lineKind: LineKind } | { kind: 'dates' } | null;
 
 /**
  * Edits one saved stub. Every change is sent to the server straight away, so
@@ -53,7 +66,7 @@ export function StubEditor({ stubId, onChanged, footer }: { stubId: string; onCh
   const { stub, worker } = data;
   const lines: readonly StubLine[] = pending ?? stub.lines;
   // Always the server's figures; while a change is on its way they are the last ones it sent, dimmed.
-  const { totals, ytd, taxStatus } = stub;
+  const { totals, ytd, taxStatus, taxNotes } = stub;
   const edited = (line: StubLine, index: number): boolean => (pending ? Boolean(line.taxCode) && line.source === 'manual' : (stub.lines[index]?.taxOverride ?? false));
   const earnings = lines.map((line, index) => ({ line, index })).filter((entry) => entry.line.kind === 'earning');
   const deductions = lines.map((line, index) => ({ line, index })).filter((entry) => entry.line.kind === 'deduction');
@@ -93,17 +106,41 @@ export function StubEditor({ stubId, onChanged, footer }: { stubId: string; onCh
   };
   const patchLine = (index: number, patch: Partial<StubLine>): Promise<void> => saveLines(lines.map((line, i) => (i === index ? { ...line, ...patch } : line)));
   const removeLine = (index: number): Promise<void> => saveLines(lines.filter((_, i) => i !== index));
-  const addLine = (kind: LineKind, label: string, amountCents: number): Promise<void> => {
-    const line: StubLine = { kind, label, minutes: null, rateCents: null, amountCents, source: 'manual' };
+  const addLine = (kind: LineKind, label: string, amountCents: number, extra?: AddedLineExtra): Promise<void> => {
+    const line: StubLine = extra?.perUnit
+      ? { kind, label, minutes: null, rateCents: extra.perUnit.rateCents, quantityMilli: extra.perUnit.quantityMilli, unit: extra.perUnit.unit, amountCents, source: 'manual' }
+      : { kind, label, minutes: null, rateCents: null, amountCents, source: 'manual', ...(extra?.supplemental !== undefined ? { supplemental: extra.supplemental } : {}) };
     // Keep earnings above deductions regardless of the order they were added in.
     const next = kind === 'earning' ? [...lines.filter((l) => l.kind === 'earning'), line, ...lines.filter((l) => l.kind === 'deduction')] : [...lines, line];
     return saveLines(next);
   };
 
-  const active = sheet?.kind === 'time' || sheet?.kind === 'amount' ? lines[sheet.index] : undefined;
+  const active = sheet?.kind === 'time' || sheet?.kind === 'quantity' || sheet?.kind === 'amount' ? lines[sheet.index] : undefined;
+  // Bonus-pay switch: on flat earnings the person typed, not on hours, units or calculated taxes.
+  const canBeBonus = active !== undefined && active.kind === 'earning' && !active.taxCode && !isHourlyLine(active) && !isQuantityLine(active);
 
   const lineRow = ({ line, index }: { line: StubLine; index: number }, last: boolean) =>
-    isHourlyLine(line) ? (
+    isQuantityLine(line) ? (
+      <Row
+        key={index}
+        title={line.label}
+        subtitle={`${formatCents(line.rateCents ?? 0)}/${line.unit ?? 'unit'}`}
+        strong
+        minHeight={52}
+        last={last}
+        onPress={() => setSheet({ kind: 'quantity', index })}
+        right={
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+            <View style={{ height: 28, paddingHorizontal: 9, borderRadius: 8, borderWidth: 1, borderColor: c.fieldBorder, justifyContent: 'center' }}>
+              <Text style={[{ fontSize: 13, fontWeight: '500', color: c.text }, TABULAR]}>{formatQuantityWithUnit(line.quantityMilli ?? 0, line.unit ?? 'unit')}</Text>
+            </View>
+            <View style={{ width: 82, alignItems: 'flex-end' }}>
+              <Amount value={pending ? '…' : formatCents(line.amountCents)} />
+            </View>
+          </View>
+        }
+      />
+    ) : isHourlyLine(line) ? (
       <Row
         key={index}
         title={line.label}
@@ -129,8 +166,18 @@ export function StubEditor({ stubId, onChanged, footer }: { stubId: string; onCh
         title={line.label}
         strong={line.kind === 'earning'}
         last={last}
-        subtitle={!line.taxCode ? undefined : line.source === 'calculated' ? 'Calculated' : edited(line, index) ? 'Typed by hand' : 'Enter by hand'}
-        minHeight={line.taxCode ? 52 : undefined}
+        subtitle={
+          !line.taxCode
+            ? line.supplemental
+              ? 'Federal tax at the flat bonus rate'
+              : undefined
+            : line.source === 'calculated'
+              ? 'Calculated'
+              : edited(line, index)
+                ? 'Typed by hand'
+                : 'Enter by hand'
+        }
+        minHeight={line.taxCode || line.supplemental ? 52 : undefined}
         onPress={() => setSheet({ kind: 'amount', index })}
         right={
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
@@ -181,6 +228,11 @@ export function StubEditor({ stubId, onChanged, footer }: { stubId: string; onCh
               <Row title="None" subtitle={worker.type === 'contractor' ? 'Nothing is withheld for a 1099 contractor' : 'Add taxes or other deductions'} last />
             ) : null}
           </SubCard>
+          {taxNotes.map((note) => (
+            <Text key={note} style={{ fontSize: 12, lineHeight: 18, color: c.muted, marginHorizontal: 4 }}>
+              {note}
+            </Text>
+          ))}
           {taxStatus === 'no-data-for-year' ? (
             <Text style={{ fontSize: 12, lineHeight: 18, color: c.warnText, marginHorizontal: 4 }}>
               The {yearOf(stub.payDate)} tax tables are not in the app yet, so taxes are not calculated for this pay date. Enter them by hand.
@@ -211,6 +263,15 @@ export function StubEditor({ stubId, onChanged, footer }: { stubId: string; onCh
         onClose={() => setSheet(null)}
         onSave={(minutes) => sheet?.kind === 'time' && void patchLine(sheet.index, { minutes })}
       />
+      <QuantitySheet
+        visible={sheet?.kind === 'quantity'}
+        title={`${active?.label ?? ''}`}
+        unit={active?.unit ?? 'unit'}
+        initialQuantityMilli={active?.quantityMilli ?? 0}
+        rateCents={active?.rateCents ?? 0}
+        onClose={() => setSheet(null)}
+        onSave={(quantityMilli) => sheet?.kind === 'quantity' && void patchLine(sheet.index, { quantityMilli })}
+      />
       <AmountSheet
         visible={sheet?.kind === 'amount'}
         title={active?.label ?? ''}
@@ -218,11 +279,12 @@ export function StubEditor({ stubId, onChanged, footer }: { stubId: string; onCh
         onClose={() => setSheet(null)}
         note={active?.taxCode && active.source === 'calculated' ? 'The app calculated this. If you type a different amount it is kept as typed and marked Edited.' : undefined}
         // Typing over a tax keeps it as typed; removing the typed figure brings the calculated one back.
-        onSave={(amountCents) => {
+        supplemental={canBeBonus ? active?.supplemental === true : undefined}
+        onSave={(amountCents, supplemental) => {
           if (sheet?.kind !== 'amount') return;
           // Saving the calculated figure unchanged is not an edit.
           if (active?.taxCode && active.source === 'calculated' && amountCents === active.amountCents) return setSheet(null);
-          void patchLine(sheet.index, active?.taxCode ? { amountCents, source: 'manual' } : { amountCents });
+          void patchLine(sheet.index, active?.taxCode ? { amountCents, source: 'manual' } : supplemental === undefined ? { amountCents } : { amountCents, supplemental });
         }}
         onDelete={active?.taxCode && active.source === 'calculated' ? undefined : () => sheet?.kind === 'amount' && void removeLine(sheet.index)}
         deleteLabel={active && sheet?.kind === 'amount' && edited(active, sheet.index) ? 'Use calculated' : undefined}
@@ -231,8 +293,9 @@ export function StubEditor({ stubId, onChanged, footer }: { stubId: string; onCh
         visible={sheet?.kind === 'add'}
         title={sheet?.kind === 'add' && sheet.lineKind === 'earning' ? 'Add pay' : 'Add a deduction'}
         suggestions={sheet?.kind === 'add' && sheet.lineKind === 'earning' ? EARNING_SUGGESTIONS : DEDUCTION_SUGGESTIONS}
+        perUnit={sheet?.kind === 'add' && sheet.lineKind === 'earning'}
         onClose={() => setSheet(null)}
-        onSave={(label, cents) => sheet?.kind === 'add' && void addLine(sheet.lineKind, label, cents)}
+        onSave={(label, cents, extra) => sheet?.kind === 'add' && void addLine(sheet.lineKind, label, cents, extra)}
       />
       <DatesSheet
         visible={sheet?.kind === 'dates'}

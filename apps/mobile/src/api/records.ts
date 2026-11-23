@@ -73,6 +73,7 @@ export function toStub(row: StubOut): Stub {
     totals: row.totals,
     ytd: row.ytd,
     taxStatus: row.taxStatus,
+    taxNotes: row.taxNotes ?? [],
     lines: row.lines.map((line) => ({
       id: line.id,
       kind: line.kind,
@@ -82,6 +83,8 @@ export function toStub(row: StubOut): Stub {
       amountCents: line.amountCents,
       source: line.source,
       taxCode: isTaxCode(line.taxCode) ? line.taxCode : null,
+      ...(line.quantityMilli != null ? { quantityMilli: line.quantityMilli, unit: line.unit ?? null } : {}),
+      ...(line.supplemental ? { supplemental: true } : {}),
       taxOverride: line.taxOverride,
     })),
   };
@@ -89,8 +92,18 @@ export function toStub(row: StubOut): Stub {
 
 /** Only the fields the server accepts for a line; `taxCode` is left out when there is none. */
 function wireLine(line: StubLine) {
-  const { kind, label, minutes, rateCents, amountCents, source, taxCode } = line;
-  return taxCode ? { kind, label, minutes, rateCents, amountCents, source, taxCode } : { kind, label, minutes, rateCents, amountCents, source };
+  const { kind, label, minutes, rateCents, amountCents, source, taxCode, quantityMilli, unit, supplemental } = line;
+  return {
+    kind,
+    label,
+    minutes,
+    rateCents,
+    amountCents,
+    source,
+    ...(taxCode ? { taxCode } : {}),
+    ...(quantityMilli != null ? { quantityMilli, unit: unit ?? null } : {}),
+    ...(kind === 'earning' && supplemental !== undefined ? { supplemental } : {}),
+  };
 }
 
 /** Lists are paged by the server; the app's lists are small, so it reads every page. */

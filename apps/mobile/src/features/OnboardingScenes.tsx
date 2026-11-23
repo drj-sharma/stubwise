@@ -1,4 +1,4 @@
-import { type UsStateCode, usStateName } from '@stubwise/domain';
+import { type PayType, type UsStateCode, payRateWords, usStateName } from '@stubwise/domain';
 import type { IconName } from '@/ui/icons';
 import { type ReactNode, useState } from 'react';
 import { Image, type StyleProp, Text, View, type ViewStyle } from 'react-native';
@@ -350,9 +350,10 @@ export function DetailsScene({
 }
 
 /** The first worker: their card, filled in as they type, with the button that makes each stub. */
-export function WorkerScene({ name, type, payType, rate }: { name: string; type: 'employee' | 'contractor'; payType: 'hourly' | 'salary'; rate: string }) {
+export function WorkerScene({ name, type, payType, rate }: { name: string; type: 'employee' | 'contractor'; payType: PayType; rate: string }) {
   const c = useTheme();
-  const rateLabel = rate.trim() ? `$${rate.trim()}${payType === 'hourly' ? '/h' : ''}` : payType === 'hourly' ? '$—/h' : '$—';
+  const short = payRateWords(payType).short;
+  const rateLabel = rate.trim() ? `$${rate.trim()}${short}` : `$—${short}`;
   return (
     <>
       {/* A second card behind, for the rest of the crew. */}

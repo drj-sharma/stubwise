@@ -67,7 +67,7 @@ ${doc.business.employerId ? `<div class="muted">Employer ID ${esc(doc.business.e
 <div><div class="cap">Pay rate</div><div class="strong">${esc(doc.worker.rateLabel)}</div><div class="muted">${esc(doc.worker.typeLabel)}</div></div>
 </div>
 <table>
-<thead><tr><th>Earnings</th><th class="num" style="width:96px">Hours (h:mm)</th><th class="num" style="width:96px">Rate</th><th class="num" style="width:120px">Current</th><th class="num" style="width:130px">Year to date</th></tr></thead>
+<thead><tr><th>Earnings</th><th class="num" style="width:96px">Hours or units</th><th class="num" style="width:96px">Rate</th><th class="num" style="width:120px">Current</th><th class="num" style="width:130px">Year to date</th></tr></thead>
 <tbody>
 ${earnings}
 <tr class="total"><td>Gross pay</td><td class="num">${hours}</td><td></td><td class="num">${money(current.grossCents)}</td><td class="num">${money(ytd.grossCents)}</td></tr>

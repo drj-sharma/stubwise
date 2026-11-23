@@ -3,6 +3,7 @@ import { ArrowClockwiseIcon } from 'phosphor-react-native/src/icons/ArrowClockwi
 import { ArrowLeftIcon } from 'phosphor-react-native/src/icons/ArrowLeft';
 import { ArrowRightIcon } from 'phosphor-react-native/src/icons/ArrowRight';
 import { BankIcon } from 'phosphor-react-native/src/icons/Bank';
+import { CalendarBlankIcon } from 'phosphor-react-native/src/icons/CalendarBlank';
 import { CaretDownIcon } from 'phosphor-react-native/src/icons/CaretDown';
 import { CaretRightIcon } from 'phosphor-react-native/src/icons/CaretRight';
 import { CaretUpIcon } from 'phosphor-react-native/src/icons/CaretUp';
@@ -12,6 +13,7 @@ import { CheckCircleIcon } from 'phosphor-react-native/src/icons/CheckCircle';
 import { CircleHalfIcon } from 'phosphor-react-native/src/icons/CircleHalf';
 import { ClockCounterClockwiseIcon } from 'phosphor-react-native/src/icons/ClockCounterClockwise';
 import { DeviceMobileIcon } from 'phosphor-react-native/src/icons/DeviceMobile';
+import { EnvelopeSimpleIcon } from 'phosphor-react-native/src/icons/EnvelopeSimple';
 import { ExportIcon } from 'phosphor-react-native/src/icons/Export';
 import { EyeIcon } from 'phosphor-react-native/src/icons/Eye';
 import { EyeSlashIcon } from 'phosphor-react-native/src/icons/EyeSlash';
@@ -57,6 +59,7 @@ export const ICONS = {
   'building.columns': BankIcon,
   'building.columns.fill': BankIcon,
   'chart.bar': ChartBarIcon,
+  calendar: CalendarBlankIcon,
   checkmark: CheckIcon,
   'checkmark.circle.fill': CheckCircleIcon,
   'chevron.down': CaretDownIcon,
@@ -68,6 +71,7 @@ export const ICONS = {
   'doc.text.fill': FileTextIcon,
   'doc.text.magnifyingglass': FileMagnifyingGlassIcon,
   'exclamationmark.triangle.fill': WarningIcon,
+  envelope: EnvelopeSimpleIcon,
   eye: EyeIcon,
   'eye.slash.fill': EyeSlashIcon,
   'g.circle.fill': GoogleLogoIcon,

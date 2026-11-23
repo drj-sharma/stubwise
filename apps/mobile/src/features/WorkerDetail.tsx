@@ -5,6 +5,7 @@ import {
   formatPeriod,
   formatShortDate,
   todayIso,
+  payRateWords,
 } from '@stubwise/domain';
 import * as Crypto from 'expo-crypto';
 import { router } from 'expo-router';
@@ -20,7 +21,7 @@ import { useTheme } from '@/ui/theme';
 
 export function workerSummary(worker: Worker): string {
   const kind = worker.type === 'contractor' ? '1099 contractor' : 'Employee';
-  const rate = worker.payType === 'hourly' ? `${formatCents(worker.rateCents)}/h` : `${formatCents(worker.rateCents)} salary`;
+  const rate = worker.payType === 'salary' ? `${formatCents(worker.rateCents)} salary` : `${formatCents(worker.rateCents)}${payRateWords(worker.payType).short}`;
   return `${kind} · ${rate}`;
 }
 
@@ -78,7 +79,7 @@ export function WorkerDetail({ workerId, showEdit = true }: { workerId: string; 
               {worker.name}
             </Text>
             <Text style={{ fontSize: 12, color: c.muted }} numberOfLines={1}>
-              {worker.payType === 'hourly' ? `${formatCents(worker.rateCents)}/h` : `${formatCents(worker.rateCents)} per pay period`}
+              {worker.payType === 'salary' ? `${formatCents(worker.rateCents)} per pay period` : `${formatCents(worker.rateCents)}${payRateWords(worker.payType).short}`}
             </Text>
           </View>
           <Pill tone="primary" label={worker.type === 'contractor' ? '1099' : 'Employee'} />

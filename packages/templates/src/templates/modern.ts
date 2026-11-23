@@ -53,7 +53,7 @@ ${logoHtml(doc, 'logo')}
 <div class="card"><div class="cap">Pay rate</div><div class="strong">${esc(doc.worker.rateLabel)}</div><div class="muted">${esc(doc.worker.typeLabel)}</div></div>
 </div>
 <h3>Earnings</h3>
-<table><thead><tr><th>Description</th><th class="num">Hours (h:mm)</th><th class="num">Rate</th><th class="num">Current</th><th class="num">Year to date</th></tr></thead>
+<table><thead><tr><th>Description</th><th class="num">Hours or units</th><th class="num">Rate</th><th class="num">Current</th><th class="num">Year to date</th></tr></thead>
 <tbody>${earnings}
 <tr class="total"><td>Gross pay</td><td></td><td></td><td class="num">${money(current.grossCents)}</td><td class="num">${money(ytd.grossCents)}</td></tr></tbody></table>
 ${
