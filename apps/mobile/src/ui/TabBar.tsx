@@ -1,5 +1,5 @@
 import { router } from 'expo-router';
-import type { SFSymbol } from 'expo-symbols';
+import type { IconName } from './icons';
 import { Pressable, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useBusiness } from '@/state/business';
@@ -9,7 +9,7 @@ import { initials, useTheme } from './theme';
 
 export type TabName = 'home' | 'workers' | 'reports' | 'settings';
 
-const TABS: readonly { name: TabName; label: string; icon: SFSymbol }[] = [
+const TABS: readonly { name: TabName; label: string; icon: IconName }[] = [
   { name: 'home', label: 'Pay stub', icon: 'doc.text' },
   { name: 'workers', label: 'Workers', icon: 'person.2' },
   { name: 'reports', label: 'Reports', icon: 'chart.bar' },

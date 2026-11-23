@@ -55,7 +55,6 @@ export default function Settings() {
       <Group>
         <MenuRow
           icon="person.fill"
-          tint="pink"
           title={user?.name || user?.email || 'Your account'}
           detail={user?.email && user.name ? `${user.email} · ${provider}` : provider}
           onPress={() => router.push('/settings/account')}
@@ -64,22 +63,20 @@ export default function Settings() {
       </Group>
 
       <Group>
-        <MenuRow icon="building.2" tint="sky" title="Business" detail={business.name} onPress={() => router.push('/business')} />
+        <MenuRow icon="building.2" title="Business" detail={business.name} onPress={() => router.push('/business')} />
         <MenuRow
           icon="doc.text"
-          tint="pink"
           title="Pay stubs"
           detail={`${TEMPLATES.find((template) => template.id === business.templateId)?.name ?? 'Classic'} design · overtime ${business.overtimePct === 200 ? '2×' : '1.5×'}`}
           onPress={() => router.push('/settings/stubs')}
         />
-        <MenuRow icon="building.columns" tint="green" title="Tax settings" detail={taxDetail} onPress={() => router.push('/settings/taxes')} last />
+        <MenuRow icon="building.columns" title="Tax settings" detail={taxDetail} onPress={() => router.push('/settings/taxes')} last />
       </Group>
 
       <Group>
-        <MenuRow icon="receipt" tint="amber" title="Order history" detail={orderDetail} onPress={() => router.push('/settings/orders')} />
+        <MenuRow icon="receipt" title="Order history" detail={orderDetail} onPress={() => router.push('/settings/orders')} />
         <MenuRow
           icon="circle.lefthalf.filled"
-          tint="grey"
           title="Appearance"
           detail={APPEARANCE_LABELS[business.appearance]}
           onPress={() => router.push('/settings/appearance')}

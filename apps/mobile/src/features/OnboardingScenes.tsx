@@ -1,5 +1,5 @@
 import { type UsStateCode, usStateName } from '@stubwise/domain';
-import type { SFSymbol } from 'expo-symbols';
+import type { IconName } from '@/ui/icons';
 import { type ReactNode, useState } from 'react';
 import { Image, type StyleProp, Text, View, type ViewStyle } from 'react-native';
 import Animated, { FadeInDown } from 'react-native-reanimated';
@@ -92,7 +92,7 @@ function Chip({
   rotate = 0,
 }: {
   at: { left?: number; right?: number; top?: number; bottom?: number };
-  icon: SFSymbol;
+  icon: IconName;
   label: string;
   tone?: 'primary' | 'success' | 'sky' | 'solid';
   delay?: number;

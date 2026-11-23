@@ -1,6 +1,6 @@
 import * as AppleAuthentication from 'expo-apple-authentication';
 import * as Crypto from 'expo-crypto';
-import type { SFSymbol } from 'expo-symbols';
+import type { IconName } from '@/ui/icons';
 import { type ReactNode, useCallback, useEffect, useState } from 'react';
 import { ActivityIndicator, Alert, Image, KeyboardAvoidingView, Platform, Pressable, Text, View } from 'react-native';
 import Animated, { FadeInRight } from 'react-native-reanimated';
@@ -302,7 +302,7 @@ export function SignIn() {
 }
 
 /** One of the two big choices on the account screen: an icon, a title, a line of detail and a chevron. */
-function ChoiceCard({ icon, title, detail, onPress, strong }: { icon: SFSymbol; title: string; detail: string; onPress: () => void; strong?: boolean }) {
+function ChoiceCard({ icon, title, detail, onPress, strong }: { icon: IconName; title: string; detail: string; onPress: () => void; strong?: boolean }) {
   const c = useTheme();
   return (
     <Pressable

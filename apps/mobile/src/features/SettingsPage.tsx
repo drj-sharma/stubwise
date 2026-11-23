@@ -1,5 +1,5 @@
 import { router } from 'expo-router';
-import type { SFSymbol } from 'expo-symbols';
+import type { IconName } from '@/ui/icons';
 import type { ReactNode } from 'react';
 import { Pressable, ScrollView, Text, View } from 'react-native';
 import { useIsWide } from '@/ui/layout';
@@ -22,31 +22,21 @@ export function SettingsPage({ title, children, refreshing, onRefresh }: { title
   );
 }
 
-/** A row in the settings hub: a coloured icon tile, a title, a line of detail and a chevron. */
+/** A row in the settings hub: an icon tile (the same quiet tile on every row), a title, a line of detail and a chevron. */
 export function MenuRow({
   icon,
-  tint,
   title,
   detail,
   onPress,
   last,
 }: {
-  icon: SFSymbol;
-  tint: 'pink' | 'sky' | 'green' | 'amber' | 'grey';
+  icon: IconName;
   title: string;
   detail?: string;
   onPress: () => void;
   last?: boolean;
 }) {
   const c = useTheme();
-  const tiles = {
-    pink: [c.primarySoft, c.primaryText],
-    sky: [c.bgTint, c.text],
-    green: [c.successBg, c.successText],
-    amber: [c.warnBg, c.warnText],
-    grey: [c.inner, c.muted],
-  } as const;
-  const [bg, fg] = tiles[tint];
   return (
     <Pressable
       onPress={onPress}
@@ -62,8 +52,8 @@ export function MenuRow({
         borderBottomColor: c.border,
         opacity: pressed ? 0.6 : 1,
       })}>
-      <View style={{ width: 36, height: 36, borderRadius: 10, backgroundColor: bg, alignItems: 'center', justifyContent: 'center' }}>
-        <Icon name={icon} size={17} color={fg} />
+      <View style={{ width: 36, height: 36, borderRadius: 10, backgroundColor: c.inner, alignItems: 'center', justifyContent: 'center' }}>
+        <Icon name={icon} size={20} color={c.text} weight="duotone" />
       </View>
       <View style={{ flex: 1, minWidth: 0 }}>
         <Text style={{ fontSize: 15, fontWeight: '600', color: c.text }}>{title}</Text>

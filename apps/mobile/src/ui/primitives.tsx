@@ -1,16 +1,18 @@
 import { LinearGradient } from 'expo-linear-gradient';
-import { SymbolView, type SFSymbol } from 'expo-symbols';
 import { type ComponentProps, type ComponentRef, type ReactNode, type Ref, useState } from 'react';
 import { Pressable, type StyleProp, Text, TextInput, type TextInputProps, type TextStyle, View, type ViewStyle } from 'react-native';
+import type { IconWeight } from 'phosphor-react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { ICONS, type IconName, iconWeight } from './icons';
 import { avatarTint, initials, useTheme } from './theme';
 
 /** Shared building blocks for "Style 1". Screens compose these and add no colours of their own. */
 
 export const TABULAR: TextStyle = { fontVariant: ['tabular-nums'] };
 
-export function Icon({ name, size = 18, color }: { name: SFSymbol; size?: number; color: string }) {
-  return <SymbolView name={name} size={size} tintColor={color} weight="medium" fallback={<View style={{ width: size, height: size }} />} />;
+export function Icon({ name, size = 18, color, weight }: { name: IconName; size?: number; color: string; weight?: IconWeight }) {
+  const Glyph = ICONS[name];
+  return <Glyph size={size} color={color} weight={weight ?? iconWeight(name)} />;
 }
 
 /** Full-screen ground with the soft tinted wash behind the header. */
@@ -100,7 +102,7 @@ export function Avatar({ name, seed, size = 38 }: { name: string; seed: string; 
   );
 }
 
-export function CircleButton({ icon, label, onPress }: { icon: SFSymbol; label: string; onPress: () => void }) {
+export function CircleButton({ icon, label, onPress }: { icon: IconName; label: string; onPress: () => void }) {
   const c = useTheme();
   return (
     <Pressable
@@ -159,7 +161,7 @@ export function Button({
   detail?: string;
   onPress: () => void;
   variant?: 'primary' | 'secondary' | 'danger';
-  icon?: SFSymbol;
+  icon?: IconName;
   disabled?: boolean;
   style?: StyleProp<ViewStyle>;
 }) {

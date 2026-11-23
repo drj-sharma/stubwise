@@ -1,6 +1,6 @@
 import { formatCents, formatDuration } from '@stubwise/domain';
 import { router } from 'expo-router';
-import type { SFSymbol } from 'expo-symbols';
+import type { IconName } from '@/ui/icons';
 import { useState } from 'react';
 import { Pressable, ScrollView, Text, View } from 'react-native';
 import { getDeductionsReport, getEarningsReport, type ReportKind } from '@/api/reports';
@@ -121,7 +121,7 @@ function ReportCard({
   facts,
   onPress,
 }: {
-  icon: SFSymbol;
+  icon: IconName;
   title: string;
   detail: string;
   figure: string;
