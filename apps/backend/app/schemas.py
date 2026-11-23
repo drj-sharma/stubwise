@@ -242,6 +242,7 @@ class BusinessCreate(Model):
     employerId: EmployerId | None = None
     logoDataUri: Logo | None = None
     paySchedule: PaySchedule
+    firstPayDate: IsoDate | None = None
     showEmployerId: bool = True
     templateId: TemplateId = "classic"
     accent: Accent = "#3F3D9E"
@@ -263,6 +264,7 @@ class BusinessPatch(Model):
     employerId: EmployerId | None = None
     logoDataUri: Logo | None = None
     paySchedule: PaySchedule | None = None
+    firstPayDate: IsoDate | None = None
     showEmployerId: bool | None = None
     templateId: TemplateId | None = None
     accent: Accent | None = None
@@ -279,6 +281,7 @@ class BusinessOut(Out):
     employerId: str | None
     logoDataUri: str | None
     paySchedule: PaySchedule
+    firstPayDate: str | None
     showEmployerId: bool
     templateId: str
     accent: str
@@ -485,6 +488,7 @@ class BackupBusiness(Model):
     employerId: EmployerId | None
     logoDataUri: Logo | None = None
     paySchedule: PaySchedule
+    firstPayDate: IsoDate | None = None
     showEmployerId: bool
     templateId: TemplateId
     accent: Accent

@@ -1,7 +1,19 @@
 import { type StubLine, calcStub, lineAmount } from '../calcStub';
 import { divRoundHalfUp } from '../money';
 import { draftNextStub } from '../nextStub';
-import { PAY_SCHEDULES, addDays, currentPeriod, defaultPayDate, diffDays, nextPayDate, nextPeriod, periodContaining } from '../payPeriod';
+import {
+  PAY_SCHEDULES,
+  addDays,
+  currentPeriod,
+  defaultPayDate,
+  diffDays,
+  nextPayDate,
+  nextPayday,
+  nextPeriod,
+  periodContaining,
+  periodForPayDate,
+  upcomingPaydays,
+} from '../payPeriod';
 import { applyTaxes } from '../tax/applyTaxes';
 import { FEDERAL_2026 } from '../tax/data/federal-2026';
 import { STATE_RULES_2026 } from '../tax/data/states-2026';
@@ -245,5 +257,27 @@ export function buildVectors() {
     return { worker, schedule, today, overtimePct, first, previous, changedRate, second: draftNextStub(changedRate, schedule, previous, today, overtimePct) };
   });
 
-  return { version: 1, divRound, hourlyPay, dates, periods, stubTotals, ytd, federal, state, taxLines, nextStub };
+  // Pay days counted on from the business's first pay day. Its own generator, so adding it moved no other case.
+  const paydayRandom = seeded(20261123);
+  const paydayInt = (min: number, max: number): number => min + Math.floor(paydayRandom() * (max - min + 1));
+  const payday = Array.from({ length: 120 }, () => {
+    const schedule = PAY_SCHEDULES[paydayInt(0, PAY_SCHEDULES.length - 1)] as (typeof PAY_SCHEDULES)[number];
+    const firstPayDate = addDays('2025-06-01', paydayInt(0, 900));
+    const today = addDays(firstPayDate, paydayInt(-40, 400));
+    const worker = { payType: 'hourly' as const, rateCents: 2_400, type: 'employee' as const, defaultDeductions: [] };
+    const anchor = { period: periodForPayDate(firstPayDate, schedule), payDate: firstPayDate };
+    return {
+      schedule,
+      firstPayDate,
+      today,
+      periodForPayDate: anchor.period,
+      nextPayday: nextPayday(firstPayDate, schedule, today),
+      upcoming: upcomingPaydays(anchor, schedule, today, 4),
+      currentNoStubs: currentPeriod(null, schedule, today, firstPayDate),
+      draftPeriod: draftNextStub(worker, schedule, null, today, 150, firstPayDate).period,
+      draftPayDate: draftNextStub(worker, schedule, null, today, 150, firstPayDate).payDate,
+    };
+  });
+
+  return { version: 1, divRound, hourlyPay, dates, periods, stubTotals, ytd, federal, state, taxLines, nextStub, payday };
 }

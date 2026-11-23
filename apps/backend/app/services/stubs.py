@@ -20,7 +20,7 @@ from sqlalchemy.orm import Session
 
 from ..domain.calc_stub import calc_stub, with_computed_amount
 from ..domain.next_stub import draft_next_stub
-from ..domain.pay_period import add_days, current_period, default_pay_date, diff_days, year_of
+from ..domain.pay_period import add_days, current_period, default_pay_date, diff_days, next_payday, year_of
 from ..domain.tax.apply_taxes import TaxContext, apply_taxes, is_tax_override, work_state
 from ..domain.tax.types import normalize_tax_profile
 from ..domain.ytd import compute_ytd, prior_ytd_gross
@@ -165,6 +165,7 @@ def _draft(business: Business, worker: Worker, stubs: Sequence[Stub], today: str
         previous,  # type: ignore[arg-type]
         today,
         business.overtime_pct,
+        business.first_pay_date,
     )
 
 
@@ -183,7 +184,7 @@ def create_batch(db: Session, business: Business, user_id: str, today: str) -> t
     for stub in all_stubs:
         if latest is None or stub.period_end > latest["end"]:
             latest = {"start": stub.period_start, "end": stub.period_end}
-    period = current_period(latest, business.pay_schedule, today)  # type: ignore[arg-type]
+    period = current_period(latest, business.pay_schedule, today, business.first_pay_date)  # type: ignore[arg-type]
 
     created = []
     for worker in records.list_workers(db, user_id):
@@ -195,7 +196,11 @@ def create_batch(db: Session, business: Business, user_id: str, today: str) -> t
         pay_date = (
             add_days(period["end"], diff_days(stubs[0].period_end, stubs[0].pay_date))
             if stubs
-            else default_pay_date(period)
+            else (
+                next_payday(business.first_pay_date, business.pay_schedule, today)["payDate"]  # type: ignore[arg-type]
+                if latest is None and business.first_pay_date
+                else default_pay_date(period)
+            )
         )
         history = [_ytd_stub(stub) for stub in stubs]
         lines = apply_taxes(draft["lines"], tax_context(db, business, worker, _unsaved(pay_date), history))["lines"]

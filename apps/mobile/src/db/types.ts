@@ -21,6 +21,8 @@ export interface Business {
   /** A data: URI of the chosen logo, small enough to embed in the stub HTML. */
   logoDataUri: string | null;
   paySchedule: PaySchedule;
+  /** A real pay day (YYYY-MM-DD) the pay cycle is counted on from; null until given. */
+  firstPayDate: IsoDate | null;
   showEmployerId: boolean;
   templateId: TemplateId;
   accent: string;

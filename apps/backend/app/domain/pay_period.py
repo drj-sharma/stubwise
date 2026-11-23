@@ -96,7 +96,9 @@ def period_containing(today: IsoDate, schedule: PaySchedule) -> PayPeriod:
     raise ValueError(f"Unknown pay schedule {schedule!r}")
 
 
-def current_period(latest: PayPeriod | None, schedule: PaySchedule, today: IsoDate) -> PayPeriod:
+def current_period(
+    latest: PayPeriod | None, schedule: PaySchedule, today: IsoDate, first_pay_date: IsoDate | None = None
+) -> PayPeriod:
     """The pay period the business is in right now.
 
     With stubs on record it follows on from the latest one, so a business whose
@@ -104,6 +106,8 @@ def current_period(latest: PayPeriod | None, schedule: PaySchedule, today: IsoDa
     back to the calendar.
     """
     if not latest:
+        if first_pay_date:
+            return next_payday(first_pay_date, schedule, today)["period"]
         return period_containing(today, schedule)
     period = latest
     # Bounded: after a long gap, stop walking and realign to the calendar.
@@ -112,6 +116,66 @@ def current_period(latest: PayPeriod | None, schedule: PaySchedule, today: IsoDa
             break
         period = next_period(period, schedule)
     return period_containing(today, schedule) if period["end"] < today else period
+
+
+class Payday(TypedDict):
+    period: PayPeriod
+    payDate: IsoDate
+
+
+def period_for_pay_date(pay_date: IsoDate, schedule: PaySchedule) -> PayPeriod:
+    """The pay period a pay day pays for: the latest whole period that ended before it.
+
+    Weeks run Monday to Sunday, so a Friday pay day pays the week before.
+    """
+    year, month, day = _split(pay_date)
+    prev_year, prev_month = (year - 1, 12) if month == 1 else (year, month - 1)
+    if schedule in ("weekly", "biweekly"):
+        # The Sunday before the pay day (a week earlier when the pay day is itself a Sunday).
+        weekday = (_date(pay_date).weekday() + 1) % 7  # 0 = Sunday
+        end = add_days(pay_date, -(7 if weekday == 0 else weekday))
+        return {"start": add_days(end, -6 if schedule == "weekly" else -13), "end": end}
+    if schedule == "semimonthly":
+        if day > 15:
+            return {"start": _join(year, month, 1), "end": _join(year, month, 15)}
+        return {
+            "start": _join(prev_year, prev_month, 16),
+            "end": _join(prev_year, prev_month, days_in_month(prev_year, prev_month)),
+        }
+    if schedule == "monthly":
+        return {
+            "start": _join(prev_year, prev_month, 1),
+            "end": _join(prev_year, prev_month, days_in_month(prev_year, prev_month)),
+        }
+    raise ValueError(f"Unknown pay schedule {schedule!r}")
+
+
+def next_payday(first_pay_date: IsoDate, schedule: PaySchedule, today: IsoDate) -> Payday:
+    """The first pay day on or after ``today``, counting on from the business's first pay day."""
+    anchor: Payday = {"period": period_for_pay_date(first_pay_date, schedule), "payDate": first_pay_date}
+    return upcoming_paydays(anchor, schedule, today, 1)[0]
+
+
+def upcoming_paydays(anchor: Payday, schedule: PaySchedule, today: IsoDate, count: int) -> list[Payday]:
+    """The next ``count`` pay days from ``today`` on (today included), walking on from a known one.
+
+    Bounded: after a very long gap the last walked pay day is used.
+    """
+    current = anchor
+    for _ in range(600):
+        if not current["payDate"] < today:
+            break
+        current = _advance_payday(current, schedule)
+    result: list[Payday] = []
+    for _ in range(count):
+        result.append(current)
+        current = _advance_payday(current, schedule)
+    return result
+
+
+def _advance_payday(payday: Payday, schedule: PaySchedule) -> Payday:
+    period = next_period(payday["period"], schedule)
+    return {"period": period, "payDate": next_pay_date(payday["period"], payday["payDate"], period)}
 
 
 def default_pay_date(period: PayPeriod) -> IsoDate:

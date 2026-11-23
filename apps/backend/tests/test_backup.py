@@ -120,7 +120,7 @@ def test_imports_a_snapshot_and_exports_the_same_records(client: TestClient, aut
     assert loaded.pop("savedAt").endswith("Z")
     # Everything that was sent comes back; fields the old format did not have are filled with the app's defaults.
     expected = without_ids(snapshot())
-    expected["business"].update(state=None, logoDataUri=None, overtimePct=150, appearance="light")
+    expected["business"].update(state=None, firstPayDate=None, logoDataUri=None, overtimePct=150, appearance="light")
     for worker in expected["workers"]:
         worker["taxProfile"] = DEFAULT_TAX_PROFILE
     assert without_ids(loaded) == expected

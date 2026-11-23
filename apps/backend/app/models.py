@@ -155,6 +155,7 @@ class Business(Base):
     employer_id: Mapped[str | None] = mapped_column(String(20))
     logo_data_uri: Mapped[str | None] = mapped_column(Text)
     pay_schedule: Mapped[str] = mapped_column(String(12))
+    first_pay_date: Mapped[str | None] = mapped_column(String(10))
     show_employer_id: Mapped[bool] = mapped_column(Boolean, default=True)
     template_id: Mapped[str] = mapped_column(String(20), default="classic")
     accent: Mapped[str] = mapped_column(String(7), default="#3F3D9E")

@@ -5,8 +5,11 @@ import {
   formatWeekdayDate,
   isIsoDate,
   nextPayDate,
+  nextPayday,
   nextPeriod,
   periodContaining,
+  periodForPayDate,
+  upcomingPaydays,
 } from './payPeriod';
 
 describe('next pay period', () => {
@@ -147,5 +150,34 @@ describe('dates', () => {
   it('formats for display', () => {
     expect(formatPeriod({ start: '2026-11-09', end: '2026-11-22' })).toBe('Nov 9 – Nov 22');
     expect(formatWeekdayDate('2026-11-27')).toBe('Fri, Nov 27');
+  });
+});
+
+describe('pay days counted on from the first pay day', () => {
+  it('pays the latest period that ended before the pay day', () => {
+    // Fri Nov 27 2026
+    expect(periodForPayDate('2026-11-27', 'weekly')).toEqual({ start: '2026-11-16', end: '2026-11-22' });
+    expect(periodForPayDate('2026-11-27', 'biweekly')).toEqual({ start: '2026-11-09', end: '2026-11-22' });
+    // A Sunday pay day pays the week before it, not the week ending that day.
+    expect(periodForPayDate('2026-11-22', 'weekly')).toEqual({ start: '2026-11-09', end: '2026-11-15' });
+    expect(periodForPayDate('2026-12-03', 'semimonthly')).toEqual({ start: '2026-11-16', end: '2026-11-30' });
+    expect(periodForPayDate('2026-12-18', 'semimonthly')).toEqual({ start: '2026-12-01', end: '2026-12-15' });
+    expect(periodForPayDate('2027-01-05', 'monthly')).toEqual({ start: '2026-12-01', end: '2026-12-31' });
+  });
+
+  it('counts on to the first pay day that is not in the past', () => {
+    expect(nextPayday('2026-11-27', 'biweekly', '2026-11-27').payDate).toBe('2026-11-27');
+    const later = nextPayday('2026-11-27', 'biweekly', '2026-12-01');
+    expect(later).toEqual({ period: { start: '2026-11-23', end: '2026-12-06' }, payDate: '2026-12-11' });
+  });
+
+  it('lists the coming pay days in order', () => {
+    const anchor = { period: periodForPayDate('2026-11-27', 'weekly'), payDate: '2026-11-27' };
+    expect(upcomingPaydays(anchor, 'weekly', '2026-12-01', 3).map((p) => p.payDate)).toEqual(['2026-12-04', '2026-12-11', '2026-12-18']);
+  });
+
+  it('starts the current period from the first pay day when there are no stubs', () => {
+    expect(currentPeriod(null, 'weekly', '2026-11-25', '2026-11-27')).toEqual({ start: '2026-11-16', end: '2026-11-22' });
+    expect(currentPeriod(null, 'weekly', '2026-11-25')).toEqual(periodContaining('2026-11-25', 'weekly'));
   });
 });

@@ -44,6 +44,7 @@ export interface BusinessOut {
   employerId: string | null;
   logoDataUri: string | null;
   paySchedule: PaySchedule;
+  firstPayDate: string | null;
   showEmployerId: boolean;
   templateId: string;
   accent: string;

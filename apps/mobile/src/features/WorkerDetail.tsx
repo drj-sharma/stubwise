@@ -52,7 +52,7 @@ export function WorkerDetail({ workerId, showEdit = true }: { workerId: string; 
     ? starting.lines.reduce((sum, line) => sum + (line.kind === 'earning' ? line.amountCents : -line.amountCents), 0)
     : null;
   const startingGross = starting ? starting.lines.filter((l) => l.kind === 'earning').reduce((s, l) => s + l.amountCents, 0) : 0;
-  const next = draftNextStub(worker, business.paySchedule, latest, todayIso(), business.overtimePct);
+  const next = draftNextStub(worker, business.paySchedule, latest, todayIso(), business.overtimePct, business.firstPayDate);
 
   // The server drafts the stub, works out its taxes and saves it. One key per tap, so a retry cannot make two.
   const makeNext = async (): Promise<void> => {
