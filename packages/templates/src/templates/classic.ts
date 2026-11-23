@@ -1,5 +1,5 @@
 import type { StubDocument } from '../document';
-import { esc, hoursCell, logoHtml, money, page, payDateText, periodText, rateCell } from '../html';
+import { EXTRAS_CSS, depositSlipHtml, extrasHtml, esc, hoursCell, logoHtml, money, page, payDateText, periodText, rateCell } from '../html';
 import type { TemplateOptions } from '../registry';
 
 /** The stub from the screen designs: black on white, employer header, two tables, boxed net pay. */
@@ -14,20 +14,20 @@ export function renderClassic(doc: StubDocument, _options: TemplateOptions): str
 .muted { color: #454B51; }
 .title { text-align: right; }
 .title h1 { margin: 0; font-size: 28px; line-height: 34px; letter-spacing: -0.01em; }
-.info { margin-top: 24px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+.info { margin-top: 20px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
 .cap { font-size: 12px; line-height: 16px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: #5A6066; }
 .strong { font-size: 15px; line-height: 22px; font-weight: 600; }
-table { margin-top: 28px; }
+table { margin-top: 22px; }
 th { padding: 0 0 8px; border-bottom: 1px solid #16171D; text-align: left; font-size: 12px; line-height: 16px; font-weight: 600; color: #454B51; }
 th:first-child { letter-spacing: 0.04em; text-transform: uppercase; color: #16171D; }
-td { padding: 9px 0; border-bottom: 1px solid #C4C7C2; }
+td { padding: 7px 0; border-bottom: 1px solid #C4C7C2; }
 tr.last td { border-bottom: 1px solid #16171D; }
 tr.total td { padding: 10px 0; border-bottom: 0; font-weight: 600; }
-.net { margin-top: 28px; padding: 20px 24px; border: 2px solid #16171D; border-radius: 10px; display: flex; align-items: center; justify-content: space-between; gap: 24px; font-variant-numeric: tabular-nums; }
+.net { margin-top: 22px; padding: 20px 24px; border: 2px solid #16171D; border-radius: 10px; display: flex; align-items: center; justify-content: space-between; gap: 24px; font-variant-numeric: tabular-nums; }
 .net .big { font-size: 40px; line-height: 46px; font-weight: 600; letter-spacing: -0.02em; }
 .net .side { display: grid; grid-template-columns: auto auto; column-gap: 28px; row-gap: 4px; }
 .grow { flex: 1 1 auto; }
-.foot { padding-top: 12px; border-top: 1px solid #C4C7C2; display: flex; justify-content: space-between; gap: 24px; font-size: 12px; line-height: 17px; color: #5A6066; }`;
+.foot { padding-top: 12px; border-top: 1px solid #C4C7C2; display: flex; justify-content: space-between; gap: 24px; font-size: 12px; line-height: 17px; color: #5A6066; }${EXTRAS_CSS}`;
 
   const earnings = doc.earnings
     .map(
@@ -80,7 +80,9 @@ ${deductionsTable}
 <div class="muted">Total deductions</div><div class="num">− ${money(current.deductionsCents)}</div>
 <div style="font-weight:600">Net pay, year to date</div><div class="num" style="font-weight:600">${money(ytd.netCents)}</div>
 </div></div>
+${extrasHtml(doc)}
 <div class="grow"></div>
+${depositSlipHtml(doc)}
 <div class="foot"><div>${esc(doc.ytdNote)}</div><div style="white-space:nowrap">Prepared by the employer · Page 1 of 1</div></div>
 </div>`;
 

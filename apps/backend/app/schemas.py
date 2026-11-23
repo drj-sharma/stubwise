@@ -249,6 +249,35 @@ class DefaultDeduction(Model):
     amountCents: Cents
 
 
+class PtoStart(Model):
+    """Paid time off a worker had available before their first stub here."""
+
+    sickMinutes: Minutes = 0
+    vacationMinutes: Minutes = 0
+
+
+class PtoUse(Model):
+    accruedMinutes: Minutes = 0
+    usedMinutes: Minutes = 0
+
+
+class StubPto(Model):
+    """Time off earned and used on one stub."""
+
+    sick: PtoUse = PtoUse()
+    vacation: PtoUse = PtoUse()
+
+
+class EmployerTax(Model):
+    """A tax the employer pays on top of the wages (FUTA, SUTA, ...). Never deducted from net pay."""
+
+    label: Label
+    amountCents: Cents
+
+
+EmployerTaxes = Annotated[list[EmployerTax], Field(max_length=10)]
+
+
 # ---- Business -------------------------------------------------------------------
 
 _BUSINESS_EXAMPLE = {
@@ -280,6 +309,9 @@ class BusinessCreate(Model):
     accent: Accent = "#3F3D9E"
     overtimePct: OvertimePct = 150
     appearance: Appearance = "light"
+    showPto: bool = False
+    showEmployerTaxes: bool = False
+    showDepositSlip: bool = False
 
 
 class BusinessPatch(Model):
@@ -302,6 +334,9 @@ class BusinessPatch(Model):
     accent: Accent | None = None
     overtimePct: OvertimePct | None = None
     appearance: Appearance | None = None
+    showPto: bool | None = None
+    showEmployerTaxes: bool | None = None
+    showDepositSlip: bool | None = None
 
 
 class BusinessOut(Out):
@@ -319,6 +354,9 @@ class BusinessOut(Out):
     accent: str
     overtimePct: int
     appearance: str
+    showPto: bool
+    showEmployerTaxes: bool
+    showDepositSlip: bool
     version: int
     createdAt: str
     updatedAt: str
@@ -350,6 +388,7 @@ class WorkerCreate(Model):
     defaultDeductions: Annotated[list[DefaultDeduction], Field(max_length=20)] = []
     startingYtd: StartingYtd | None = None
     taxProfile: TaxProfile = TaxProfile()
+    ptoStart: PtoStart | None = None
 
 
 class WorkerPatch(Model):
@@ -366,6 +405,7 @@ class WorkerPatch(Model):
     defaultDeductions: Annotated[list[DefaultDeduction], Field(max_length=20)] | None = None
     startingYtd: StartingYtd | None = None
     taxProfile: TaxProfile | None = None
+    ptoStart: PtoStart | None = None
 
 
 class WorkerOut(Out):
@@ -379,6 +419,7 @@ class WorkerOut(Out):
     defaultDeductions: list[DefaultDeduction]
     startingYtd: StartingYtd | None
     taxProfile: TaxProfile
+    ptoStart: PtoStart | None
     version: int
     createdAt: str
     updatedAt: str
@@ -411,6 +452,29 @@ class LinesReplace(Model):
     )  # fmt: skip
 
     lines: Lines
+
+
+class ExtrasReplace(Model):
+    """Paid time off and employer-paid taxes for one stub. Both are replaced as sent."""
+
+    model_config = ConfigDict(
+        strict=True,
+        extra="ignore",
+        json_schema_extra={
+            "examples": [
+                {
+                    "pto": {
+                        "sick": {"accruedMinutes": 90, "usedMinutes": 0},
+                        "vacation": {"accruedMinutes": 120, "usedMinutes": 480},
+                    },
+                    "employerTaxes": [{"label": "FUTA", "amountCents": 1104}, {"label": "SUTA", "amountCents": 5520}],
+                }
+            ]
+        },
+    )  # fmt: skip
+
+    pto: StubPto | None = None
+    employerTaxes: EmployerTaxes = []
 
 
 class StubPatch(Model):
@@ -464,6 +528,25 @@ class Ytd(Out):
     byLine: dict[str, int] = Field(description="Year-to-date per line, keyed by '<kind>:<label, lower-cased>'.")
 
 
+class PtoBalanceOut(Out):
+    accruedMinutes: int = Field(description="Earned on this stub.")
+    usedMinutes: int = Field(description="Taken on this stub.")
+    availableMinutes: int = Field(
+        description="Balance after this stub: the worker's opening balance plus all earned, minus all used."
+    )
+
+
+class StubPtoOut(Out):
+    sick: PtoBalanceOut
+    vacation: PtoBalanceOut
+
+
+class EmployerTaxOut(Out):
+    label: str
+    amountCents: int
+    ytdCents: int
+
+
 class StubOut(Out):
     id: str
     workerId: str
@@ -476,6 +559,8 @@ class StubOut(Out):
     taxNotes: list[str] = Field(
         [], description="Plain-language notes on how the taxes were worked out, such as bonus pay."
     )
+    pto: StubPtoOut = Field(description="Paid time off for this stub; zeros when none was entered.")
+    employerTaxes: list[EmployerTaxOut] = Field(description="Employer-paid taxes, not part of net pay.")
     version: int
     createdAt: str
     updatedAt: str
@@ -513,6 +598,7 @@ class BackupWorker(Model):
     startingYtd: StartingYtd | None
     taxProfile: TaxProfile = TaxProfile()
     createdAt: IsoDateTime | None = None
+    ptoStart: PtoStart | None = None
 
 
 class BackupStub(Model):
@@ -523,6 +609,8 @@ class BackupStub(Model):
     payDate: IsoDate
     createdAt: IsoDateTime
     lines: Annotated[list[BackupLine], Field(min_length=1, max_length=40)]
+    pto: StubPto | None = None
+    employerTaxes: EmployerTaxes | None = None
 
 
 class BackupBusiness(Model):
@@ -540,6 +628,9 @@ class BackupBusiness(Model):
     accent: Accent
     overtimePct: OvertimePct = 150
     appearance: Appearance = "light"
+    showPto: bool = False
+    showEmployerTaxes: bool = False
+    showDepositSlip: bool = False
 
 
 class Snapshot(Model):

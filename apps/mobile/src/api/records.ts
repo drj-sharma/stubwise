@@ -41,6 +41,9 @@ export function toBusiness(row: BusinessOut): Business {
     accent: row.accent,
     overtimePct: row.overtimePct,
     appearance: APPEARANCES.includes(row.appearance as Appearance) ? (row.appearance as Appearance) : 'light',
+    showPto: row.showPto ?? false,
+    showEmployerTaxes: row.showEmployerTaxes ?? false,
+    showDepositSlip: row.showDepositSlip ?? false,
     version: row.version,
   };
 }
@@ -57,10 +60,13 @@ export function toWorker(row: WorkerOut): Worker {
     defaultDeductions: row.defaultDeductions,
     startingYtd: row.startingYtd,
     taxProfile: normalizeTaxProfile(row.taxProfile),
+    ptoStart: row.ptoStart ?? null,
     createdAt: row.createdAt,
     version: row.version,
   };
 }
+
+const NO_PTO = { accruedMinutes: 0, usedMinutes: 0, availableMinutes: 0 };
 
 export function toStub(row: StubOut): Stub {
   return {
@@ -74,6 +80,8 @@ export function toStub(row: StubOut): Stub {
     ytd: row.ytd,
     taxStatus: row.taxStatus,
     taxNotes: row.taxNotes ?? [],
+    pto: row.pto ?? { sick: NO_PTO, vacation: NO_PTO },
+    employerTaxes: row.employerTaxes ?? [],
     lines: row.lines.map((line) => ({
       id: line.id,
       kind: line.kind,
@@ -137,7 +145,9 @@ export interface BusinessInput {
   overtimePct?: number;
 }
 
-export type BusinessPatch = Partial<BusinessInput & { showEmployerId: boolean; appearance: Appearance }>;
+export type BusinessPatch = Partial<
+  BusinessInput & { showEmployerId: boolean; appearance: Appearance; showPto: boolean; showEmployerTaxes: boolean; showDepositSlip: boolean }
+>;
 
 /** The signed-in user's business, or null before setup. */
 export async function getBusiness(): Promise<Business | null> {
@@ -230,6 +240,17 @@ export async function replaceStubLines(id: string, version: number, lines: reado
   return toStub(
     await api.request<StubOut>('PUT', `/v1/stubs/${encodeURIComponent(id)}/lines`, { body: { lines: lines.map(wireLine) }, ifMatch: version }),
   );
+}
+
+/** What the person types for one stub's extras: time earned and used (in minutes), and employer-paid taxes. */
+export interface StubExtrasPatch {
+  pto: { sick: { accruedMinutes: number; usedMinutes: number }; vacation: { accruedMinutes: number; usedMinutes: number } } | null;
+  employerTaxes: { label: string; amountCents: number }[];
+}
+
+/** Replaces the stub's paid time off and employer-paid taxes. The server works out balances and year to date. */
+export async function replaceStubExtras(id: string, version: number, extras: StubExtrasPatch): Promise<Stub> {
+  return toStub(await api.request<StubOut>('PUT', `/v1/stubs/${encodeURIComponent(id)}/extras`, { body: extras, ifMatch: version }));
 }
 
 /** Moves the stub; the server recalculates its taxes for the new pay date. */

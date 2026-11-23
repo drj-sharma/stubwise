@@ -19,6 +19,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from ..domain.calc_stub import calc_stub, with_computed_amount
+from ..domain.extras import ExtrasStub, carry_forward, compute_employer_taxes, compute_pto
 from ..domain.next_stub import draft_next_stub
 from ..domain.pay_period import add_days, current_period, default_pay_date, diff_days, next_payday, year_of
 from ..domain.tax.apply_taxes import TaxContext, apply_taxes, is_tax_override, supplemental_notes, work_state
@@ -63,6 +64,16 @@ def _ytd_stub(stub: Stub) -> dict[str, Any]:
         "payDate": stub.pay_date,
         "createdAt": _sort_key(stub.created_at),
         "lines": [_domain_line(row) for row in stub.lines],
+    }
+
+
+def _extras_stub(stub: Stub) -> ExtrasStub:
+    return {
+        "id": stub.id,
+        "payDate": stub.pay_date,
+        "createdAt": _sort_key(stub.created_at),
+        "pto": stub.pto,
+        "employerTaxes": stub.employer_taxes,
     }
 
 
@@ -130,8 +141,19 @@ def _set_lines(stub: Stub, lines: Sequence[Line]) -> None:
     ]
 
 
-def _insert(db: Session, worker: Worker, period: dict[str, str], pay_date: str, lines: Sequence[Line]) -> Stub:
+def _insert(
+    db: Session,
+    worker: Worker,
+    period: dict[str, str],
+    pay_date: str,
+    lines: Sequence[Line],
+    previous: Stub | None = None,
+) -> Stub:
+    """``previous`` is the worker's last stub: its time-off accrual and employer taxes carry over."""
+    pto, employer_taxes = carry_forward(_extras_stub(previous) if previous else None)
     stub = Stub(
+        pto=pto,
+        employer_taxes=employer_taxes,
         user_id=worker.user_id,
         worker_id=worker.id,
         period_start=period["start"],
@@ -153,7 +175,7 @@ def create_next(db: Session, business: Business, worker: Worker, today: str) -> 
     draft = _draft(business, worker, stubs, today)
     history = [_ytd_stub(stub) for stub in stubs]
     lines = apply_taxes(draft["lines"], tax_context(db, business, worker, _unsaved(draft["payDate"]), history))["lines"]
-    stub = _insert(db, worker, draft["period"], draft["payDate"], lines)  # type: ignore[arg-type]
+    stub = _insert(db, worker, draft["period"], draft["payDate"], lines, stubs[0] if stubs else None)  # type: ignore[arg-type]
     db.commit()
     return stub
 
@@ -213,7 +235,7 @@ def create_batch(db: Session, business: Business, user_id: str, today: str) -> t
         )
         history = [_ytd_stub(stub) for stub in stubs]
         lines = apply_taxes(draft["lines"], tax_context(db, business, worker, _unsaved(pay_date), history))["lines"]
-        created.append(_insert(db, worker, period, pay_date, lines))  # type: ignore[arg-type]
+        created.append(_insert(db, worker, period, pay_date, lines, stubs[0] if stubs else None))  # type: ignore[arg-type]
     db.commit()
     return period, created  # type: ignore[return-value]
 
@@ -225,6 +247,15 @@ def replace_lines(db: Session, business: Business, worker: Worker, stub: Stub, l
     context = tax_context(db, business, worker, _ytd_stub(stub), history)
     taxed = apply_taxes([with_computed_amount(line) for line in lines], context)["lines"]  # type: ignore[arg-type]
     _replace(db, stub, taxed)
+    return stub
+
+
+def set_extras(db: Session, stub: Stub, pto: dict[str, Any] | None, employer_taxes: Sequence[dict[str, Any]]) -> Stub:
+    """Saves the stub's time off and employer-paid taxes as sent. Neither touches the lines or net pay."""
+    stub.pto = pto
+    stub.employer_taxes = list(employer_taxes) or None
+    records.touch(stub)
+    db.commit()
     return stub
 
 
@@ -272,19 +303,21 @@ class StubView:
         self._db = db
         self._user_id = user_id
         self._business: Business | None = None
-        self._workers: dict[str, tuple[Worker, list[dict[str, Any]]]] = {}
+        self._workers: dict[str, tuple[Worker, list[dict[str, Any]], list[ExtrasStub]]] = {}
 
-    def _history(self, worker_id: str) -> tuple[Worker, list[dict[str, Any]]]:
+    def _history(self, worker_id: str) -> tuple[Worker, list[dict[str, Any]], list[ExtrasStub]]:
         if worker_id not in self._workers:
             worker = records.owned(self._db, Worker, self._user_id, worker_id)
-            self._workers[worker_id] = (worker, [_ytd_stub(stub) for stub in worker_stubs(self._db, worker)])
+            rows = worker_stubs(self._db, worker)
+            self._workers[worker_id] = (worker, [_ytd_stub(stub) for stub in rows], [_extras_stub(s) for s in rows])
         return self._workers[worker_id]
 
     def json(self, stub: Stub) -> dict[str, Any]:
         if self._business is None:
             self._business = records.get_business(self._db, self._user_id)
-        worker, history = self._history(stub.worker_id)
+        worker, history, extras_history = self._history(stub.worker_id)
         target = _ytd_stub(stub)
+        extras_target = _extras_stub(stub)
         # The stub itself may be newer than the cached history (it was just saved).
         history = [target if other["id"] == stub.id else other for other in history]
         context = tax_context(self._db, self._business, worker, target, history)
@@ -305,6 +338,8 @@ class StubView:
             "ytd": {**ytd, "byLine": dict(sorted(ytd["byLine"].items()))},
             "taxStatus": apply_taxes(target["lines"], context)["status"],
             "taxNotes": supplemental_notes(target["lines"], context),
+            "pto": compute_pto(extras_target, extras_history, worker.pto_start),
+            "employerTaxes": compute_employer_taxes(extras_target, extras_history),
             "version": stub.version,
             "createdAt": iso_z(stub.created_at),
             "updatedAt": iso_z(stub.updated_at),

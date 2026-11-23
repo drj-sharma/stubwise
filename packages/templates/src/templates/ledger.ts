@@ -1,5 +1,5 @@
 import type { StubDocument } from '../document';
-import { esc, hoursCell, money, page, payDateText, periodText, rateCell } from '../html';
+import { EXTRAS_CSS, depositSlipHtml, extrasHtml, esc, hoursCell, money, page, payDateText, periodText, rateCell } from '../html';
 import type { TemplateOptions } from '../registry';
 
 /** A traditional payroll-register look: fully ruled grid, no colour, prints well on any printer. */
@@ -23,7 +23,7 @@ tr.total td { border-bottom: 1.5px solid #16171D; border-top: 1px solid #16171D;
 .net .cell { padding: 14px 12px; }
 .net .big { font-size: 26px; line-height: 32px; font-weight: 700; font-variant-numeric: tabular-nums; }
 .grow { flex: 1 1 auto; }
-.foot { margin-top: 12px; font-size: 12px; color: #454B51; }`;
+.foot { margin-top: 12px; font-size: 12px; color: #454B51; }${EXTRAS_CSS}`;
 
   const { current, ytd } = doc.totals;
   const earnings = doc.earnings
@@ -66,6 +66,9 @@ ${deductions}
 <div class="cell"><div class="cap">Net pay, year to date</div><div class="big">${money(ytd.netCents)}</div></div>
 </div>
 </div>
+${extrasHtml(doc)}
+<div class="grow"></div>
+${depositSlipHtml(doc)}
 <div class="foot">${esc(doc.ytdNote)} Prepared by the employer.</div>
 </div>`;
 

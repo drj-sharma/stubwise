@@ -182,6 +182,7 @@ export function Onboarding() {
           rateCents,
           defaultDeductions: [],
           startingYtd: null,
+          ptoStart: null,
           taxProfile: DEFAULT_TAX_PROFILE,
         };
         let created: Worker;

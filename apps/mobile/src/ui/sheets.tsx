@@ -18,6 +18,7 @@ import {
 import { useState, type ReactNode } from 'react';
 import { KeyboardAvoidingView, Modal, Platform, Pressable, ScrollView, Switch, Text, TextInput, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { hoursTextToMinutes, minutesToHoursText } from './hours';
 import { Button, Icon, TABULAR } from './primitives';
 import { useTheme } from './theme';
 
@@ -301,6 +302,58 @@ function QuantityBody({ unit, initialQuantityMilli, rateCents, onSave }: { unit:
     </>
   );
 }
+
+
+/** One or more amounts of time typed in hours ("1.5"), returned in minutes in the order given. */
+export function HoursSheet({
+  visible,
+  title,
+  note,
+  fields,
+  onSave,
+  onClose,
+}: {
+  visible: boolean;
+  title: string;
+  note?: string;
+  fields: readonly { label: string; initialMinutes: number }[];
+  onSave: (minutes: number[]) => void;
+  onClose: () => void;
+}) {
+  return (
+    <BottomSheet visible={visible} title={title} onClose={onClose}>
+      {() => <HoursBody fields={fields} note={note} onSave={onSave} />}
+    </BottomSheet>
+  );
+}
+
+function HoursBody({ fields, note, onSave }: { fields: readonly { label: string; initialMinutes: number }[]; note?: string; onSave: (minutes: number[]) => void }) {
+  const c = useTheme();
+  const [texts, setTexts] = useState(() => fields.map((field) => minutesToHoursText(field.initialMinutes)));
+  const minutes = texts.map(hoursTextToMinutes);
+  const ready = minutes.every((value) => value !== null);
+  return (
+    <>
+      {note ? <Text style={{ fontSize: 13, lineHeight: 19, color: c.muted }}>{note}</Text> : null}
+      <View style={{ flexDirection: 'row', gap: 10 }}>
+        {fields.map((field, index) => (
+          <BigInput
+            key={field.label}
+            initial={minutesToHoursText(field.initialMinutes)}
+            onChangeText={(text) => setTexts((current) => current.map((old, i) => (i === index ? text : old)))}
+            label={field.label}
+            keyboardType="decimal-pad"
+            autoFocus={index === 0}
+            grow
+          />
+        ))}
+      </View>
+      {!ready ? <Text style={{ fontSize: 13, color: c.danger }}>Type hours as a number, for example 8 or 1.5.</Text> : null}
+      <Button title="Save" onPress={() => ready && onSave(minutes as number[])} disabled={!ready} />
+    </>
+  );
+}
+
 
 /** The server accepts up to 10,000 units on one line. */
 const MAX_QUANTITY_MILLI = 10_000_000;

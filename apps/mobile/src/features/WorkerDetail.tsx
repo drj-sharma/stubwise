@@ -15,6 +15,7 @@ import { createNextStub, getWorker, listStubs } from '@/api/records';
 import type { Stub, Worker } from '@/db/types';
 import { useBusiness } from '@/state/business';
 import { useQuery } from '@/state/useQuery';
+import { formatHours } from '@/ui/hours';
 import { ErrorState, Loading, Refresher, StaleBanner, alertError } from '@/ui/states';
 import { Amount, Avatar, Button, Pill, Row, SectionLabel, Sheet, StatTile, SubCard, TABULAR, TextButton } from '@/ui/primitives';
 import { useTheme } from '@/ui/theme';
@@ -53,6 +54,10 @@ export function WorkerDetail({ workerId, showEdit = true }: { workerId: string; 
     ? starting.lines.reduce((sum, line) => sum + (line.kind === 'earning' ? line.amountCents : -line.amountCents), 0)
     : null;
   const startingGross = starting ? starting.lines.filter((l) => l.kind === 'earning').reduce((s, l) => s + l.amountCents, 0) : 0;
+  // The latest stub's balance, or the opening balance before there is a stub.
+  const ptoNow = latest
+    ? { sick: latest.pto.sick.availableMinutes, vacation: latest.pto.vacation.availableMinutes }
+    : { sick: worker.ptoStart?.sickMinutes ?? 0, vacation: worker.ptoStart?.vacationMinutes ?? 0 };
   const next = draftNextStub(worker, business.paySchedule, latest, todayIso(), business.overtimePct, business.firstPayDate);
 
   // The server drafts the stub, works out its taxes and saves it. One key per tap, so a retry cannot make two.
@@ -96,6 +101,17 @@ export function WorkerDetail({ workerId, showEdit = true }: { workerId: string; 
           disabled={busy}
         />
       </Sheet>
+
+      {business.showPto && worker.type === 'employee' ? (
+        <Sheet>
+          <SectionLabel>Paid time off</SectionLabel>
+          <SubCard>
+            <Row title="Sick leave" subtitle="Available after the latest stub" right={<Amount value={`${formatHours(ptoNow.sick)} h`} />} />
+            <Row title="Vacation" subtitle="Available after the latest stub" right={<Amount value={`${formatHours(ptoNow.vacation)} h`} />} last />
+          </SubCard>
+          <Text style={{ fontSize: 12, lineHeight: 18, color: c.muted, marginHorizontal: 2 }}>Set the opening balance with Edit. Earned and used time is entered on each stub.</Text>
+        </Sheet>
+      ) : null}
 
       <Sheet>
         <SectionLabel>Stub history</SectionLabel>

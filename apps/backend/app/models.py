@@ -161,6 +161,10 @@ class Business(Base):
     accent: Mapped[str] = mapped_column(String(7), default="#3F3D9E")
     overtime_pct: Mapped[int] = mapped_column(Integer, default=150)
     appearance: Mapped[str] = mapped_column(String(10), default="light")
+    # Optional stub extras, all off until the employer switches them on in Settings.
+    show_pto: Mapped[bool] = mapped_column(Boolean, default=False, server_default="0")
+    show_employer_taxes: Mapped[bool] = mapped_column(Boolean, default=False, server_default="0")
+    show_deposit_slip: Mapped[bool] = mapped_column(Boolean, default=False, server_default="0")
     version: Mapped[int] = mapped_column(Integer, default=1)
     created_at: Mapped[datetime] = mapped_column(Timestamp, default=utcnow)
     updated_at: Mapped[datetime] = mapped_column(Timestamp, default=utcnow)
@@ -182,6 +186,8 @@ class Worker(Base):
     default_deductions: Mapped[list[dict[str, Any]]] = mapped_column(JSON, default=list)
     starting_ytd: Mapped[dict[str, Any] | None] = mapped_column(JSON)
     tax_profile: Mapped[dict[str, Any]] = mapped_column(JSON)
+    # Paid time off available before the first stub: {"sickMinutes": 0, "vacationMinutes": 0}. Null when none.
+    pto_start: Mapped[dict[str, Any] | None] = mapped_column(JSON)
     version: Mapped[int] = mapped_column(Integer, default=1)
     created_at: Mapped[datetime] = mapped_column(Timestamp, default=utcnow)
     updated_at: Mapped[datetime] = mapped_column(Timestamp, default=utcnow)
@@ -198,6 +204,11 @@ class Stub(Base):
     period_start: Mapped[str] = mapped_column(String(10))
     period_end: Mapped[str] = mapped_column(String(10))
     pay_date: Mapped[str] = mapped_column(String(10))
+    # Paid time off earned and used this period: {"sick": {"accruedMinutes", "usedMinutes"}, "vacation": {...}}.
+    # The balance is worked out from these on every read, like year-to-date.
+    pto: Mapped[dict[str, Any] | None] = mapped_column(JSON)
+    # Employer-paid taxes (FUTA, SUTA, ...) for this period: [{"label", "amountCents"}]. Never deducted from net pay.
+    employer_taxes: Mapped[list[dict[str, Any]] | None] = mapped_column(JSON)
     version: Mapped[int] = mapped_column(Integer, default=1)
     created_at: Mapped[datetime] = mapped_column(Timestamp, default=utcnow)
     updated_at: Mapped[datetime] = mapped_column(Timestamp, default=utcnow)

@@ -1,5 +1,5 @@
 import { type StubLine, type YtdStub, toMinutes } from '@stubwise/domain';
-import { type BuildStubDocumentInput, buildStubDocument, stubFileName } from './document';
+import { type BuildStubDocumentInput, type StubExtrasInput, buildStubDocument, stubFileName } from './document';
 import { TEMPLATES, isTemplateId, renderStubHtml } from './registry';
 
 const hourly = (label: string, h: number, m: number, rateCents: number): StubLine => ({
@@ -215,5 +215,76 @@ describe('per-unit pay', () => {
     const base = perMile([miles(1000)]);
     const doc = buildStubDocument({ ...base, worker: { ...base.worker, type: 'contractor' } });
     expect(doc.worker.typeLabel).toBe('1099 contractor');
+  });
+});
+
+describe('optional extras', () => {
+  const extras = (overrides: Partial<StubExtrasInput> = {}): StubExtrasInput => ({
+    showPto: true,
+    showEmployerTaxes: true,
+    showDepositSlip: true,
+    pto: {
+      sick: { accruedMinutes: 90, usedMinutes: 60, availableMinutes: 630 },
+      vacation: { accruedMinutes: 120, usedMinutes: 0, availableMinutes: -30 },
+    },
+    employerTaxes: [
+      { label: 'FUTA', amountCents: 1104, ytdCents: 2208 },
+      { label: 'SUTA <b>', amountCents: 5520, ytdCents: 11040 },
+      { label: 'Unused', amountCents: 0, ytdCents: 0 },
+    ],
+    ...overrides,
+  });
+  const ids = TEMPLATES.map((template) => template.id);
+
+  it('prints nothing extra by default, so existing stubs look as they did', () => {
+    const plain = buildStubDocument(input());
+    expect(plain.pto).toBeNull();
+    expect(plain.employerTaxes).toEqual([]);
+    expect(plain.depositSlip).toBeNull();
+    for (const id of ids) {
+      const html = renderStubHtml(plain, id);
+      for (const text of ['Paid time off', 'Employer-paid', 'Detach', 'Deposit slip']) expect(html).not.toContain(text);
+    }
+  });
+
+  it('stays off when the switches are off even if the figures are supplied', () => {
+    const doc = buildStubDocument({ ...input(), extras: extras({ showPto: false, showEmployerTaxes: false, showDepositSlip: false }) });
+    expect([doc.pto, doc.employerTaxes, doc.depositSlip]).toEqual([null, [], null]);
+  });
+
+  it.each(ids)('%s prints time off, employer taxes and the deposit slip when on', (id) => {
+    const html = renderStubHtml(buildStubDocument({ ...input(), extras: extras() }), id);
+    for (const text of [
+      'Paid time off',
+      'Sick leave',
+      '10:30', // 630 minutes available
+      '−0:30', // a balance below zero keeps its sign
+      'Employer-paid',
+      '$11.04',
+      '$110.40',
+      'Not deducted from net pay',
+      'Detach',
+      'Deposit slip',
+    ]) {
+      expect(html).toContain(text);
+    }
+    expect(html).not.toContain('Unused');
+    expect(html).not.toContain('<b>');
+    expect(html).toContain('SUTA &lt;b&gt;');
+  });
+
+  it('does not let employer taxes change net pay, and the slip shows the net pay', () => {
+    const doc = buildStubDocument({ ...input(), extras: extras() });
+    expect(doc.totals.current.netCents).toBe(177200);
+    expect(doc.depositSlip).toEqual({ netCents: 177200 });
+    expect(doc.totals.current.deductionsCents).toBe(27100);
+  });
+
+  it.each(ids)('%s puts the net pay on the slip', (id) => {
+    const html = renderStubHtml(buildStubDocument({ ...input(), extras: extras({ showPto: false, showEmployerTaxes: false }) }), id);
+    const slip = html.slice(html.indexOf('Detach'));
+    expect(slip).toContain('$1,772.00');
+    expect(slip).toContain('Marcus Bell');
+    expect(slip).toContain('Nov 27, 2026');
   });
 });

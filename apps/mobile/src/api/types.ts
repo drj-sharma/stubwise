@@ -50,6 +50,9 @@ export interface BusinessOut {
   accent: string;
   overtimePct: number;
   appearance: string;
+  showPto: boolean;
+  showEmployerTaxes: boolean;
+  showDepositSlip: boolean;
   version: number;
   createdAt: string;
   updatedAt: string;
@@ -66,6 +69,7 @@ export interface WorkerOut {
   defaultDeductions: { label: string; amountCents: number }[];
   startingYtd: StartingYtd | null;
   taxProfile: unknown;
+  ptoStart: PtoStart | null;
   version: number;
   createdAt: string;
   updatedAt: string;
@@ -104,6 +108,30 @@ export interface YtdOut {
 
 export type TaxStatus = 'calculated' | 'off' | 'no-data-for-year';
 
+/** Paid time off a worker had before their first stub here, in minutes. */
+export interface PtoStart {
+  sickMinutes: number;
+  vacationMinutes: number;
+}
+
+export interface PtoBalanceOut {
+  accruedMinutes: number;
+  usedMinutes: number;
+  /** The balance after this stub: opening balance plus everything earned, minus everything used. */
+  availableMinutes: number;
+}
+
+export interface PtoOut {
+  sick: PtoBalanceOut;
+  vacation: PtoBalanceOut;
+}
+
+export interface EmployerTaxOut {
+  label: string;
+  amountCents: number;
+  ytdCents: number;
+}
+
 export interface StubOut {
   id: string;
   workerId: string;
@@ -114,6 +142,9 @@ export interface StubOut {
   ytd: YtdOut;
   taxStatus: TaxStatus;
   taxNotes?: string[];
+  /** Absent from a server older than this feature. */
+  pto?: PtoOut;
+  employerTaxes?: EmployerTaxOut[];
   version: number;
   createdAt: string;
   updatedAt: string;

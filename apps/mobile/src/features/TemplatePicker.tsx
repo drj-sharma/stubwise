@@ -39,6 +39,9 @@ export function sample(business: TemplateSampleBusiness): StubDocument {
       ytd: { grossCents: 4539400, deductionsCents: 951564, netCents: 3587836 },
     },
     ytdNote: 'Year-to-date amounts cover pay dated Jan 1 to Nov 27, 2026.',
+    pto: null,
+    employerTaxes: [],
+    depositSlip: null,
   };
 }
 

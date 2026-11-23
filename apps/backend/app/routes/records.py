@@ -17,6 +17,7 @@ from ..schemas import (
     BusinessCreate,
     BusinessOut,
     BusinessPatch,
+    ExtrasReplace,
     LinesReplace,
     Snapshot,
     StubOut,
@@ -252,6 +253,31 @@ def replace_lines(
     worker = records.owned(db, Worker, user_id, stub.worker_id)
     business = records.get_business(db, user_id)
     stubs.replace_lines(db, business, worker, stub, [line.as_domain() for line in body.lines])
+    return stubs.StubView(db, user_id).json(stub)
+
+
+@stubs_router.put(
+    "/{stub_id}/extras",
+    response_model=StubOut,
+    summary="Set a stub's paid time off and employer-paid taxes",
+    description="Both are replaced as sent (`pto` null clears it). They never change the lines or net pay. "
+    "Balances and year-to-date carry forward from earlier stubs. " + IF_MATCH,
+)
+def replace_extras(
+    stub_id: str,
+    body: ExtrasReplace,
+    request: Request,
+    user_id: str = Depends(writer),
+    db: Session = Depends(get_session),
+) -> Any:
+    stub = records.owned(db, Stub, user_id, stub_id)
+    records.check_version(request, stub)
+    stubs.set_extras(
+        db,
+        stub,
+        body.pto.model_dump() if body.pto else None,
+        [tax.model_dump() for tax in body.employerTaxes],
+    )
     return stubs.StubView(db, user_id).json(stub)
 
 

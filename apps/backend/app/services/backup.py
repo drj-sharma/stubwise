@@ -92,6 +92,9 @@ def import_snapshot(db: Session, user_id: str, snapshot: Snapshot) -> dict[str, 
         accent=source.accent,
         overtime_pct=source.overtimePct,
         appearance=source.appearance,
+        show_pto=source.showPto,
+        show_employer_taxes=source.showEmployerTaxes,
+        show_deposit_slip=source.showDepositSlip,
         created_at=now,
         updated_at=now,
     )
@@ -111,6 +114,7 @@ def import_snapshot(db: Session, user_id: str, snapshot: Snapshot) -> dict[str, 
             default_deductions=[d.model_dump() for d in item.defaultDeductions],
             starting_ytd=item.startingYtd.model_dump() if item.startingYtd else None,
             tax_profile=item.taxProfile.model_dump(),
+            pto_start=item.ptoStart.model_dump() if item.ptoStart else None,
             created_at=_when(item.createdAt, now),
             updated_at=now,
         )
@@ -124,6 +128,8 @@ def import_snapshot(db: Session, user_id: str, snapshot: Snapshot) -> dict[str, 
             period_start=entry.periodStart,
             period_end=entry.periodEnd,
             pay_date=entry.payDate,
+            pto=entry.pto.model_dump() if entry.pto else None,
+            employer_taxes=[tax.model_dump() for tax in entry.employerTaxes] if entry.employerTaxes else None,
             created_at=_when(entry.createdAt, now),
             updated_at=now,
         )
@@ -175,6 +181,9 @@ def export_snapshot(db: Session, user_id: str) -> dict[str, Any] | None:
             "accent": business.accent,
             "overtimePct": business.overtime_pct,
             "appearance": business.appearance,
+            "showPto": business.show_pto,
+            "showEmployerTaxes": business.show_employer_taxes,
+            "showDepositSlip": business.show_deposit_slip,
         },
         "workers": [
             {
@@ -189,6 +198,8 @@ def export_snapshot(db: Session, user_id: str) -> dict[str, Any] | None:
                 "startingYtd": worker.starting_ytd,
                 "taxProfile": normalize_tax_profile(worker.tax_profile),
                 "createdAt": iso_z(worker.created_at),
+                # Left out when unset, so a backup stays as small and as old-format as it was.
+                **({"ptoStart": worker.pto_start} if worker.pto_start else {}),
             }
             for worker in workers
         ],
@@ -219,6 +230,8 @@ def export_snapshot(db: Session, user_id: str) -> dict[str, Any] | None:
                     }
                     for line in stub.lines
                 ],
+                **({"pto": stub.pto} if stub.pto else {}),
+                **({"employerTaxes": stub.employer_taxes} if stub.employer_taxes else {}),
             }
             for stub in stubs
         ],
