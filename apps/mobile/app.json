@@ -12,6 +12,7 @@
       "bundleIdentifier": "com.crewstub.app",
       "supportsTablet": true,
       "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false,
         "NSPhotoLibraryUsageDescription": "CrewStub uses a photo you choose as your business logo on pay stubs."
       },
       "usesAppleSignIn": true

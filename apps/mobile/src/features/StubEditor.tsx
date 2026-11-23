@@ -279,9 +279,17 @@ export function StubEditor({ stubId, onChanged, footer }: { stubId: string; onCh
               <Text style={{ fontSize: 13, color: c.muted }}>Net pay</Text>
               <Text style={[{ fontSize: 22, fontWeight: '700', color: c.text }, TABULAR]}>{formatCents(totals.netCents)}</Text>
             </View>
-            <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-              <Text style={{ fontSize: 12, color: c.muted }}>Year to date: gross {formatCents(ytd.grossCents)}</Text>
-              <Text style={[{ fontSize: 12, fontWeight: '600', color: c.successText }, TABULAR]}>net {formatCents(ytd.netCents)}</Text>
+            <View style={{ gap: 6, paddingTop: 8, borderTopWidth: 1, borderTopColor: c.border }}>
+              <Text style={{ fontSize: 12, fontWeight: '600', color: c.muted }}>Year to date, through this stub</Text>
+              <SummaryLine label="Gross pay" value={formatCents(ytd.grossCents)} />
+              <SummaryLine label="Deductions" value={`− ${formatCents(ytd.deductionsCents)}`} />
+              <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                <Text style={{ fontSize: 13, color: c.muted }}>Net pay</Text>
+                <Text style={[{ fontSize: 13, fontWeight: '700', color: c.successText }, TABULAR]}>{formatCents(ytd.netCents)}</Text>
+              </View>
+              <Text style={{ fontSize: 11, lineHeight: 16, color: c.muted }}>
+                Counted from this worker’s earlier stubs this year, plus any amount already paid before CrewStub. Edit a stub and every later stub updates.
+              </Text>
             </View>
           </View>
         </Sheet>

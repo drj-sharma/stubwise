@@ -43,6 +43,24 @@ describe('hours and minutes', () => {
     expect(payForMinutes(minutes, 1800)).toBeLessThan(payForMinutes(toMinutes(40, 0), 1800));
   });
 
+  it('matches exact arithmetic for every minute of a 60-hour week at common rates', () => {
+    // Reference: exact rational pay in BigInt, rounded half up once. Nothing here uses floating point.
+    const exact = (minutes: number, rate: number): number => {
+      const numerator = BigInt(minutes) * BigInt(rate);
+      return Number((numerator * 2n + 60n) / 120n);
+    };
+    for (const rate of [1, 725, 1500, 1800, 1825, 2000, 2333, 9999]) {
+      for (let minutes = 0; minutes <= 60 * 60; minutes += 1) {
+        expect(payForMinutes(minutes, rate)).toBe(exact(minutes, rate));
+      }
+    }
+  });
+
+  it('pays a part-time week to the cent: 23 h 20 min at $16.50 and 38 h 5 min at $22.75', () => {
+    expect(payForMinutes(toMinutes(23, 20), 1650)).toBe(38500); // 23⅓ h × $16.50 = $385.00
+    expect(payForMinutes(toMinutes(38, 5), 2275)).toBe(86640); // 38 1/12 h × $22.75 = $866.3958… → $866.40
+  });
+
   it('does not read 7 h 45 min as 7.45 hours', () => {
     expect(payForMinutes(toMinutes(7, 45), 1800)).not.toBe(Math.round(7.45 * 1800));
   });
