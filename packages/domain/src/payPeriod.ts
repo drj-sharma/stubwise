@@ -112,14 +112,81 @@ export function periodContaining(today: IsoDate, schedule: PaySchedule): PayPeri
  * on from the latest one, so a business whose two-week cycle starts on a
  * Wednesday keeps that cycle; with none it falls back to the calendar.
  */
-export function currentPeriod(latest: PayPeriod | null, schedule: PaySchedule, today: IsoDate): PayPeriod {
-  if (!latest) return periodContaining(today, schedule);
+export function currentPeriod(
+  latest: PayPeriod | null,
+  schedule: PaySchedule,
+  today: IsoDate,
+  firstPayDate: IsoDate | null = null,
+): PayPeriod {
+  if (!latest) return firstPayDate ? nextPayday(firstPayDate, schedule, today).period : periodContaining(today, schedule);
   let period = latest;
   // Bounded: after a long gap, stop walking and realign to the calendar.
   for (let step = 0; step < 60 && period.end < today; step += 1) {
     period = nextPeriod(period, schedule);
   }
   return period.end < today ? periodContaining(today, schedule) : period;
+}
+
+export interface Payday {
+  period: PayPeriod;
+  payDate: IsoDate;
+}
+
+/**
+ * The pay period a pay day pays for: the latest whole period that ended before
+ * it. Weeks run Monday to Sunday, so a Friday pay day pays the week before.
+ */
+export function periodForPayDate(payDate: IsoDate, schedule: PaySchedule): PayPeriod {
+  const { year, month, day } = split(payDate);
+  const previousMonth = month === 1 ? { year: year - 1, month: 12 } : { year, month: month - 1 };
+  switch (schedule) {
+    case 'weekly':
+    case 'biweekly': {
+      // The Sunday before the pay day (a week earlier when the pay day is itself a Sunday).
+      const weekday = new Date(toTime(payDate)).getUTCDay(); // 0 = Sunday
+      const end = addDays(payDate, -(weekday === 0 ? 7 : weekday));
+      return { start: addDays(end, schedule === 'weekly' ? -6 : -13), end };
+    }
+    case 'semimonthly':
+      return day > 15
+        ? { start: join(year, month, 1), end: join(year, month, 15) }
+        : {
+            start: join(previousMonth.year, previousMonth.month, 16),
+            end: join(previousMonth.year, previousMonth.month, daysInMonth(previousMonth.year, previousMonth.month)),
+          };
+    case 'monthly':
+      return {
+        start: join(previousMonth.year, previousMonth.month, 1),
+        end: join(previousMonth.year, previousMonth.month, daysInMonth(previousMonth.year, previousMonth.month)),
+      };
+  }
+}
+
+/** The first pay day on or after `today`, counting on from the business's first pay day, with the period it pays for. */
+export function nextPayday(firstPayDate: IsoDate, schedule: PaySchedule, today: IsoDate): Payday {
+  return upcomingPaydays({ period: periodForPayDate(firstPayDate, schedule), payDate: firstPayDate }, schedule, today, 1)[0]!;
+}
+
+/**
+ * The next `count` pay days from `today` on (today included), walking on from
+ * a known one. Bounded: after a very long gap the last walked pay day is used.
+ */
+export function upcomingPaydays(anchor: Payday, schedule: PaySchedule, today: IsoDate, count: number): Payday[] {
+  let current = anchor;
+  for (let step = 0; step < 600 && current.payDate < today; step += 1) {
+    current = advancePayday(current, schedule);
+  }
+  const result: Payday[] = [];
+  for (let i = 0; i < count; i += 1) {
+    result.push(current);
+    current = advancePayday(current, schedule);
+  }
+  return result;
+}
+
+function advancePayday(payday: Payday, schedule: PaySchedule): Payday {
+  const period = nextPeriod(payday.period, schedule);
+  return { period, payDate: nextPayDate(payday.period, payday.payDate, period) };
 }
 
 /** Default pay date for a first stub: the Friday after the period ends. */

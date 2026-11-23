@@ -49,7 +49,7 @@ export default function PickWorker() {
       <View style={{ gap: 8 }}>
         {sorted.map((worker) => {
           const latest = stubs.find((stub) => stub.workerId === worker.id) ?? null;
-          const next = draftNextStub(worker, business.paySchedule, latest, todayIso(), business.overtimePct);
+          const next = draftNextStub(worker, business.paySchedule, latest, todayIso(), business.overtimePct, business.firstPayDate);
           const due = !stubForPeriod(stubs, worker.id, period);
           return (
             <Pressable

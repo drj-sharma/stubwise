@@ -103,6 +103,7 @@ def create_business(db: Session, user_id: str, plan: str, body: BusinessCreate) 
         employer_id=body.employerId,
         logo_data_uri=body.logoDataUri,
         pay_schedule=body.paySchedule,
+        first_pay_date=body.firstPayDate,
         show_employer_id=body.showEmployerId,
         template_id=body.templateId,
         accent=body.accent,
@@ -122,6 +123,7 @@ _BUSINESS_COLUMNS = {
     "employerId": "employer_id",
     "logoDataUri": "logo_data_uri",
     "paySchedule": "pay_schedule",
+    "firstPayDate": "first_pay_date",
     "showEmployerId": "show_employer_id",
     "templateId": "template_id",
     "accent": "accent",
@@ -129,7 +131,7 @@ _BUSINESS_COLUMNS = {
     "appearance": "appearance",
 }
 # Fields that may be cleared by sending null; null for any other field is refused.
-_BUSINESS_NULLABLE = {"state", "employerId", "logoDataUri"}
+_BUSINESS_NULLABLE = {"state", "employerId", "logoDataUri", "firstPayDate"}
 
 
 def update_business(db: Session, business: Business, body: BusinessPatch) -> Business:
@@ -153,6 +155,7 @@ def business_json(business: Business) -> dict[str, Any]:
         "employerId": business.employer_id,
         "logoDataUri": business.logo_data_uri,
         "paySchedule": business.pay_schedule,
+        "firstPayDate": business.first_pay_date,
         "showEmployerId": business.show_employer_id,
         "templateId": business.template_id,
         "accent": business.accent,

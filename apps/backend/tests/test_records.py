@@ -98,10 +98,32 @@ def test_business_lifecycle(client: TestClient, auth: dict[str, str]) -> None:
     assert client.get("/v1/business", headers=auth).status_code == 404
 
 
+def test_the_first_pay_day_can_be_set_changed_and_cleared(client: TestClient, auth: dict[str, str]) -> None:
+    created = client.post("/v1/business", headers=auth, json={**BUSINESS, "firstPayDate": "2026-11-27"}).json()
+    assert created["firstPayDate"] == "2026-11-27"
+    patched = client.patch("/v1/business", headers=auth, json={"firstPayDate": "2026-12-04"}).json()
+    assert patched["firstPayDate"] == "2026-12-04"
+    assert client.patch("/v1/business", headers=auth, json={"firstPayDate": None}).json()["firstPayDate"] is None
+    assert client.patch("/v1/business", headers=auth, json={"firstPayDate": "2026-02-30"}).status_code == 400
+
+
+def test_the_first_stub_follows_the_first_pay_day(client: TestClient, auth: dict[str, str]) -> None:
+    # Biweekly, paid on Friday Dec 4: that pay day pays the two weeks that ended on Sunday Nov 29.
+    client.post("/v1/business", headers=auth, json={**BUSINESS, "firstPayDate": "2026-12-04"})
+    worker = client.post("/v1/workers", headers=auth, json=WORKER).json()
+    stub = client.post(f"/v1/workers/{worker['id']}/stubs/next", headers=auth, json=TODAY).json()
+    assert stub["period"] == {"start": "2026-11-16", "end": "2026-11-29"}
+    assert stub["payDate"] == "2026-12-04"
+    # The next one keeps the cycle.
+    again = client.post(f"/v1/workers/{worker['id']}/stubs/next", headers=auth, json=TODAY).json()
+    assert (again["period"]["end"], again["payDate"]) == ("2026-12-13", "2026-12-18")
+
+
 @pytest.mark.parametrize(
     ("change", "path"),
     [
         ({"name": "  "}, "name"),
+        ({"firstPayDate": "soon"}, "firstPayDate"),
         ({"state": "ZZ"}, "state"),
         ({"state": "pa"}, "state"),
         ({"paySchedule": "daily"}, "paySchedule"),

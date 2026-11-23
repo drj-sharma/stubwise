@@ -13,6 +13,7 @@ from .pay_period import (
     PaySchedule,
     default_pay_date,
     next_pay_date,
+    next_payday,
     next_period,
     period_containing,
 )
@@ -54,6 +55,7 @@ def draft_next_stub(
     previous: PreviousStub | None,
     today: IsoDate,
     overtime_multiplier_pct: int = DEFAULT_OVERTIME_MULTIPLIER_PCT,
+    first_pay_date: IsoDate | None = None,
 ) -> StubDraft:
     """The draft behind "Next pay period".
 
@@ -62,6 +64,14 @@ def draft_next_stub(
     crews work a similar week; one-off earnings such as a bonus are not repeated.
     """
     if not previous:
+        # With the business's first pay day known, the first stub is for the next real pay day.
+        if first_pay_date:
+            upcoming = next_payday(first_pay_date, schedule, today)
+            return {
+                "period": upcoming["period"],
+                "payDate": upcoming["payDate"],
+                "lines": _first_lines(worker, overtime_multiplier_pct),
+            }
         period = period_containing(today, schedule)
         return {
             "period": period,

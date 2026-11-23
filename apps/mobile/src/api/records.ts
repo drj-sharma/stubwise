@@ -35,6 +35,7 @@ export function toBusiness(row: BusinessOut): Business {
     employerId: row.employerId,
     logoDataUri: row.logoDataUri,
     paySchedule: row.paySchedule,
+    firstPayDate: row.firstPayDate,
     showEmployerId: row.showEmployerId,
     templateId: isTemplateId(row.templateId) ? row.templateId : DEFAULT_TEMPLATE_ID,
     accent: row.accent,
@@ -117,6 +118,7 @@ export interface BusinessInput {
   employerId: string | null;
   logoDataUri: string | null;
   paySchedule: PaySchedule;
+  firstPayDate?: IsoDate | null;
   templateId?: TemplateId;
   accent?: string;
   overtimePct?: number;

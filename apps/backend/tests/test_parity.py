@@ -23,8 +23,11 @@ from app.domain.pay_period import (
     default_pay_date,
     diff_days,
     next_pay_date,
+    next_payday,
     next_period,
     period_containing,
+    period_for_pay_date,
+    upcoming_paydays,
 )
 from app.domain.tax.apply_taxes import apply_taxes, work_state
 from app.domain.tax.data import PAY_PERIODS_PER_YEAR, TAX_DATA_PATH
@@ -52,6 +55,7 @@ EXPECTED_MINIMUM = {
     "state": 204,
     "taxLines": 120,
     "nextStub": 60,
+    "payday": 120,
 }
 
 
@@ -239,3 +243,17 @@ def test_federal_form_w4_2019_or_earlier() -> None:
     assert tax(1_000_00, 52, allowances=1, filingStatus="head") == plain
     assert tax(100_00, 52, allowances=3) == 0
     assert tax(5_000_00, 26, allowances=1, exempt=True) == 0
+
+
+@pytest.mark.parametrize("case", cases("payday"))
+def test_payday(case: dict[str, Any]) -> None:
+    schedule, first, today = case["schedule"], case["firstPayDate"], case["today"]
+    anchor = {"period": period_for_pay_date(first, schedule), "payDate": first}
+    assert anchor["period"] == case["periodForPayDate"]
+    assert next_payday(first, schedule, today) == case["nextPayday"]
+    assert upcoming_paydays(anchor, schedule, today, 4) == case["upcoming"]  # type: ignore[arg-type]
+    assert current_period(None, schedule, today, first) == case["currentNoStubs"]
+    worker = {"payType": "hourly", "rateCents": 2400, "type": "employee", "defaultDeductions": []}
+    draft = draft_next_stub(worker, schedule, None, today, 150, first)  # type: ignore[arg-type]
+    assert draft["period"] == case["draftPeriod"]
+    assert draft["payDate"] == case["draftPayDate"]

@@ -1,11 +1,12 @@
-import { formatPeriod } from '@stubwise/domain';
+import { formatPeriod, formatWeekdayDate, todayIso } from '@stubwise/domain';
 import * as Crypto from 'expo-crypto';
 import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { ActivityIndicator, Pressable, Text, View } from 'react-native';
+import { ActivityIndicator, Alert, Pressable, Text, View } from 'react-native';
 import Animated, { Easing, useAnimatedStyle, useReducedMotion, useSharedValue, withRepeat, withTiming } from 'react-native-reanimated';
 import { createNextStub, listStubs, listWorkers } from '@/api/records';
-import { businessCurrentPeriod, stubForPeriod } from '@/services/stubs';
+import { loadReminderPrefs, remindersSupported, requestReminderPermission, saveReminderPrefs, syncPaydayReminders } from '@/services/reminders';
+import { businessCurrentPeriod, stubForPeriod, upcomingBusinessPaydays } from '@/services/stubs';
 import { useBusiness } from '@/state/business';
 import { useQuery } from '@/state/useQuery';
 import { useIsWide } from '@/ui/layout';
@@ -38,6 +39,30 @@ export default function Home() {
   // Until the first stub is made, the + pulses to show where to start.
   const firstTime = data !== undefined && stubs.length === 0;
 
+  // Keep the pay day reminders planned from the latest stubs; after the first stub, offer them once.
+  useEffect(() => {
+    if (!data || !remindersSupported) return;
+    const prefs = loadReminderPrefs();
+    if (!prefs.enabled && !prefs.asked && data.stubs.length > 0) {
+      saveReminderPrefs({ ...prefs, asked: true });
+      Alert.alert('Remind you on pay days?', 'CrewStub can send a notification when it is time to make stubs. You can change this in Settings.', [
+        { text: 'Not now', style: 'cancel' },
+        {
+          text: 'Remind me',
+          onPress: () => {
+            void requestReminderPermission().then((granted) => {
+              if (!granted) return;
+              saveReminderPrefs({ ...loadReminderPrefs(), enabled: true });
+              return syncPaydayReminders(business, data.stubs);
+            });
+          },
+        },
+      ]);
+      return;
+    }
+    void syncPaydayReminders(business, data.stubs).catch(() => {});
+  }, [data, business]);
+
   const add = async (): Promise<void> => {
     if (!data) return;
     if (workers.length === 0) {
@@ -60,12 +85,13 @@ export default function Home() {
     }
   };
 
+  const payDay = upcomingBusinessPaydays(business, stubs, todayIso(), 1)[0]?.payDate ?? null;
   const subtitle =
     data === undefined
       ? ' '
       : workers.length === 0
         ? 'Add the first person you pay, then tap + on each pay day.'
-        : `Pay period ${formatPeriod(period)} · ${made} of ${workers.length} made`;
+        : `Pay period ${formatPeriod(period)} · ${made} of ${workers.length} made${payDay ? `\nNext pay day ${formatWeekdayDate(payDay)}` : ''}`;
 
   const history = <CircleButton icon="clock.arrow.circlepath" label="History" onPress={() => router.push('/stubs')} />;
 

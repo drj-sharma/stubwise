@@ -1,3 +1,4 @@
+import DateTimePicker from '@react-native-community/datetimepicker';
 import {
   PAY_SCHEDULES,
   PAY_SCHEDULE_LABELS,
@@ -26,6 +27,7 @@ import { createBusiness, createWorker } from '@/api/records';
 import type { NewWorker, Worker } from '@/db/types';
 import { Check, DetailsScene, DoneScene, NameScene, ProgressPills, ScenePanel, SecureScene, WorkerScene } from '@/features/OnboardingScenes';
 import { AccentSwatches, DesignPreview, TemplatePicker } from '@/features/TemplatePicker';
+import { isoToLocalDate, suggestedPayDay } from '@/services/stubs';
 import { useAuth } from '@/state/auth';
 import { useBusinessState } from '@/state/business';
 import { useFit, useKeyboardShown } from '@/ui/fit';
@@ -90,6 +92,7 @@ export function Onboarding() {
   const [pickingState, setPickingState] = useState(false);
   const [employerId, setEmployerId] = useState('');
   const [schedule, setSchedule] = useState<PaySchedule>('biweekly');
+  const [firstPayDate, setFirstPayDate] = useState(() => suggestedPayDay());
   const [overtimePct, setOvertimePct] = useState<'150' | '200'>('150');
   const [templateId, setTemplateId] = useState<TemplateId>(DEFAULT_TEMPLATE_ID);
   const [accent, setAccent] = useState<string>(DEFAULT_ACCENT);
@@ -160,6 +163,7 @@ export function Onboarding() {
         employerId: employerId.trim() === '' ? null : employerId.trim(),
         logoDataUri: logo,
         paySchedule: schedule,
+        firstPayDate,
         templateId,
         accent,
         overtimePct: Number(overtimePct),
@@ -357,7 +361,22 @@ export function Onboarding() {
       body = (
         <View style={{ gap: 6 }}>
           <ScheduleChoices value={schedule} onChange={setSchedule} />
-          <View style={{ height: 6 }} />
+          <View style={{ minHeight: 50, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+            <View style={{ flex: 1 }}>
+              <Text style={{ fontSize: 15, fontWeight: '600', color: c.text }}>First pay day</Text>
+              <Text style={{ fontSize: 12, color: c.muted }} numberOfLines={1}>
+                Your next real pay day
+              </Text>
+            </View>
+            <DateTimePicker
+              value={isoToLocalDate(firstPayDate)}
+              mode="date"
+              display="compact"
+              themeVariant={c.scheme}
+              accessibilityLabel="First pay day"
+              onValueChange={(_event, date) => setFirstPayDate(todayIso(date))}
+            />
+          </View>
           <SectionLabel>Overtime pay</SectionLabel>
           <Segmented
             value={overtimePct}

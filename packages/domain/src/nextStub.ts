@@ -6,6 +6,7 @@ import {
   type PaySchedule,
   defaultPayDate,
   nextPayDate,
+  nextPayday,
   nextPeriod,
   periodContaining,
 } from './payPeriod';
@@ -44,8 +45,14 @@ export function draftNextStub(
   previous: PreviousStub | null,
   today: IsoDate,
   overtimeMultiplierPct: number = DEFAULT_OVERTIME_MULTIPLIER_PCT,
+  firstPayDate: IsoDate | null = null,
 ): StubDraft {
   if (!previous) {
+    // With the business's first pay day known, the first stub is for the next real pay day.
+    if (firstPayDate) {
+      const { period, payDate } = nextPayday(firstPayDate, schedule, today);
+      return { period, payDate, lines: firstLines(worker, overtimeMultiplierPct) };
+    }
     const period = periodContaining(today, schedule);
     return { period, payDate: defaultPayDate(period), lines: firstLines(worker, overtimeMultiplierPct) };
   }

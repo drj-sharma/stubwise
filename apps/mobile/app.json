@@ -51,6 +51,12 @@
         }
       ],
       "@react-native-community/datetimepicker",
+      [
+        "expo-notifications",
+        {
+          "color": "#3F3D9E"
+        }
+      ],
       "expo-secure-store",
       "expo-mail-composer"
     ],
