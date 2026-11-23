@@ -4,18 +4,22 @@ import { router } from 'expo-router';
 import { useState } from 'react';
 import { ActivityIndicator, Alert, Modal, Pressable, ScrollView, Text, View } from 'react-native';
 import { isConflict } from '@/api';
-import { deleteStub, getStub, getWorker, replaceStubLines, updateStubDates } from '@/api/records';
+import { type StubExtrasPatch, deleteStub, getStub, getWorker, replaceStubExtras, replaceStubLines, updateStubDates } from '@/api/records';
 import type { Stub } from '@/db/types';
+import { useBusiness } from '@/state/business';
 import { useQuery } from '@/state/useQuery';
+import { formatHours } from '@/ui/hours';
 import { ErrorState, Loading, Refresher, alertError } from '@/ui/states';
 import { Amount, Avatar, Button, CardHeader, Pill, Row, Sheet, SubCard, TABULAR } from '@/ui/primitives';
-import { AddLineSheet, AmountSheet, TimeSheet } from '@/ui/sheets';
+import { AddLineSheet, AmountSheet, HoursSheet, TimeSheet } from '@/ui/sheets';
 import { useTheme } from '@/ui/theme';
 
 const EARNING_SUGGESTIONS = ['Bonus', 'Tips', 'Commission', 'Reimbursement', 'Holiday pay'];
+const EMPLOYER_TAX_SUGGESTIONS = ['FUTA', 'SUTA', 'State unemployment', 'Workers comp'];
 const DEDUCTION_SUGGESTIONS = ['Health insurance', 'Retirement', 'Garnishment', 'Uniform', 'Advance repayment'];
 
-type OpenSheet = { kind: 'time'; index: number } | { kind: 'amount'; index: number } | { kind: 'add'; lineKind: LineKind } | { kind: 'dates' } | null;
+type PtoKind = 'sick' | 'vacation';
+type OpenSheet = { kind: 'pto'; which: PtoKind } | { kind: 'taxAmount'; index: number } | { kind: 'addTax' } | { kind: 'time'; index: number } | { kind: 'amount'; index: number } | { kind: 'add'; lineKind: LineKind } | { kind: 'dates' } | null;
 
 /**
  * Edits one saved stub. Every change is sent to the server straight away, so
@@ -27,6 +31,7 @@ type OpenSheet = { kind: 'time'; index: number } | { kind: 'amount'; index: numb
  */
 export function StubEditor({ stubId, onChanged, footer }: { stubId: string; onChanged?: () => void; footer?: React.ReactNode }) {
   const c = useTheme();
+  const business = useBusiness();
   const [sheet, setSheetState] = useState<OpenSheet>(null);
   /** Lines shown while a change is being saved; null when the screen shows the server's copy. */
   const [pending, setPending] = useState<StubLine[] | null>(null);
@@ -88,6 +93,34 @@ export function StubEditor({ stubId, onChanged, footer }: { stubId: string; onCh
       setSaving(false);
     }
   };
+
+  // Paid time off and employer-paid taxes are saved on their own and never change the lines or net pay.
+  const saveExtras = async (extras: StubExtrasPatch): Promise<void> => {
+    setSheetState(null);
+    setSaving(true);
+    try {
+      adopt(await replaceStubExtras(stub.id, stub.version, extras));
+    } catch (caught) {
+      await failed('Could not save the change', caught);
+    } finally {
+      setSaving(false);
+    }
+  };
+  const currentExtras = (): StubExtrasPatch => ({
+    pto: {
+      sick: { accruedMinutes: stub.pto.sick.accruedMinutes, usedMinutes: stub.pto.sick.usedMinutes },
+      vacation: { accruedMinutes: stub.pto.vacation.accruedMinutes, usedMinutes: stub.pto.vacation.usedMinutes },
+    },
+    employerTaxes: stub.employerTaxes.map((tax) => ({ label: tax.label, amountCents: tax.amountCents })),
+  });
+  const showPto = business.showPto && worker.type === 'employee';
+  const showEmployerTaxes = business.showEmployerTaxes && worker.type === 'employee';
+  const ptoRows: { which: PtoKind; title: string }[] = [
+    { which: 'sick', title: 'Sick leave' },
+    { which: 'vacation', title: 'Vacation' },
+  ];
+  const activeTax = sheet?.kind === 'taxAmount' ? stub.employerTaxes[sheet.index] : undefined;
+  const activePto = sheet?.kind === 'pto' ? stub.pto[sheet.which] : undefined;
   const patchLine = (index: number, patch: Partial<StubLine>): Promise<void> => saveLines(lines.map((line, i) => (i === index ? { ...line, ...patch } : line)));
   const removeLine = (index: number): Promise<void> => saveLines(lines.filter((_, i) => i !== index));
   const addLine = (kind: LineKind, label: string, amountCents: number): Promise<void> => {
@@ -191,6 +224,47 @@ export function StubEditor({ stubId, onChanged, footer }: { stubId: string; onCh
             </View>
           </View>
         </Sheet>
+        {showPto ? (
+          <Sheet>
+            <SubCard>
+              <CardHeader title="Paid time off" />
+              {ptoRows.map(({ which, title }, i) => (
+                <Row
+                  key={which}
+                  title={title}
+                  subtitle={`Earned ${formatHours(stub.pto[which].accruedMinutes)} · used ${formatHours(stub.pto[which].usedMinutes)}`}
+                  minHeight={52}
+                  last={i === ptoRows.length - 1}
+                  onPress={() => setSheet({ kind: 'pto', which })}
+                  right={<Amount value={`${formatHours(stub.pto[which].availableMinutes)} h`} />}
+                />
+              ))}
+            </SubCard>
+            <Text style={{ fontSize: 12, lineHeight: 18, color: c.muted, marginHorizontal: 4 }}>
+              The amount on the right is what is available after this stub. It carries on from the stub before.
+            </Text>
+          </Sheet>
+        ) : null}
+        {showEmployerTaxes ? (
+          <Sheet>
+            <SubCard>
+              <CardHeader title="Employer-paid" action="Add" onAction={() => setSheet({ kind: 'addTax' })} />
+              {stub.employerTaxes.map((tax, index) => (
+                <Row
+                  key={`${tax.label}-${index}`}
+                  title={tax.label}
+                  subtitle={`Year to date ${formatCents(tax.ytdCents)}`}
+                  minHeight={52}
+                  last={index === stub.employerTaxes.length - 1}
+                  onPress={() => setSheet({ kind: 'taxAmount', index })}
+                  right={<Amount value={formatCents(tax.amountCents)} />}
+                />
+              ))}
+              {stub.employerTaxes.length === 0 ? <Row title="None yet" subtitle="Add FUTA, SUTA or another tax you pay as the employer" last /> : null}
+            </SubCard>
+            <Text style={{ fontSize: 12, lineHeight: 18, color: c.muted, marginHorizontal: 4 }}>Paid by you on top of wages. Not deducted from net pay.</Text>
+          </Sheet>
+        ) : null}
         {footer}
       </ScrollView>
 
@@ -217,6 +291,52 @@ export function StubEditor({ stubId, onChanged, footer }: { stubId: string; onCh
         }}
         onDelete={active?.taxCode && active.source === 'calculated' ? undefined : () => sheet?.kind === 'amount' && void removeLine(sheet.index)}
         deleteLabel={active && sheet?.kind === 'amount' && edited(active, sheet.index) ? 'Use calculated' : undefined}
+      />
+      <HoursSheet
+        visible={sheet?.kind === 'pto'}
+        title={sheet?.kind === 'pto' ? `${sheet.which === 'sick' ? 'Sick leave' : 'Vacation'} this stub` : ''}
+        note="Hours typed as a number, such as 1.5. The balance after this stub is worked out for you."
+        fields={[
+          { label: 'Earned (h)', initialMinutes: activePto?.accruedMinutes ?? 0 },
+          { label: 'Used (h)', initialMinutes: activePto?.usedMinutes ?? 0 },
+        ]}
+        onClose={() => setSheet(null)}
+        onSave={([accruedMinutes, usedMinutes]) => {
+          if (sheet?.kind !== 'pto') return;
+          const next = currentExtras();
+          if (next.pto) next.pto[sheet.which] = { accruedMinutes: accruedMinutes ?? 0, usedMinutes: usedMinutes ?? 0 };
+          void saveExtras(next);
+        }}
+      />
+      <AmountSheet
+        visible={sheet?.kind === 'taxAmount'}
+        title={activeTax?.label ?? ''}
+        initialCents={activeTax?.amountCents ?? 0}
+        note="Paid by the employer. Not deducted from net pay."
+        onClose={() => setSheet(null)}
+        onSave={(amountCents) => {
+          if (sheet?.kind !== 'taxAmount') return;
+          const next = currentExtras();
+          next.employerTaxes = next.employerTaxes.map((tax, i) => (i === sheet.index ? { ...tax, amountCents } : tax));
+          void saveExtras(next);
+        }}
+        onDelete={() => {
+          if (sheet?.kind !== 'taxAmount') return;
+          const next = currentExtras();
+          next.employerTaxes = next.employerTaxes.filter((_, i) => i !== sheet.index);
+          void saveExtras(next);
+        }}
+      />
+      <AddLineSheet
+        visible={sheet?.kind === 'addTax'}
+        title="Add an employer-paid tax"
+        suggestions={EMPLOYER_TAX_SUGGESTIONS}
+        onClose={() => setSheet(null)}
+        onSave={(label, amountCents) => {
+          const next = currentExtras();
+          next.employerTaxes = [...next.employerTaxes, { label, amountCents }];
+          void saveExtras(next);
+        }}
       />
       <AddLineSheet
         visible={sheet?.kind === 'add'}

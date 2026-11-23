@@ -48,6 +48,47 @@ export interface StubDocument {
   };
   /** "January 1 to November 27, 2026" style note under the stub. */
   ytdNote: string;
+  /** Paid time off, or null when the business does not print it. */
+  pto: StubDocumentPto | null;
+  /** Employer-paid taxes (not deducted from net pay); empty when the business does not print them or there are none. */
+  employerTaxes: StubDocumentEmployerTax[];
+  /** The tear-off slip, or null when the business has it off. */
+  depositSlip: StubDocumentDepositSlip | null;
+}
+
+/** One kind of paid time off, in minutes. `availableMinutes` is the balance after this stub. */
+export interface PtoBalance {
+  accruedMinutes: number;
+  usedMinutes: number;
+  availableMinutes: number;
+}
+
+export interface StubDocumentPto {
+  sick: PtoBalance;
+  vacation: PtoBalance;
+}
+
+export interface StubDocumentEmployerTax {
+  label: string;
+  currentCents: Cents;
+  ytdCents: Cents;
+}
+
+export interface StubDocumentDepositSlip {
+  netCents: Cents;
+}
+
+/**
+ * The optional extras, worked out by the server (balances and year-to-date
+ * carry forward from earlier stubs there). Each is printed only when its
+ * `show` switch is on in the business's settings.
+ */
+export interface StubExtrasInput {
+  showPto: boolean;
+  showEmployerTaxes: boolean;
+  showDepositSlip: boolean;
+  pto: StubDocumentPto | null;
+  employerTaxes: readonly { label: string; amountCents: Cents; ytdCents: Cents }[];
 }
 
 export interface StubDocumentRow {
@@ -80,10 +121,12 @@ export interface BuildStubDocumentInput {
   stub: YtdStub & { period: PayPeriod };
   /** Every saved stub for this worker; used only for year-to-date. */
   workerStubs: readonly YtdStub[];
+  /** Left out, the stub prints without time off, employer taxes or a deposit slip. */
+  extras?: StubExtrasInput;
 }
 
 export function buildStubDocument(input: BuildStubDocumentInput): StubDocument {
-  const { business, worker, stub, workerStubs } = input;
+  const { business, worker, stub, workerStubs, extras } = input;
   const current = calcStub(stub.lines);
   const ytd = computeYtd(stub, workerStubs, worker.startingYtd);
 
@@ -127,6 +170,13 @@ export function buildStubDocument(input: BuildStubDocumentInput): StubDocument {
       ytd: { grossCents: ytd.grossCents, deductionsCents: ytd.deductionsCents, netCents: ytd.netCents },
     },
     ytdNote: `Year-to-date amounts cover pay dated Jan 1 to ${formatDateWithYear(stub.payDate)}.`,
+    pto: extras?.showPto ? extras.pto : null,
+    employerTaxes: extras?.showEmployerTaxes
+      ? extras.employerTaxes
+          .map((tax) => ({ label: tax.label, currentCents: tax.amountCents, ytdCents: tax.ytdCents }))
+          .filter((tax) => tax.currentCents !== 0 || tax.ytdCents !== 0)
+      : [],
+    depositSlip: extras?.showDepositSlip ? { netCents: current.netCents } : null,
   };
 }
 

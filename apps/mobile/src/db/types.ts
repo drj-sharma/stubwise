@@ -1,6 +1,6 @@
 import type { Cents, IsoDate, PayPeriod, PaySchedule, StartingYtd, StubLine, TaxProfile, UsStateCode } from '@stubwise/domain';
 import type { TemplateId } from '@stubwise/templates';
-import type { TaxStatus, Totals, YtdOut } from '@/api/types';
+import type { EmployerTaxOut, PtoOut, PtoStart, TaxStatus, Totals, YtdOut } from '@/api/types';
 import type { Appearance } from '@/ui/theme';
 
 /**
@@ -26,6 +26,10 @@ export interface Business {
   accent: string;
   overtimePct: number;
   appearance: Appearance;
+  /** Optional stub extras, all off until switched on in Settings > Pay stubs. */
+  showPto: boolean;
+  showEmployerTaxes: boolean;
+  showDepositSlip: boolean;
   version: number;
 }
 
@@ -41,6 +45,8 @@ export interface Worker {
   startingYtd: StartingYtd | null;
   /** W-4 answers and work state. Ignored for contractors, who have nothing withheld. */
   taxProfile: TaxProfile;
+  /** Paid time off available before the first stub made here; null when not tracked. */
+  ptoStart: PtoStart | null;
   createdAt: string;
   version: number;
 }
@@ -63,6 +69,10 @@ export interface Stub {
   totals: Totals;
   ytd: YtdOut;
   taxStatus: TaxStatus;
+  /** Time off earned and used on this stub, and the balance after it. */
+  pto: PtoOut;
+  /** Employer-paid taxes with year to date; never part of net pay. */
+  employerTaxes: EmployerTaxOut[];
 }
 
 export type NewWorker = Omit<Worker, 'id' | 'createdAt' | 'version'>;

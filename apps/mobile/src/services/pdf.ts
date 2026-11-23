@@ -24,7 +24,14 @@ export async function renderStub(business: Business, stubId: string): Promise<Re
   if (!stub) return null;
   const [worker, workerStubs] = await Promise.all([getWorker(stub.workerId), listStubs(stub.workerId)]);
   if (!worker) return null;
-  const document = buildStubDocument({ business, worker, stub, workerStubs });
+  const extras = {
+    showPto: business.showPto,
+    showEmployerTaxes: business.showEmployerTaxes,
+    showDepositSlip: business.showDepositSlip,
+    pto: stub.pto,
+    employerTaxes: stub.employerTaxes,
+  };
+  const document = buildStubDocument({ business, worker, stub, workerStubs, extras });
   const html = renderStubHtml(document, business.templateId, { accent: business.accent });
   return { stub, worker, document, html };
 }

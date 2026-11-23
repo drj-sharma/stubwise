@@ -21,7 +21,8 @@ import { type CertificateField, useStateCoverage } from '@/api/taxCoverage';
 import type { NewWorker, Worker } from '@/db/types';
 import { Amount, Button, CardHeader, Field, Icon, Row, SectionLabel, Segmented, Sheet, StatTile, SubCard, TABULAR } from '@/ui/primitives';
 import { useBusiness } from '@/state/business';
-import { AddLineSheet, AmountSheet, StateSheet } from '@/ui/sheets';
+import { formatHours } from '@/ui/hours';
+import { AddLineSheet, AmountSheet, HoursSheet, StateSheet } from '@/ui/sheets';
 import { alertError } from '@/ui/states';
 import { useTheme } from '@/ui/theme';
 
@@ -88,7 +89,9 @@ export function WorkerForm({ existing, onConflict }: { existing: Worker | null; 
   const [rate, setRate] = useState(existing ? (existing.rateCents / 100).toFixed(2) : '');
   const [deductions, setDeductions] = useState<Deduction[]>(existing?.defaultDeductions ?? []);
   const [starting, setStarting] = useState<StartingLine[]>(existing?.startingYtd?.year === year ? [...existing.startingYtd.lines] : []);
+  const [pto, setPto] = useState({ sickMinutes: existing?.ptoStart?.sickMinutes ?? 0, vacationMinutes: existing?.ptoStart?.vacationMinutes ?? 0 });
   const [sheet, setSheet] = useState<
+    | { kind: 'ptoStart' }
     | { kind: 'addDeduction' }
     | { kind: 'editDeduction'; index: number }
     | { kind: 'addStarting'; lineKind: LineKind }
@@ -120,6 +123,8 @@ export function WorkerForm({ existing, onConflict }: { existing: Worker | null; 
       defaultDeductions: type === 'contractor' ? [] : deductions,
       startingYtd: starting.length > 0 ? { year, lines: starting } : null,
       taxProfile: tax,
+      // Kept when time off is switched off in Settings, so switching it back on finds the balances again.
+      ptoStart: pto.sickMinutes === 0 && pto.vacationMinutes === 0 ? null : pto,
     };
     setSaving(true);
     try {
@@ -405,12 +410,39 @@ export function WorkerForm({ existing, onConflict }: { existing: Worker | null; 
               If this worker was already paid this year, add those totals so year-to-date on their stubs is right from the first one.
             </Text>
           )}
+
+          {business.showPto && type === 'employee' ? (
+            <>
+              <SubCard>
+                <CardHeader title="Paid time off now (optional)" action="Edit" onAction={() => setSheet({ kind: 'ptoStart' })} />
+                <Row title="Sick leave" subtitle="Hours available" right={<Amount value={`${formatHours(pto.sickMinutes)} h`} />} onPress={() => setSheet({ kind: 'ptoStart' })} />
+                <Row title="Vacation" subtitle="Hours available" right={<Amount value={`${formatHours(pto.vacationMinutes)} h`} />} onPress={() => setSheet({ kind: 'ptoStart' })} last />
+              </SubCard>
+              <Text style={{ fontSize: 12, lineHeight: 18, color: c.muted, marginHorizontal: 2 }}>
+                What the worker has available before their first stub here. Each stub then adds what they earn and takes off what they use.
+              </Text>
+            </>
+          ) : null}
         </Sheet>
 
         <Button title={existing ? 'Save worker' : 'Add worker'} onPress={() => void save()} disabled={saving} />
         {existing ? <Button title="Delete worker" variant="danger" onPress={remove} /> : null}
       </ScrollView>
 
+      <HoursSheet
+        visible={sheet?.kind === 'ptoStart'}
+        title="Paid time off available"
+        note="Hours the worker has now, typed as a number such as 40 or 12.5."
+        fields={[
+          { label: 'Sick leave (h)', initialMinutes: pto.sickMinutes },
+          { label: 'Vacation (h)', initialMinutes: pto.vacationMinutes },
+        ]}
+        onClose={() => setSheet(null)}
+        onSave={([sickMinutes, vacationMinutes]) => {
+          setPto({ sickMinutes: sickMinutes ?? 0, vacationMinutes: vacationMinutes ?? 0 });
+          setSheet(null);
+        }}
+      />
       <AddLineSheet
         visible={sheet?.kind === 'addDeduction'}
         title="Add a default deduction"

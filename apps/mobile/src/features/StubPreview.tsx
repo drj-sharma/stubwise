@@ -18,7 +18,7 @@ function forPreview(html: string): string {
 export function StubPreview({ stubId, version = 0 }: { stubId: string; version?: number }) {
   const c = useTheme();
   const business = useBusiness();
-  const { data, error, reload } = useQuery(() => renderStub(business, stubId), [stubId, version, business.templateId, business.accent]);
+  const { data, error, reload } = useQuery(() => renderStub(business, stubId), [stubId, version, business.templateId, business.accent, business.showPto, business.showEmployerTaxes, business.showDepositSlip]);
 
   if (error && !data) return <ErrorState title="Could not load the preview" error={error} onRetry={() => void reload()} />;
 

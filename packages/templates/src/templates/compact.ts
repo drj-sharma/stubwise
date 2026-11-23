@@ -1,5 +1,5 @@
 import type { StubDocument } from '../document';
-import { esc, hoursCell, money, page, payDateText, periodText, rateCell } from '../html';
+import { EXTRAS_CSS, depositSlipHtml, extrasHtml, esc, hoursCell, money, page, payDateText, periodText, rateCell } from '../html';
 import type { TemplateOptions } from '../registry';
 
 /**
@@ -21,7 +21,7 @@ td { padding: 5px 0; border-bottom: 1px solid #C4C7C2; }
 tr.total td { border-bottom: 0; font-weight: 700; }
 .net { margin-top: 12px; padding-top: 10px; border-top: 1px solid #16171D; display: flex; justify-content: space-between; align-items: baseline; font-variant-numeric: tabular-nums; }
 .net .big { font-size: 22px; line-height: 26px; font-weight: 700; }
-.note { margin-top: 8px; font-size: 12px; color: #5A6066; }`;
+.note { margin-top: 8px; font-size: 12px; color: #5A6066; }${EXTRAS_CSS}`;
 
   const { current, ytd } = doc.totals;
   const earnings = doc.earnings
@@ -52,8 +52,9 @@ tr.total td { border-bottom: 0; font-weight: 700; }
 <tbody>${deductions || '<tr><td class="muted">None</td><td></td><td></td></tr>'}<tr class="total"><td>Total</td><td class="num">${money(current.deductionsCents)}</td><td class="num">${money(ytd.deductionsCents)}</td></tr></tbody></table>
 </div>
 <div class="net"><div><span style="font-weight:600">Net pay</span> <span class="big">${money(current.netCents)}</span></div><div>Net pay, year to date <span style="font-weight:700">${money(ytd.netCents)}</span></div></div>
+${extrasHtml(doc)}
 <div class="note">${esc(doc.ytdNote)}</div>
-</div></div>`;
+</div>${depositSlipHtml(doc)}</div>`;
 
   return page(`Pay stub: ${doc.worker.name}`, css, body);
 }

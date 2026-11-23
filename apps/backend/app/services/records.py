@@ -108,6 +108,9 @@ def create_business(db: Session, user_id: str, plan: str, body: BusinessCreate) 
         accent=body.accent,
         overtime_pct=body.overtimePct,
         appearance=body.appearance,
+        show_pto=body.showPto,
+        show_employer_taxes=body.showEmployerTaxes,
+        show_deposit_slip=body.showDepositSlip,
     )
     db.add(business)
     db.commit()
@@ -127,6 +130,9 @@ _BUSINESS_COLUMNS = {
     "accent": "accent",
     "overtimePct": "overtime_pct",
     "appearance": "appearance",
+    "showPto": "show_pto",
+    "showEmployerTaxes": "show_employer_taxes",
+    "showDepositSlip": "show_deposit_slip",
 }
 # Fields that may be cleared by sending null; null for any other field is refused.
 _BUSINESS_NULLABLE = {"state", "employerId", "logoDataUri"}
@@ -158,6 +164,9 @@ def business_json(business: Business) -> dict[str, Any]:
         "accent": business.accent,
         "overtimePct": business.overtime_pct,
         "appearance": business.appearance,
+        "showPto": business.show_pto,
+        "showEmployerTaxes": business.show_employer_taxes,
+        "showDepositSlip": business.show_deposit_slip,
         "version": business.version,
         "createdAt": iso_z(business.created_at),
         "updatedAt": iso_z(business.updated_at),
@@ -191,6 +200,7 @@ def create_worker(db: Session, user_id: str, plan: str, body: WorkerCreate) -> W
         default_deductions=[d.model_dump() for d in body.defaultDeductions],
         starting_ytd=body.startingYtd.model_dump() if body.startingYtd else None,
         tax_profile=body.taxProfile.model_dump(),
+        pto_start=body.ptoStart.model_dump() if body.ptoStart else None,
     )
     db.add(worker)
     db.commit()
@@ -206,13 +216,14 @@ _WORKER_COLUMNS = {
     "defaultDeductions": "default_deductions",
     "startingYtd": "starting_ytd",
     "taxProfile": "tax_profile",
+    "ptoStart": "pto_start",
 }
 
 
 def update_worker(db: Session, worker: Worker, body: WorkerPatch) -> Worker:
     # mode="json" so nested models arrive as the plain dicts the JSON columns store.
     changes = body.model_dump(exclude_unset=True, mode="json")
-    _refuse_nulls(changes, {"startingYtd"})
+    _refuse_nulls(changes, {"startingYtd", "ptoStart"})
     for field, value in changes.items():
         setattr(worker, _WORKER_COLUMNS[field], value)
     if changes:
@@ -233,6 +244,7 @@ def worker_json(worker: Worker) -> dict[str, Any]:
         "startingYtd": worker.starting_ytd,
         # Normalised on the way out, so a profile stored before a field existed still has every field.
         "taxProfile": normalize_tax_profile(worker.tax_profile),
+        "ptoStart": worker.pto_start,
         "version": worker.version,
         "createdAt": iso_z(worker.created_at),
         "updatedAt": iso_z(worker.updated_at),
