@@ -114,6 +114,9 @@ importers:
       expo-linking:
         specifier: ~58.0.17
         version: 58.0.17(expo@58.0.26)(react-native@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(@react-native/metro-config@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(react@19.3.0)(supports-color@8.1.1)(typescript@6.0.3)
+      expo-mail-composer:
+        specifier: ~58.0.4
+        version: 58.0.4(expo@58.0.26)
       expo-print:
         specifier: ~58.0.9
         version: 58.0.9(expo@58.0.26)(react-native@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(@react-native/metro-config@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))
@@ -2926,6 +2929,11 @@ packages:
       expo: '*'
       react: '*'
       react-native: '*'
+
+  expo-mail-composer@58.0.4:
+    resolution: {integrity: sha512-zR1CMazjlycBlXFM2qKxHtv0wF68a1p6q/vYhwf5zY6HvmGqCfiLODUki/GgRYnwTiGvdjUERRtrdkxp5LzIsg==}
+    peerDependencies:
+      expo: '*'
 
   expo-modules-autolinking@58.1.0:
     resolution: {integrity: sha512-JAegkS+nC4LVEgKMHAnpWhUxs1BYHHaTJnncVW2EQION1bVz0y8/wEglAeGV+oq4BNS1V7s8zCMTZU0hMi28bA==}
@@ -8413,6 +8421,10 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
       - typescript
+
+  expo-mail-composer@58.0.4(expo@58.0.26):
+    dependencies:
+      expo: 58.0.26(ab72de19d5c3f790a0cf522ea6d4a0f7)
 
   expo-modules-autolinking@58.1.0(supports-color@8.1.1)(typescript@6.0.3):
     dependencies:

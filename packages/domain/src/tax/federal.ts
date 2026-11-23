@@ -32,6 +32,7 @@ export function federalIncomeTax(input: {
   const { data, wagesCents, periodsPerYear, w4 } = input;
   assertCents(wagesCents);
   if (w4.exempt || wagesCents <= 0) return 0;
+  if (w4.legacy) return legacyFederalIncomeTax({ data, wagesCents, periodsPerYear, w4 });
 
   const annualWages = wagesCents * periodsPerYear; // 1c
   const withOtherIncome = annualWages + w4.otherIncomeCents; // 1e
@@ -43,6 +44,22 @@ export function federalIncomeTax(input: {
   const tentative = divRoundHalfUp(annualTax, periodsPerYear); // 2h
   const credit = divRoundHalfUp(w4.dependentsCents, periodsPerYear); // 3b
   return Math.max(0, tentative - credit) + w4.extraWithholdingCents; // 3c + 4a
+}
+
+/**
+ * The same worksheet for an employee whose most recent Form W-4 is from 2019 or
+ * earlier (lines 1j–1l, then Steps 2 and 4 as usual; Step 3 does not apply).
+ * Each allowance takes $4,300 off the annual wage and the STANDARD schedule for
+ * the marital status is used. "Married, but withhold at higher Single rate" is
+ * Single, and the Head of Household schedule is never used for these forms.
+ */
+function legacyFederalIncomeTax(input: { data: FederalTaxData; wagesCents: Cents; periodsPerYear: number; w4: W4 }): Cents {
+  const { data, wagesCents, periodsPerYear, w4 } = input;
+  const annualWages = wagesCents * periodsPerYear; // 1c
+  const adjustedAnnualWage = Math.max(0, annualWages - w4.allowances * data.legacyAllowanceCents); // 1k, 1l
+  const table = data.standard[w4.filingStatus === 'married' ? 'married' : 'single'];
+  const tentative = divRoundHalfUp(taxFromBrackets(table, adjustedAnnualWage), periodsPerYear); // 2g, 2h
+  return tentative + w4.extraWithholdingCents; // 4a, 4b
 }
 
 /** Lines 2b–2g: the row whose "at least" amount is the highest one not above the wage. */

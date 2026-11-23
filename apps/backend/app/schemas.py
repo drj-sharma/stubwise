@@ -82,6 +82,16 @@ Address = Annotated[str, _text(240)]
 Phone = Annotated[str, _text(40)]
 
 
+def _email(value: str) -> str:
+    """Empty, or something@something.tld: the phone's mail app does the real checking."""
+    if value and not re.fullmatch(r"[^@\s]+@[^@\s.]+(\.[^@\s.]+)+", value):
+        raise ValueError("must be an email address like name@example.com")
+    return value.lower()
+
+
+Email = Annotated[str, _text(254), AfterValidator(_email)]
+
+
 def _us_phone(value: str) -> str:
     normalized = normalize_us_phone(value)
     if normalized is None:
@@ -163,6 +173,8 @@ class Period(Model):
 
 
 class W4(Model):
+    legacy: bool = False
+    allowances: Count = 0
     filingStatus: Literal["single", "married", "head"] = "single"
     multipleJobs: bool = False
     dependentsCents: Cents = 0
@@ -308,6 +320,7 @@ class WorkerCreate(Model):
 
     name: Name
     address: Address = ""
+    email: Email = ""
     type: Literal["employee", "contractor"]
     payType: Literal["hourly", "salary"]
     rateCents: Cents
@@ -323,6 +336,7 @@ class WorkerPatch(Model):
 
     name: Name | None = None
     address: Address | None = None
+    email: Email | None = None
     type: Literal["employee", "contractor"] | None = None
     payType: Literal["hourly", "salary"] | None = None
     rateCents: Cents | None = None
@@ -335,6 +349,7 @@ class WorkerOut(Out):
     id: str
     name: str
     address: str
+    email: str
     type: str
     payType: str
     rateCents: int
@@ -457,6 +472,7 @@ class BackupWorker(Model):
     id: Id
     name: Name
     address: Address
+    email: Email = ""
     type: Literal["employee", "contractor"]
     payType: Literal["hourly", "salary"]
     rateCents: Cents

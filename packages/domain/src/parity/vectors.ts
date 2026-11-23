@@ -45,11 +45,15 @@ export function buildTaxData() {
 
 export function buildVectors() {
   const random = seeded(20261122);
+  const oldFormRandom = seeded(20190101);
   const int = (min: number, max: number): number => min + Math.floor(random() * (max - min + 1));
   const pick = <T>(items: readonly T[]): T => items[int(0, items.length - 1)] as T;
   const statuses: FilingStatus[] = ['single', 'married', 'head'];
 
   const randomW4 = (): W4 => ({
+    // Drawn from their own generator so adding them did not reshuffle every other case.
+    legacy: oldFormRandom() < 0.2,
+    allowances: oldFormRandom() < 0.3 ? 0 : 1 + Math.floor(oldFormRandom() * 8),
     filingStatus: pick(statuses),
     multipleJobs: random() < 0.3,
     dependentsCents: random() < 0.5 ? 0 : int(0, 8) * 500_00,

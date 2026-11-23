@@ -4,8 +4,15 @@ import { type UsStateCode, isUsStateCode } from '../usStates';
 /** Step 1(c) of Form W-4. "single" also covers married filing separately. */
 export type FilingStatus = 'single' | 'married' | 'head';
 
-/** What an employee wrote on a 2020-or-later Form W-4. */
+/**
+ * What an employee wrote on their Form W-4: a 2020-or-later form (the default),
+ * or, when `legacy` is set, a 2019-or-earlier form that counts withholding allowances.
+ */
 export interface W4 {
+  /** True for a Form W-4 from 2019 or earlier: only the filing status, `allowances` and `extraWithholdingCents` apply. */
+  legacy: boolean;
+  /** Line 5 of a 2019-or-earlier Form W-4: the number of withholding allowances. */
+  allowances: number;
   filingStatus: FilingStatus;
   /** Step 2(c) checkbox: two jobs, or married and both work. */
   multipleJobs: boolean;
@@ -15,7 +22,7 @@ export interface W4 {
   otherIncomeCents: Cents;
   /** Step 4(b): deductions, per year. */
   deductionsCents: Cents;
-  /** Step 4(c): extra withholding, per pay period. */
+  /** Step 4(c): extra withholding, per pay period (line 6 on a 2019-or-earlier form). */
   extraWithholdingCents: Cents;
   /** Claimed exempt from federal income tax withholding. Social Security and Medicare still apply. */
   exempt: boolean;
@@ -26,6 +33,8 @@ export interface W4 {
  * filer with no other entries (Pub. 15-T, "New employee fails to furnish Form W-4").
  */
 export const DEFAULT_W4: W4 = {
+  legacy: false,
+  allowances: 0,
   filingStatus: 'single',
   multipleJobs: false,
   dependentsCents: 0,
@@ -88,6 +97,8 @@ export type BracketRow = readonly [atLeastDollars: number, baseCents: Cents, per
 export interface FederalTaxData {
   year: number;
   standardAdjustmentCents: Record<FilingStatus, Cents>;
+  /** Worksheet 1A, line 1k: the value of one withholding allowance on a 2019-or-earlier Form W-4, per year. */
+  legacyAllowanceCents: Cents;
   standard: Record<FilingStatus, readonly BracketRow[]>;
   step2Checkbox: Record<FilingStatus, readonly BracketRow[]>;
   /** Rates are in basis points: 620 = 6.2%. */
@@ -141,6 +152,8 @@ export function normalizeTaxProfile(value: unknown): TaxProfile {
       exempt: stateW4.exempt === true,
     },
     w4: {
+      legacy: w4.legacy === true,
+      allowances: count(w4.allowances),
       filingStatus: status === 'married' || status === 'head' ? status : 'single',
       multipleJobs: w4.multipleJobs === true,
       dependentsCents: isCents(w4.dependentsCents) ? w4.dependentsCents : 0,

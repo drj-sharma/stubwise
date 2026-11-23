@@ -33,6 +33,8 @@ export interface Worker {
   id: string;
   name: string;
   address: string;
+  /** Where "Send to worker" addresses the stub; empty when not given. */
+  email: string;
   type: 'employee' | 'contractor';
   payType: 'hourly' | 'salary';
   /** Hourly rate, or salary per pay period, in cents. */

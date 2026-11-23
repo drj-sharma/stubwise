@@ -33,6 +33,8 @@ def federal_income_tax(*, data: FederalTaxData, wages_cents: Cents, periods_per_
     assert_cents(wages_cents)
     if w4["exempt"] or wages_cents <= 0:
         return 0
+    if w4.get("legacy"):
+        return _legacy_federal_income_tax(data, wages_cents, periods_per_year, w4)
 
     status = w4["filingStatus"]
     annual_wages = wages_cents * periods_per_year  # 1c
@@ -45,6 +47,19 @@ def federal_income_tax(*, data: FederalTaxData, wages_cents: Cents, periods_per_
     tentative = div_round_half_up(annual_tax, periods_per_year)  # 2h
     credit = div_round_half_up(w4["dependentsCents"], periods_per_year)  # 3b
     return max(0, tentative - credit) + w4["extraWithholdingCents"]  # 3c + 4a
+
+
+def _legacy_federal_income_tax(data: FederalTaxData, wages_cents: Cents, periods_per_year: int, w4: W4) -> Cents:
+    """Worksheet 1A lines 1j-1l for a Form W-4 from 2019 or earlier (see the TypeScript twin).
+
+    Each allowance takes the yearly allowance value off the annual wage, then the STANDARD
+    schedule for the marital status applies. Head of Household is never used for these forms.
+    """
+    annual_wages = wages_cents * periods_per_year  # 1c
+    adjusted = max(0, annual_wages - w4["allowances"] * data["legacyAllowanceCents"])  # 1k, 1l
+    table = data["standard"]["married" if w4["filingStatus"] == "married" else "single"]
+    tentative = div_round_half_up(tax_from_brackets(table, adjusted), periods_per_year)  # 2g, 2h
+    return tentative + w4["extraWithholdingCents"]  # 4a, 4b
 
 
 def tax_from_brackets(table: Sequence[BracketRow], amount_cents: Cents) -> Cents:

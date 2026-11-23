@@ -17,6 +17,9 @@ export const FEDERAL_2026: FederalTaxData = {
   year: 2026,
   // Worksheet 1A, line 1g: used when the Step 2 box is NOT checked.
   standardAdjustmentCents: { married: 12_900_00, single: 8_600_00, head: 8_600_00 },
+  // Worksheet 1A, line 1k: $4,300 per withholding allowance, for a Form W-4 from 2019 or earlier.
+  // Those forms use the STANDARD schedules below (never Head of Household) and have no Step 2 box.
+  legacyAllowanceCents: 4_300_00,
   // STANDARD Withholding Rate Schedules.
   standard: {
     married: [

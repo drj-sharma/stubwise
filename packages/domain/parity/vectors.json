@@ -12299,6 +12299,8 @@
    "periodsPerYear": 52,
    "wagesCents": 267367,
    "w4": {
+    "legacy": false,
+    "allowances": 4,
     "filingStatus": "married",
     "multipleJobs": true,
     "dependentsCents": 0,
@@ -12320,6 +12322,8 @@
    "periodsPerYear": 26,
    "wagesCents": 3506328,
    "w4": {
+    "legacy": false,
+    "allowances": 0,
     "filingStatus": "head",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -12341,6 +12345,8 @@
    "periodsPerYear": 24,
    "wagesCents": 514742,
    "w4": {
+    "legacy": true,
+    "allowances": 0,
     "filingStatus": "single",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -12351,7 +12357,7 @@
    },
    "priorYtdWagesCents": 12889341,
    "expected": {
-    "federalIncomeTaxCents": 76596,
+    "federalIncomeTaxCents": 85196,
     "socialSecurityCents": 31914,
     "medicareCents": 7464
    }
@@ -12362,6 +12368,8 @@
    "periodsPerYear": 12,
    "wagesCents": 474952,
    "w4": {
+    "legacy": true,
+    "allowances": 0,
     "filingStatus": "married",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -12383,6 +12391,8 @@
    "periodsPerYear": 52,
    "wagesCents": 809939,
    "w4": {
+    "legacy": false,
+    "allowances": 3,
     "filingStatus": "married",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -12404,6 +12414,8 @@
    "periodsPerYear": 26,
    "wagesCents": 1175958,
    "w4": {
+    "legacy": false,
+    "allowances": 3,
     "filingStatus": "married",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -12425,6 +12437,8 @@
    "periodsPerYear": 52,
    "wagesCents": 99112,
    "w4": {
+    "legacy": false,
+    "allowances": 0,
     "filingStatus": "head",
     "multipleJobs": true,
     "dependentsCents": 0,
@@ -12446,6 +12460,8 @@
    "periodsPerYear": 12,
    "wagesCents": 596266,
    "w4": {
+    "legacy": false,
+    "allowances": 5,
     "filingStatus": "married",
     "multipleJobs": true,
     "dependentsCents": 0,
@@ -12467,6 +12483,8 @@
    "periodsPerYear": 24,
    "wagesCents": 811712,
    "w4": {
+    "legacy": false,
+    "allowances": 6,
     "filingStatus": "head",
     "multipleJobs": false,
     "dependentsCents": 200000,
@@ -12488,6 +12506,8 @@
    "periodsPerYear": 52,
    "wagesCents": 38240,
    "w4": {
+    "legacy": false,
+    "allowances": 0,
     "filingStatus": "single",
     "multipleJobs": false,
     "dependentsCents": 200000,
@@ -12509,6 +12529,8 @@
    "periodsPerYear": 26,
    "wagesCents": 546483,
    "w4": {
+    "legacy": true,
+    "allowances": 0,
     "filingStatus": "head",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -12519,7 +12541,7 @@
    },
    "priorYtdWagesCents": 1799240,
    "expected": {
-    "federalIncomeTaxCents": 73429,
+    "federalIncomeTaxCents": 95764,
     "socialSecurityCents": 33882,
     "medicareCents": 7924
    }
@@ -12530,6 +12552,8 @@
    "periodsPerYear": 12,
    "wagesCents": 1101268,
    "w4": {
+    "legacy": false,
+    "allowances": 3,
     "filingStatus": "single",
     "multipleJobs": false,
     "dependentsCents": 400000,
@@ -12551,6 +12575,8 @@
    "periodsPerYear": 12,
    "wagesCents": 798605,
    "w4": {
+    "legacy": false,
+    "allowances": 3,
     "filingStatus": "married",
     "multipleJobs": false,
     "dependentsCents": 300000,
@@ -12572,6 +12598,8 @@
    "periodsPerYear": 12,
    "wagesCents": 83537,
    "w4": {
+    "legacy": true,
+    "allowances": 0,
     "filingStatus": "head",
     "multipleJobs": true,
     "dependentsCents": 0,
@@ -12582,7 +12610,7 @@
    },
    "priorYtdWagesCents": 11551,
    "expected": {
-    "federalIncomeTaxCents": 0,
+    "federalIncomeTaxCents": 2104,
     "socialSecurityCents": 5179,
     "medicareCents": 1211
    }
@@ -12593,6 +12621,8 @@
    "periodsPerYear": 12,
    "wagesCents": 427978,
    "w4": {
+    "legacy": false,
+    "allowances": 6,
     "filingStatus": "married",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -12614,6 +12644,8 @@
    "periodsPerYear": 52,
    "wagesCents": 898789,
    "w4": {
+    "legacy": true,
+    "allowances": 4,
     "filingStatus": "single",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -12624,7 +12656,7 @@
    },
    "priorYtdWagesCents": 7150406,
    "expected": {
-    "federalIncomeTaxCents": 250114,
+    "federalIncomeTaxCents": 237892,
     "socialSecurityCents": 55725,
     "medicareCents": 13032
    }
@@ -12635,6 +12667,8 @@
    "periodsPerYear": 26,
    "wagesCents": 1061866,
    "w4": {
+    "legacy": false,
+    "allowances": 6,
     "filingStatus": "head",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -12656,6 +12690,8 @@
    "periodsPerYear": 52,
    "wagesCents": 973643,
    "w4": {
+    "legacy": true,
+    "allowances": 3,
     "filingStatus": "single",
     "multipleJobs": false,
     "dependentsCents": 400000,
@@ -12666,7 +12702,7 @@
    },
    "priorYtdWagesCents": 10895867,
    "expected": {
-    "federalIncomeTaxCents": 259573,
+    "federalIncomeTaxCents": 266985,
     "socialSecurityCents": 60366,
     "medicareCents": 14118
    }
@@ -12677,6 +12713,8 @@
    "periodsPerYear": 24,
    "wagesCents": 339494,
    "w4": {
+    "legacy": false,
+    "allowances": 2,
     "filingStatus": "married",
     "multipleJobs": false,
     "dependentsCents": 200000,
@@ -12698,6 +12736,8 @@
    "periodsPerYear": 24,
    "wagesCents": 810748,
    "w4": {
+    "legacy": false,
+    "allowances": 6,
     "filingStatus": "married",
     "multipleJobs": true,
     "dependentsCents": 150000,
@@ -12719,6 +12759,8 @@
    "periodsPerYear": 52,
    "wagesCents": 397098,
    "w4": {
+    "legacy": true,
+    "allowances": 1,
     "filingStatus": "married",
     "multipleJobs": false,
     "dependentsCents": 150000,
@@ -12729,7 +12771,7 @@
    },
    "priorYtdWagesCents": 26603175,
    "expected": {
-    "federalIncomeTaxCents": 50515,
+    "federalIncomeTaxCents": 57038,
     "socialSecurityCents": 0,
     "medicareCents": 9332
    }
@@ -12740,6 +12782,8 @@
    "periodsPerYear": 12,
    "wagesCents": 101774,
    "w4": {
+    "legacy": false,
+    "allowances": 0,
     "filingStatus": "head",
     "multipleJobs": true,
     "dependentsCents": 250000,
@@ -12761,6 +12805,8 @@
    "periodsPerYear": 24,
    "wagesCents": 1185806,
    "w4": {
+    "legacy": false,
+    "allowances": 0,
     "filingStatus": "single",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -12782,6 +12828,8 @@
    "periodsPerYear": 24,
    "wagesCents": 486295,
    "w4": {
+    "legacy": false,
+    "allowances": 8,
     "filingStatus": "single",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -12803,6 +12851,8 @@
    "periodsPerYear": 12,
    "wagesCents": 224073,
    "w4": {
+    "legacy": false,
+    "allowances": 0,
     "filingStatus": "married",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -12824,6 +12874,8 @@
    "periodsPerYear": 26,
    "wagesCents": 1763111,
    "w4": {
+    "legacy": true,
+    "allowances": 5,
     "filingStatus": "married",
     "multipleJobs": false,
     "dependentsCents": 250000,
@@ -12834,7 +12886,7 @@
    },
    "priorYtdWagesCents": 26326086,
    "expected": {
-    "federalIncomeTaxCents": 333842,
+    "federalIncomeTaxCents": 332872,
     "socialSecurityCents": 0,
     "medicareCents": 41433
    }
@@ -12845,6 +12897,8 @@
    "periodsPerYear": 24,
    "wagesCents": 1025430,
    "w4": {
+    "legacy": false,
+    "allowances": 6,
     "filingStatus": "single",
     "multipleJobs": true,
     "dependentsCents": 200000,
@@ -12866,6 +12920,8 @@
    "periodsPerYear": 24,
    "wagesCents": 776768,
    "w4": {
+    "legacy": false,
+    "allowances": 0,
     "filingStatus": "head",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -12887,6 +12943,8 @@
    "periodsPerYear": 52,
    "wagesCents": 409923,
    "w4": {
+    "legacy": false,
+    "allowances": 0,
     "filingStatus": "single",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -12908,6 +12966,8 @@
    "periodsPerYear": 26,
    "wagesCents": 441843,
    "w4": {
+    "legacy": false,
+    "allowances": 6,
     "filingStatus": "head",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -12929,6 +12989,8 @@
    "periodsPerYear": 52,
    "wagesCents": 1033146,
    "w4": {
+    "legacy": false,
+    "allowances": 3,
     "filingStatus": "head",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -12950,6 +13012,8 @@
    "periodsPerYear": 12,
    "wagesCents": 323907,
    "w4": {
+    "legacy": false,
+    "allowances": 1,
     "filingStatus": "single",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -12971,6 +13035,8 @@
    "periodsPerYear": 52,
    "wagesCents": 7839249,
    "w4": {
+    "legacy": false,
+    "allowances": 2,
     "filingStatus": "married",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -12992,6 +13058,8 @@
    "periodsPerYear": 52,
    "wagesCents": 8603048,
    "w4": {
+    "legacy": false,
+    "allowances": 2,
     "filingStatus": "head",
     "multipleJobs": false,
     "dependentsCents": 400000,
@@ -13013,6 +13081,8 @@
    "periodsPerYear": 12,
    "wagesCents": 1147950,
    "w4": {
+    "legacy": false,
+    "allowances": 5,
     "filingStatus": "married",
     "multipleJobs": true,
     "dependentsCents": 0,
@@ -13034,6 +13104,8 @@
    "periodsPerYear": 12,
    "wagesCents": 1042399,
    "w4": {
+    "legacy": false,
+    "allowances": 0,
     "filingStatus": "married",
     "multipleJobs": false,
     "dependentsCents": 100000,
@@ -13055,6 +13127,8 @@
    "periodsPerYear": 24,
    "wagesCents": 800332,
    "w4": {
+    "legacy": true,
+    "allowances": 3,
     "filingStatus": "married",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -13065,7 +13139,7 @@
    },
    "priorYtdWagesCents": 28898367,
    "expected": {
-    "federalIncomeTaxCents": 108992,
+    "federalIncomeTaxCents": 102490,
     "socialSecurityCents": 0,
     "medicareCents": 18808
    }
@@ -13076,6 +13150,8 @@
    "periodsPerYear": 26,
    "wagesCents": 977479,
    "w4": {
+    "legacy": true,
+    "allowances": 3,
     "filingStatus": "head",
     "multipleJobs": false,
     "dependentsCents": 250000,
@@ -13086,7 +13162,7 @@
    },
    "priorYtdWagesCents": 4282122,
    "expected": {
-    "federalIncomeTaxCents": 192666,
+    "federalIncomeTaxCents": 213854,
     "socialSecurityCents": 60604,
     "medicareCents": 14173
    }
@@ -13097,6 +13173,8 @@
    "periodsPerYear": 52,
    "wagesCents": 148233,
    "w4": {
+    "legacy": false,
+    "allowances": 4,
     "filingStatus": "married",
     "multipleJobs": true,
     "dependentsCents": 0,
@@ -13118,6 +13196,8 @@
    "periodsPerYear": 52,
    "wagesCents": 106071,
    "w4": {
+    "legacy": false,
+    "allowances": 5,
     "filingStatus": "head",
     "multipleJobs": true,
     "dependentsCents": 0,
@@ -13139,6 +13219,8 @@
    "periodsPerYear": 26,
    "wagesCents": 543666,
    "w4": {
+    "legacy": false,
+    "allowances": 0,
     "filingStatus": "head",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -13160,6 +13242,8 @@
    "periodsPerYear": 24,
    "wagesCents": 958642,
    "w4": {
+    "legacy": false,
+    "allowances": 5,
     "filingStatus": "married",
     "multipleJobs": true,
     "dependentsCents": 0,
@@ -13181,6 +13265,8 @@
    "periodsPerYear": 26,
    "wagesCents": 312325,
    "w4": {
+    "legacy": false,
+    "allowances": 2,
     "filingStatus": "head",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -13202,6 +13288,8 @@
    "periodsPerYear": 24,
    "wagesCents": 153821,
    "w4": {
+    "legacy": false,
+    "allowances": 6,
     "filingStatus": "married",
     "multipleJobs": false,
     "dependentsCents": 300000,
@@ -13223,6 +13311,8 @@
    "periodsPerYear": 12,
    "wagesCents": 1050469,
    "w4": {
+    "legacy": false,
+    "allowances": 0,
     "filingStatus": "head",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -13244,6 +13334,8 @@
    "periodsPerYear": 24,
    "wagesCents": 665906,
    "w4": {
+    "legacy": false,
+    "allowances": 0,
     "filingStatus": "head",
     "multipleJobs": false,
     "dependentsCents": 350000,
@@ -13265,6 +13357,8 @@
    "periodsPerYear": 12,
    "wagesCents": 4812508,
    "w4": {
+    "legacy": false,
+    "allowances": 8,
     "filingStatus": "single",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -13286,6 +13380,8 @@
    "periodsPerYear": 12,
    "wagesCents": 532527,
    "w4": {
+    "legacy": false,
+    "allowances": 8,
     "filingStatus": "single",
     "multipleJobs": true,
     "dependentsCents": 300000,
@@ -13307,6 +13403,8 @@
    "periodsPerYear": 52,
    "wagesCents": 277095,
    "w4": {
+    "legacy": false,
+    "allowances": 0,
     "filingStatus": "single",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -13328,6 +13426,8 @@
    "periodsPerYear": 26,
    "wagesCents": 129211,
    "w4": {
+    "legacy": false,
+    "allowances": 7,
     "filingStatus": "single",
     "multipleJobs": false,
     "dependentsCents": 50000,
@@ -13349,6 +13449,8 @@
    "periodsPerYear": 52,
    "wagesCents": 402965,
    "w4": {
+    "legacy": false,
+    "allowances": 3,
     "filingStatus": "single",
     "multipleJobs": false,
     "dependentsCents": 50000,
@@ -13370,6 +13472,8 @@
    "periodsPerYear": 12,
    "wagesCents": 548113,
    "w4": {
+    "legacy": false,
+    "allowances": 0,
     "filingStatus": "single",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -13391,6 +13495,8 @@
    "periodsPerYear": 24,
    "wagesCents": 5495592,
    "w4": {
+    "legacy": true,
+    "allowances": 0,
     "filingStatus": "single",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -13401,7 +13507,7 @@
    },
    "priorYtdWagesCents": 5155317,
    "expected": {
-    "federalIncomeTaxCents": 1825027,
+    "federalIncomeTaxCents": 1838295,
     "socialSecurityCents": 340727,
     "medicareCents": 79686
    }
@@ -13412,6 +13518,8 @@
    "periodsPerYear": 12,
    "wagesCents": 385412,
    "w4": {
+    "legacy": false,
+    "allowances": 0,
     "filingStatus": "married",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -13433,6 +13541,8 @@
    "periodsPerYear": 26,
    "wagesCents": 197553,
    "w4": {
+    "legacy": false,
+    "allowances": 6,
     "filingStatus": "single",
     "multipleJobs": true,
     "dependentsCents": 400000,
@@ -13454,6 +13564,8 @@
    "periodsPerYear": 26,
    "wagesCents": 350808,
    "w4": {
+    "legacy": false,
+    "allowances": 2,
     "filingStatus": "married",
     "multipleJobs": false,
     "dependentsCents": 350000,
@@ -13475,6 +13587,8 @@
    "periodsPerYear": 12,
    "wagesCents": 568899,
    "w4": {
+    "legacy": false,
+    "allowances": 8,
     "filingStatus": "single",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -13496,6 +13610,8 @@
    "periodsPerYear": 24,
    "wagesCents": 1076565,
    "w4": {
+    "legacy": true,
+    "allowances": 3,
     "filingStatus": "single",
     "multipleJobs": false,
     "dependentsCents": 350000,
@@ -13506,7 +13622,7 @@
    },
    "priorYtdWagesCents": 12418083,
    "expected": {
-    "federalIncomeTaxCents": 210351,
+    "federalIncomeTaxCents": 219201,
     "socialSecurityCents": 66747,
     "medicareCents": 15610
    }
@@ -13517,6 +13633,8 @@
    "periodsPerYear": 26,
    "wagesCents": 6615254,
    "w4": {
+    "legacy": false,
+    "allowances": 8,
     "filingStatus": "married",
     "multipleJobs": true,
     "dependentsCents": 0,
@@ -13538,6 +13656,8 @@
    "periodsPerYear": 26,
    "wagesCents": 594668,
    "w4": {
+    "legacy": false,
+    "allowances": 1,
     "filingStatus": "head",
     "multipleJobs": true,
     "dependentsCents": 0,
@@ -13559,6 +13679,8 @@
    "periodsPerYear": 26,
    "wagesCents": 1146280,
    "w4": {
+    "legacy": false,
+    "allowances": 8,
     "filingStatus": "married",
     "multipleJobs": false,
     "dependentsCents": 100000,
@@ -13580,6 +13702,8 @@
    "periodsPerYear": 52,
    "wagesCents": 3029112,
    "w4": {
+    "legacy": false,
+    "allowances": 0,
     "filingStatus": "single",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -13601,6 +13725,8 @@
    "periodsPerYear": 24,
    "wagesCents": 1007613,
    "w4": {
+    "legacy": false,
+    "allowances": 0,
     "filingStatus": "head",
     "multipleJobs": false,
     "dependentsCents": 250000,
@@ -13622,6 +13748,8 @@
    "periodsPerYear": 24,
    "wagesCents": 796528,
    "w4": {
+    "legacy": false,
+    "allowances": 0,
     "filingStatus": "married",
     "multipleJobs": false,
     "dependentsCents": 50000,
@@ -13643,6 +13771,8 @@
    "periodsPerYear": 26,
    "wagesCents": 958199,
    "w4": {
+    "legacy": false,
+    "allowances": 2,
     "filingStatus": "head",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -13664,6 +13794,8 @@
    "periodsPerYear": 26,
    "wagesCents": 8632966,
    "w4": {
+    "legacy": true,
+    "allowances": 7,
     "filingStatus": "married",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -13685,6 +13817,8 @@
    "periodsPerYear": 26,
    "wagesCents": 681587,
    "w4": {
+    "legacy": false,
+    "allowances": 1,
     "filingStatus": "married",
     "multipleJobs": false,
     "dependentsCents": 150000,
@@ -13706,6 +13840,8 @@
    "periodsPerYear": 26,
    "wagesCents": 1063946,
    "w4": {
+    "legacy": false,
+    "allowances": 0,
     "filingStatus": "head",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -13727,6 +13863,8 @@
    "periodsPerYear": 26,
    "wagesCents": 2089069,
    "w4": {
+    "legacy": false,
+    "allowances": 6,
     "filingStatus": "head",
     "multipleJobs": false,
     "dependentsCents": 350000,
@@ -13748,6 +13886,8 @@
    "periodsPerYear": 26,
    "wagesCents": 847404,
    "w4": {
+    "legacy": false,
+    "allowances": 0,
     "filingStatus": "head",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -13769,6 +13909,8 @@
    "periodsPerYear": 26,
    "wagesCents": 1088007,
    "w4": {
+    "legacy": false,
+    "allowances": 5,
     "filingStatus": "head",
     "multipleJobs": false,
     "dependentsCents": 100000,
@@ -13790,6 +13932,8 @@
    "periodsPerYear": 26,
    "wagesCents": 1053578,
    "w4": {
+    "legacy": false,
+    "allowances": 6,
     "filingStatus": "single",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -13811,6 +13955,8 @@
    "periodsPerYear": 52,
    "wagesCents": 360412,
    "w4": {
+    "legacy": true,
+    "allowances": 0,
     "filingStatus": "head",
     "multipleJobs": true,
     "dependentsCents": 0,
@@ -13821,7 +13967,7 @@
    },
    "priorYtdWagesCents": 22430771,
    "expected": {
-    "federalIncomeTaxCents": 86249,
+    "federalIncomeTaxCents": 68803,
     "socialSecurityCents": 0,
     "medicareCents": 8470
    }
@@ -13832,6 +13978,8 @@
    "periodsPerYear": 52,
    "wagesCents": 650805,
    "w4": {
+    "legacy": false,
+    "allowances": 2,
     "filingStatus": "married",
     "multipleJobs": false,
     "dependentsCents": 400000,
@@ -13853,6 +14001,8 @@
    "periodsPerYear": 24,
    "wagesCents": 67795,
    "w4": {
+    "legacy": false,
+    "allowances": 0,
     "filingStatus": "single",
     "multipleJobs": false,
     "dependentsCents": 350000,
@@ -13874,6 +14024,8 @@
    "periodsPerYear": 24,
    "wagesCents": 710046,
    "w4": {
+    "legacy": false,
+    "allowances": 6,
     "filingStatus": "head",
     "multipleJobs": false,
     "dependentsCents": 400000,
@@ -13895,6 +14047,8 @@
    "periodsPerYear": 52,
    "wagesCents": 1097651,
    "w4": {
+    "legacy": false,
+    "allowances": 0,
     "filingStatus": "head",
     "multipleJobs": false,
     "dependentsCents": 50000,
@@ -13916,6 +14070,8 @@
    "periodsPerYear": 52,
    "wagesCents": 913555,
    "w4": {
+    "legacy": true,
+    "allowances": 5,
     "filingStatus": "married",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -13926,7 +14082,7 @@
    },
    "priorYtdWagesCents": 5873792,
    "expected": {
-    "federalIncomeTaxCents": 182825,
+    "federalIncomeTaxCents": 177533,
     "socialSecurityCents": 56640,
     "medicareCents": 13247
    }
@@ -13937,6 +14093,8 @@
    "periodsPerYear": 26,
    "wagesCents": 560534,
    "w4": {
+    "legacy": true,
+    "allowances": 7,
     "filingStatus": "head",
     "multipleJobs": true,
     "dependentsCents": 250000,
@@ -13947,7 +14105,7 @@
    },
    "priorYtdWagesCents": 8788047,
    "expected": {
-    "federalIncomeTaxCents": 121379,
+    "federalIncomeTaxCents": 71351,
     "socialSecurityCents": 34753,
     "medicareCents": 8128
    }
@@ -13958,6 +14116,8 @@
    "periodsPerYear": 26,
    "wagesCents": 1040053,
    "w4": {
+    "legacy": false,
+    "allowances": 1,
     "filingStatus": "head",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -13979,6 +14139,8 @@
    "periodsPerYear": 12,
    "wagesCents": 34087,
    "w4": {
+    "legacy": true,
+    "allowances": 5,
     "filingStatus": "single",
     "multipleJobs": true,
     "dependentsCents": 0,
@@ -13989,7 +14151,7 @@
    },
    "priorYtdWagesCents": 1144090,
    "expected": {
-    "federalIncomeTaxCents": 12957,
+    "federalIncomeTaxCents": 0,
     "socialSecurityCents": 2113,
     "medicareCents": 494
    }
@@ -14000,6 +14162,8 @@
    "periodsPerYear": 52,
    "wagesCents": 913377,
    "w4": {
+    "legacy": false,
+    "allowances": 2,
     "filingStatus": "married",
     "multipleJobs": false,
     "dependentsCents": 200000,
@@ -14021,6 +14185,8 @@
    "periodsPerYear": 52,
    "wagesCents": 948392,
    "w4": {
+    "legacy": true,
+    "allowances": 3,
     "filingStatus": "single",
     "multipleJobs": true,
     "dependentsCents": 350000,
@@ -14031,7 +14197,7 @@
    },
    "priorYtdWagesCents": 22056699,
    "expected": {
-    "federalIncomeTaxCents": 296734,
+    "federalIncomeTaxCents": 258784,
     "socialSecurityCents": 0,
     "medicareCents": 22288
    }
@@ -14042,6 +14208,8 @@
    "periodsPerYear": 52,
    "wagesCents": 877057,
    "w4": {
+    "legacy": false,
+    "allowances": 2,
     "filingStatus": "married",
     "multipleJobs": true,
     "dependentsCents": 400000,
@@ -14063,6 +14231,8 @@
    "periodsPerYear": 26,
    "wagesCents": 30984,
    "w4": {
+    "legacy": false,
+    "allowances": 1,
     "filingStatus": "head",
     "multipleJobs": true,
     "dependentsCents": 0,
@@ -14084,6 +14254,8 @@
    "periodsPerYear": 26,
    "wagesCents": 621968,
    "w4": {
+    "legacy": false,
+    "allowances": 4,
     "filingStatus": "head",
     "multipleJobs": false,
     "dependentsCents": 200000,
@@ -14105,6 +14277,8 @@
    "periodsPerYear": 52,
    "wagesCents": 124926,
    "w4": {
+    "legacy": false,
+    "allowances": 2,
     "filingStatus": "head",
     "multipleJobs": false,
     "dependentsCents": 350000,
@@ -14126,6 +14300,8 @@
    "periodsPerYear": 26,
    "wagesCents": 959378,
    "w4": {
+    "legacy": false,
+    "allowances": 0,
     "filingStatus": "married",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -14147,6 +14323,8 @@
    "periodsPerYear": 26,
    "wagesCents": 9797125,
    "w4": {
+    "legacy": false,
+    "allowances": 7,
     "filingStatus": "single",
     "multipleJobs": true,
     "dependentsCents": 0,
@@ -14168,6 +14346,8 @@
    "periodsPerYear": 52,
    "wagesCents": 3606748,
    "w4": {
+    "legacy": false,
+    "allowances": 1,
     "filingStatus": "head",
     "multipleJobs": true,
     "dependentsCents": 350000,
@@ -14189,6 +14369,8 @@
    "periodsPerYear": 24,
    "wagesCents": 81882,
    "w4": {
+    "legacy": false,
+    "allowances": 2,
     "filingStatus": "head",
     "multipleJobs": true,
     "dependentsCents": 350000,
@@ -14210,6 +14392,8 @@
    "periodsPerYear": 52,
    "wagesCents": 6262478,
    "w4": {
+    "legacy": false,
+    "allowances": 1,
     "filingStatus": "single",
     "multipleJobs": false,
     "dependentsCents": 50000,
@@ -14231,6 +14415,8 @@
    "periodsPerYear": 12,
    "wagesCents": 827236,
    "w4": {
+    "legacy": false,
+    "allowances": 1,
     "filingStatus": "married",
     "multipleJobs": true,
     "dependentsCents": 0,
@@ -14252,6 +14438,8 @@
    "periodsPerYear": 12,
    "wagesCents": 5551963,
    "w4": {
+    "legacy": false,
+    "allowances": 5,
     "filingStatus": "single",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -14273,6 +14461,8 @@
    "periodsPerYear": 26,
    "wagesCents": 840711,
    "w4": {
+    "legacy": false,
+    "allowances": 7,
     "filingStatus": "married",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -14294,6 +14484,8 @@
    "periodsPerYear": 52,
    "wagesCents": 600937,
    "w4": {
+    "legacy": false,
+    "allowances": 4,
     "filingStatus": "head",
     "multipleJobs": false,
     "dependentsCents": 400000,
@@ -14315,6 +14507,8 @@
    "periodsPerYear": 26,
    "wagesCents": 369939,
    "w4": {
+    "legacy": false,
+    "allowances": 2,
     "filingStatus": "single",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -14336,6 +14530,8 @@
    "periodsPerYear": 24,
    "wagesCents": 660122,
    "w4": {
+    "legacy": false,
+    "allowances": 5,
     "filingStatus": "single",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -14357,6 +14553,8 @@
    "periodsPerYear": 12,
    "wagesCents": 776478,
    "w4": {
+    "legacy": false,
+    "allowances": 1,
     "filingStatus": "married",
     "multipleJobs": false,
     "dependentsCents": 50000,
@@ -14378,6 +14576,8 @@
    "periodsPerYear": 24,
    "wagesCents": 414928,
    "w4": {
+    "legacy": true,
+    "allowances": 0,
     "filingStatus": "head",
     "multipleJobs": false,
     "dependentsCents": 250000,
@@ -14388,7 +14588,7 @@
    },
    "priorYtdWagesCents": 8480634,
    "expected": {
-    "federalIncomeTaxCents": 48998,
+    "federalIncomeTaxCents": 72804,
     "socialSecurityCents": 25726,
     "medicareCents": 6016
    }
@@ -14399,6 +14599,8 @@
    "periodsPerYear": 52,
    "wagesCents": 709510,
    "w4": {
+    "legacy": false,
+    "allowances": 7,
     "filingStatus": "single",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -14420,6 +14622,8 @@
    "periodsPerYear": 24,
    "wagesCents": 760364,
    "w4": {
+    "legacy": false,
+    "allowances": 2,
     "filingStatus": "head",
     "multipleJobs": false,
     "dependentsCents": 50000,
@@ -14441,6 +14645,8 @@
    "periodsPerYear": 26,
    "wagesCents": 1135403,
    "w4": {
+    "legacy": false,
+    "allowances": 0,
     "filingStatus": "head",
     "multipleJobs": false,
     "dependentsCents": 100000,
@@ -14462,6 +14668,8 @@
    "periodsPerYear": 52,
    "wagesCents": 664849,
    "w4": {
+    "legacy": false,
+    "allowances": 4,
     "filingStatus": "single",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -14483,6 +14691,8 @@
    "periodsPerYear": 12,
    "wagesCents": 274044,
    "w4": {
+    "legacy": true,
+    "allowances": 0,
     "filingStatus": "married",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -14493,7 +14703,7 @@
    },
    "priorYtdWagesCents": 2422835,
    "expected": {
-    "federalIncomeTaxCents": 19333,
+    "federalIncomeTaxCents": 30083,
     "socialSecurityCents": 16991,
     "medicareCents": 3974
    }
@@ -14504,6 +14714,8 @@
    "periodsPerYear": 24,
    "wagesCents": 433535,
    "w4": {
+    "legacy": true,
+    "allowances": 3,
     "filingStatus": "single",
     "multipleJobs": false,
     "dependentsCents": 150000,
@@ -14514,7 +14726,7 @@
    },
    "priorYtdWagesCents": 14778879,
    "expected": {
-    "federalIncomeTaxCents": 46877,
+    "federalIncomeTaxCents": 54644,
     "socialSecurityCents": 26879,
     "medicareCents": 6286
    }
@@ -14525,6 +14737,8 @@
    "periodsPerYear": 52,
    "wagesCents": 11742496,
    "w4": {
+    "legacy": true,
+    "allowances": 7,
     "filingStatus": "head",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -14535,7 +14749,7 @@
    },
    "priorYtdWagesCents": 14685193,
    "expected": {
-    "federalIncomeTaxCents": 4239365,
+    "federalIncomeTaxCents": 4233272,
     "socialSecurityCents": 233418,
     "medicareCents": 228115
    }
@@ -14546,6 +14760,8 @@
    "periodsPerYear": 26,
    "wagesCents": 10327420,
    "w4": {
+    "legacy": false,
+    "allowances": 6,
     "filingStatus": "single",
     "multipleJobs": true,
     "dependentsCents": 0,
@@ -14567,6 +14783,8 @@
    "periodsPerYear": 12,
    "wagesCents": 281078,
    "w4": {
+    "legacy": true,
+    "allowances": 0,
     "filingStatus": "head",
     "multipleJobs": true,
     "dependentsCents": 0,
@@ -14577,7 +14795,7 @@
    },
    "priorYtdWagesCents": 673083,
    "expected": {
-    "federalIncomeTaxCents": 14685,
+    "federalIncomeTaxCents": 25778,
     "socialSecurityCents": 17427,
     "medicareCents": 4076
    }
@@ -14588,6 +14806,8 @@
    "periodsPerYear": 12,
    "wagesCents": 958293,
    "w4": {
+    "legacy": false,
+    "allowances": 8,
     "filingStatus": "married",
     "multipleJobs": true,
     "dependentsCents": 0,
@@ -14609,6 +14829,8 @@
    "periodsPerYear": 12,
    "wagesCents": 352272,
    "w4": {
+    "legacy": false,
+    "allowances": 4,
     "filingStatus": "head",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -14630,6 +14852,8 @@
    "periodsPerYear": 24,
    "wagesCents": 701637,
    "w4": {
+    "legacy": false,
+    "allowances": 7,
     "filingStatus": "married",
     "multipleJobs": false,
     "dependentsCents": 400000,
@@ -14651,6 +14875,8 @@
    "periodsPerYear": 52,
    "wagesCents": 1000858,
    "w4": {
+    "legacy": true,
+    "allowances": 0,
     "filingStatus": "single",
     "multipleJobs": false,
     "dependentsCents": 200000,
@@ -14661,7 +14887,7 @@
    },
    "priorYtdWagesCents": 7341164,
    "expected": {
-    "federalIncomeTaxCents": 277466,
+    "federalIncomeTaxCents": 285713,
     "socialSecurityCents": 62053,
     "medicareCents": 14512
    }
@@ -14672,6 +14898,8 @@
    "periodsPerYear": 24,
    "wagesCents": 350835,
    "w4": {
+    "legacy": false,
+    "allowances": 0,
     "filingStatus": "head",
     "multipleJobs": false,
     "dependentsCents": 150000,
@@ -14693,6 +14921,8 @@
    "periodsPerYear": 52,
    "wagesCents": 388727,
    "w4": {
+    "legacy": false,
+    "allowances": 5,
     "filingStatus": "single",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -14714,6 +14944,8 @@
    "periodsPerYear": 26,
    "wagesCents": 110891,
    "w4": {
+    "legacy": false,
+    "allowances": 8,
     "filingStatus": "head",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -14735,6 +14967,8 @@
    "periodsPerYear": 52,
    "wagesCents": 794578,
    "w4": {
+    "legacy": false,
+    "allowances": 0,
     "filingStatus": "head",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -14756,6 +14990,8 @@
    "periodsPerYear": 52,
    "wagesCents": 748111,
    "w4": {
+    "legacy": false,
+    "allowances": 5,
     "filingStatus": "married",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -14777,6 +15013,8 @@
    "periodsPerYear": 12,
    "wagesCents": 1188351,
    "w4": {
+    "legacy": false,
+    "allowances": 5,
     "filingStatus": "head",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -14798,6 +15036,8 @@
    "periodsPerYear": 24,
    "wagesCents": 911312,
    "w4": {
+    "legacy": true,
+    "allowances": 7,
     "filingStatus": "single",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -14808,7 +15048,7 @@
    },
    "priorYtdWagesCents": 11921849,
    "expected": {
-    "federalIncomeTaxCents": 161865,
+    "federalIncomeTaxCents": 150273,
     "socialSecurityCents": 56501,
     "medicareCents": 13214
    }
@@ -14819,6 +15059,8 @@
    "periodsPerYear": 52,
    "wagesCents": 1185002,
    "w4": {
+    "legacy": true,
+    "allowances": 3,
     "filingStatus": "head",
     "multipleJobs": true,
     "dependentsCents": 0,
@@ -14829,7 +15071,7 @@
    },
    "priorYtdWagesCents": 29557024,
    "expected": {
-    "federalIncomeTaxCents": 382046,
+    "federalIncomeTaxCents": 340961,
     "socialSecurityCents": 0,
     "medicareCents": 27848
    }
@@ -14840,6 +15082,8 @@
    "periodsPerYear": 12,
    "wagesCents": 783096,
    "w4": {
+    "legacy": true,
+    "allowances": 2,
     "filingStatus": "single",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -14850,7 +15094,7 @@
    },
    "priorYtdWagesCents": 15957711,
    "expected": {
-    "federalIncomeTaxCents": 98146,
+    "federalIncomeTaxCents": 98698,
     "socialSecurityCents": 48552,
     "medicareCents": 11355
    }
@@ -14861,6 +15105,8 @@
    "periodsPerYear": 24,
    "wagesCents": 826611,
    "w4": {
+    "legacy": false,
+    "allowances": 0,
     "filingStatus": "single",
     "multipleJobs": false,
     "dependentsCents": 200000,
@@ -14882,6 +15128,8 @@
    "periodsPerYear": 12,
    "wagesCents": 1123047,
    "w4": {
+    "legacy": false,
+    "allowances": 3,
     "filingStatus": "single",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -14903,6 +15151,8 @@
    "periodsPerYear": 26,
    "wagesCents": 884525,
    "w4": {
+    "legacy": false,
+    "allowances": 5,
     "filingStatus": "single",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -14924,6 +15174,8 @@
    "periodsPerYear": 12,
    "wagesCents": 464574,
    "w4": {
+    "legacy": false,
+    "allowances": 7,
     "filingStatus": "married",
     "multipleJobs": false,
     "dependentsCents": 250000,
@@ -14945,6 +15197,8 @@
    "periodsPerYear": 26,
    "wagesCents": 604443,
    "w4": {
+    "legacy": true,
+    "allowances": 1,
     "filingStatus": "head",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -14955,7 +15209,7 @@
    },
    "priorYtdWagesCents": 6454599,
    "expected": {
-    "federalIncomeTaxCents": 87339,
+    "federalIncomeTaxCents": 105705,
     "socialSecurityCents": 37475,
     "medicareCents": 8764
    }
@@ -14966,6 +15220,8 @@
    "periodsPerYear": 26,
    "wagesCents": 786563,
    "w4": {
+    "legacy": false,
+    "allowances": 5,
     "filingStatus": "single",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -14987,6 +15243,8 @@
    "periodsPerYear": 24,
    "wagesCents": 101431,
    "w4": {
+    "legacy": false,
+    "allowances": 0,
     "filingStatus": "single",
     "multipleJobs": false,
     "dependentsCents": 350000,
@@ -15008,6 +15266,8 @@
    "periodsPerYear": 12,
    "wagesCents": 928081,
    "w4": {
+    "legacy": false,
+    "allowances": 1,
     "filingStatus": "head",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -15029,6 +15289,8 @@
    "periodsPerYear": 26,
    "wagesCents": 1107798,
    "w4": {
+    "legacy": true,
+    "allowances": 3,
     "filingStatus": "single",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -15039,7 +15301,7 @@
    },
    "priorYtdWagesCents": 14866650,
    "expected": {
-    "federalIncomeTaxCents": 240593,
+    "federalIncomeTaxCents": 240150,
     "socialSecurityCents": 68683,
     "medicareCents": 16063
    }
@@ -15050,6 +15312,8 @@
    "periodsPerYear": 26,
    "wagesCents": 785894,
    "w4": {
+    "legacy": false,
+    "allowances": 8,
     "filingStatus": "head",
     "multipleJobs": false,
     "dependentsCents": 200000,
@@ -15071,6 +15335,8 @@
    "periodsPerYear": 52,
    "wagesCents": 480223,
    "w4": {
+    "legacy": false,
+    "allowances": 3,
     "filingStatus": "head",
     "multipleJobs": true,
     "dependentsCents": 0,
@@ -15092,6 +15358,8 @@
    "periodsPerYear": 12,
    "wagesCents": 581756,
    "w4": {
+    "legacy": false,
+    "allowances": 0,
     "filingStatus": "married",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -15113,6 +15381,8 @@
    "periodsPerYear": 24,
    "wagesCents": 854751,
    "w4": {
+    "legacy": false,
+    "allowances": 2,
     "filingStatus": "married",
     "multipleJobs": false,
     "dependentsCents": 300000,
@@ -15134,6 +15404,8 @@
    "periodsPerYear": 26,
    "wagesCents": 302175,
    "w4": {
+    "legacy": false,
+    "allowances": 0,
     "filingStatus": "single",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -15155,6 +15427,8 @@
    "periodsPerYear": 52,
    "wagesCents": 185140,
    "w4": {
+    "legacy": false,
+    "allowances": 0,
     "filingStatus": "married",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -15176,6 +15450,8 @@
    "periodsPerYear": 26,
    "wagesCents": 52950,
    "w4": {
+    "legacy": true,
+    "allowances": 4,
     "filingStatus": "married",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -15197,6 +15473,8 @@
    "periodsPerYear": 52,
    "wagesCents": 117902,
    "w4": {
+    "legacy": true,
+    "allowances": 2,
     "filingStatus": "single",
     "multipleJobs": false,
     "dependentsCents": 400000,
@@ -15207,7 +15485,7 @@
    },
    "priorYtdWagesCents": 21550830,
    "expected": {
-    "federalIncomeTaxCents": 8390,
+    "federalIncomeTaxCents": 9956,
     "socialSecurityCents": 0,
     "medicareCents": 2771
    }
@@ -15218,6 +15496,8 @@
    "periodsPerYear": 26,
    "wagesCents": 827029,
    "w4": {
+    "legacy": false,
+    "allowances": 1,
     "filingStatus": "married",
     "multipleJobs": true,
     "dependentsCents": 0,
@@ -15239,6 +15519,8 @@
    "periodsPerYear": 12,
    "wagesCents": 536873,
    "w4": {
+    "legacy": true,
+    "allowances": 2,
     "filingStatus": "head",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -15249,7 +15531,7 @@
    },
    "priorYtdWagesCents": 16067262,
    "expected": {
-    "federalIncomeTaxCents": 26933,
+    "federalIncomeTaxCents": 46258,
     "socialSecurityCents": 33286,
     "medicareCents": 7785
    }
@@ -15260,6 +15542,8 @@
    "periodsPerYear": 24,
    "wagesCents": 245183,
    "w4": {
+    "legacy": true,
+    "allowances": 3,
     "filingStatus": "married",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -15281,6 +15565,8 @@
    "periodsPerYear": 12,
    "wagesCents": 881309,
    "w4": {
+    "legacy": true,
+    "allowances": 6,
     "filingStatus": "head",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -15291,7 +15577,7 @@
    },
    "priorYtdWagesCents": 13131002,
    "expected": {
-    "federalIncomeTaxCents": 85079,
+    "federalIncomeTaxCents": 88771,
     "socialSecurityCents": 54641,
     "medicareCents": 12779
    }
@@ -15302,6 +15588,8 @@
    "periodsPerYear": 12,
    "wagesCents": 865429,
    "w4": {
+    "legacy": false,
+    "allowances": 3,
     "filingStatus": "single",
     "multipleJobs": true,
     "dependentsCents": 0,
@@ -15323,6 +15611,8 @@
    "periodsPerYear": 52,
    "wagesCents": 516820,
    "w4": {
+    "legacy": false,
+    "allowances": 0,
     "filingStatus": "married",
     "multipleJobs": false,
     "dependentsCents": 400000,
@@ -15344,6 +15634,8 @@
    "periodsPerYear": 52,
    "wagesCents": 128294,
    "w4": {
+    "legacy": false,
+    "allowances": 0,
     "filingStatus": "head",
     "multipleJobs": true,
     "dependentsCents": 0,
@@ -15365,6 +15657,8 @@
    "periodsPerYear": 24,
    "wagesCents": 10589961,
    "w4": {
+    "legacy": false,
+    "allowances": 3,
     "filingStatus": "head",
     "multipleJobs": false,
     "dependentsCents": 50000,
@@ -15386,6 +15680,8 @@
    "periodsPerYear": 12,
    "wagesCents": 253028,
    "w4": {
+    "legacy": false,
+    "allowances": 4,
     "filingStatus": "single",
     "multipleJobs": true,
     "dependentsCents": 0,
@@ -15407,6 +15703,8 @@
    "periodsPerYear": 24,
    "wagesCents": 3981136,
    "w4": {
+    "legacy": true,
+    "allowances": 7,
     "filingStatus": "married",
     "multipleJobs": false,
     "dependentsCents": 250000,
@@ -15417,7 +15715,7 @@
    },
    "priorYtdWagesCents": 22444077,
    "expected": {
-    "federalIncomeTaxCents": 1069893,
+    "federalIncomeTaxCents": 1072547,
     "socialSecurityCents": 0,
     "medicareCents": 93556
    }
@@ -15428,6 +15726,8 @@
    "periodsPerYear": 12,
    "wagesCents": 2538957,
    "w4": {
+    "legacy": true,
+    "allowances": 0,
     "filingStatus": "married",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -15438,7 +15738,7 @@
    },
    "priorYtdWagesCents": 1860511,
    "expected": {
-    "federalIncomeTaxCents": 460919,
+    "federalIncomeTaxCents": 455498,
     "socialSecurityCents": 157415,
     "medicareCents": 36815
    }
@@ -15449,6 +15749,8 @@
    "periodsPerYear": 24,
    "wagesCents": 397840,
    "w4": {
+    "legacy": false,
+    "allowances": 1,
     "filingStatus": "single",
     "multipleJobs": false,
     "dependentsCents": 200000,
@@ -15470,6 +15772,8 @@
    "periodsPerYear": 12,
    "wagesCents": 517928,
    "w4": {
+    "legacy": false,
+    "allowances": 0,
     "filingStatus": "married",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -15491,6 +15795,8 @@
    "periodsPerYear": 12,
    "wagesCents": 832181,
    "w4": {
+    "legacy": true,
+    "allowances": 7,
     "filingStatus": "married",
     "multipleJobs": false,
     "dependentsCents": 250000,
@@ -15501,7 +15807,7 @@
    },
    "priorYtdWagesCents": 10689117,
    "expected": {
-    "federalIncomeTaxCents": 42695,
+    "federalIncomeTaxCents": 46328,
     "socialSecurityCents": 51595,
     "medicareCents": 12067
    }
@@ -15512,6 +15818,8 @@
    "periodsPerYear": 52,
    "wagesCents": 558124,
    "w4": {
+    "legacy": false,
+    "allowances": 3,
     "filingStatus": "head",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -15533,6 +15841,8 @@
    "periodsPerYear": 12,
    "wagesCents": 1127445,
    "w4": {
+    "legacy": true,
+    "allowances": 4,
     "filingStatus": "single",
     "multipleJobs": false,
     "dependentsCents": 350000,
@@ -15543,7 +15853,7 @@
    },
    "priorYtdWagesCents": 1222208,
    "expected": {
-    "federalIncomeTaxCents": 147537,
+    "federalIncomeTaxCents": 159504,
     "socialSecurityCents": 69902,
     "medicareCents": 16348
    }
@@ -15554,6 +15864,8 @@
    "periodsPerYear": 26,
    "wagesCents": 234335,
    "w4": {
+    "legacy": false,
+    "allowances": 0,
     "filingStatus": "married",
     "multipleJobs": false,
     "dependentsCents": 200000,
@@ -15575,6 +15887,8 @@
    "periodsPerYear": 26,
    "wagesCents": 1079098,
    "w4": {
+    "legacy": false,
+    "allowances": 1,
     "filingStatus": "head",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -15596,6 +15910,8 @@
    "periodsPerYear": 12,
    "wagesCents": 973818,
    "w4": {
+    "legacy": false,
+    "allowances": 5,
     "filingStatus": "head",
     "multipleJobs": false,
     "dependentsCents": 100000,
@@ -15617,6 +15933,8 @@
    "periodsPerYear": 12,
    "wagesCents": 1042534,
    "w4": {
+    "legacy": false,
+    "allowances": 1,
     "filingStatus": "married",
     "multipleJobs": false,
     "dependentsCents": 100000,
@@ -15638,6 +15956,8 @@
    "periodsPerYear": 26,
    "wagesCents": 1130764,
    "w4": {
+    "legacy": false,
+    "allowances": 0,
     "filingStatus": "head",
     "multipleJobs": false,
     "dependentsCents": 200000,
@@ -15659,6 +15979,8 @@
    "periodsPerYear": 24,
    "wagesCents": 450663,
    "w4": {
+    "legacy": false,
+    "allowances": 4,
     "filingStatus": "single",
     "multipleJobs": false,
     "dependentsCents": 250000,
@@ -15680,6 +16002,8 @@
    "periodsPerYear": 26,
    "wagesCents": 783280,
    "w4": {
+    "legacy": false,
+    "allowances": 0,
     "filingStatus": "single",
     "multipleJobs": false,
     "dependentsCents": 400000,
@@ -15701,6 +16025,8 @@
    "periodsPerYear": 26,
    "wagesCents": 955973,
    "w4": {
+    "legacy": false,
+    "allowances": 4,
     "filingStatus": "head",
     "multipleJobs": false,
     "dependentsCents": 200000,
@@ -15722,6 +16048,8 @@
    "periodsPerYear": 26,
    "wagesCents": 569301,
    "w4": {
+    "legacy": false,
+    "allowances": 5,
     "filingStatus": "married",
     "multipleJobs": false,
     "dependentsCents": 150000,
@@ -15743,6 +16071,8 @@
    "periodsPerYear": 24,
    "wagesCents": 356908,
    "w4": {
+    "legacy": false,
+    "allowances": 2,
     "filingStatus": "married",
     "multipleJobs": false,
     "dependentsCents": 100000,
@@ -15764,6 +16094,8 @@
    "periodsPerYear": 12,
    "wagesCents": 5375264,
    "w4": {
+    "legacy": false,
+    "allowances": 5,
     "filingStatus": "single",
     "multipleJobs": true,
     "dependentsCents": 200000,
@@ -15785,6 +16117,8 @@
    "periodsPerYear": 52,
    "wagesCents": 183136,
    "w4": {
+    "legacy": true,
+    "allowances": 6,
     "filingStatus": "married",
     "multipleJobs": true,
     "dependentsCents": 0,
@@ -15795,7 +16129,7 @@
    },
    "priorYtdWagesCents": 15323620,
    "expected": {
-    "federalIncomeTaxCents": 22508,
+    "federalIncomeTaxCents": 10615,
     "socialSecurityCents": 11354,
     "medicareCents": 2655
    }
@@ -15806,6 +16140,8 @@
    "periodsPerYear": 52,
    "wagesCents": 366512,
    "w4": {
+    "legacy": true,
+    "allowances": 8,
     "filingStatus": "single",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -15827,6 +16163,8 @@
    "periodsPerYear": 26,
    "wagesCents": 210600,
    "w4": {
+    "legacy": true,
+    "allowances": 4,
     "filingStatus": "single",
     "multipleJobs": true,
     "dependentsCents": 100000,
@@ -15848,6 +16186,8 @@
    "periodsPerYear": 52,
    "wagesCents": 961800,
    "w4": {
+    "legacy": false,
+    "allowances": 6,
     "filingStatus": "head",
     "multipleJobs": false,
     "dependentsCents": 300000,
@@ -15869,6 +16209,8 @@
    "periodsPerYear": 26,
    "wagesCents": 694191,
    "w4": {
+    "legacy": false,
+    "allowances": 6,
     "filingStatus": "single",
     "multipleJobs": true,
     "dependentsCents": 150000,
@@ -15890,6 +16232,8 @@
    "periodsPerYear": 26,
    "wagesCents": 768548,
    "w4": {
+    "legacy": false,
+    "allowances": 7,
     "filingStatus": "head",
     "multipleJobs": false,
     "dependentsCents": 350000,
@@ -15911,6 +16255,8 @@
    "periodsPerYear": 26,
    "wagesCents": 4695180,
    "w4": {
+    "legacy": false,
+    "allowances": 6,
     "filingStatus": "married",
     "multipleJobs": false,
     "dependentsCents": 300000,
@@ -15932,6 +16278,8 @@
    "periodsPerYear": 26,
    "wagesCents": 8907052,
    "w4": {
+    "legacy": false,
+    "allowances": 1,
     "filingStatus": "married",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -15953,6 +16301,8 @@
    "periodsPerYear": 12,
    "wagesCents": 137917,
    "w4": {
+    "legacy": false,
+    "allowances": 8,
     "filingStatus": "head",
     "multipleJobs": true,
     "dependentsCents": 0,
@@ -15974,6 +16324,8 @@
    "periodsPerYear": 24,
    "wagesCents": 1106371,
    "w4": {
+    "legacy": false,
+    "allowances": 6,
     "filingStatus": "married",
     "multipleJobs": false,
     "dependentsCents": 200000,
@@ -15995,6 +16347,8 @@
    "periodsPerYear": 12,
    "wagesCents": 485327,
    "w4": {
+    "legacy": false,
+    "allowances": 0,
     "filingStatus": "head",
     "multipleJobs": false,
     "dependentsCents": 350000,
@@ -16016,6 +16370,8 @@
    "periodsPerYear": 52,
    "wagesCents": 673560,
    "w4": {
+    "legacy": false,
+    "allowances": 7,
     "filingStatus": "head",
     "multipleJobs": true,
     "dependentsCents": 0,
@@ -16037,6 +16393,8 @@
    "periodsPerYear": 26,
    "wagesCents": 394107,
    "w4": {
+    "legacy": false,
+    "allowances": 2,
     "filingStatus": "head",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -16058,6 +16416,8 @@
    "periodsPerYear": 52,
    "wagesCents": 95639,
    "w4": {
+    "legacy": false,
+    "allowances": 1,
     "filingStatus": "single",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -16079,6 +16439,8 @@
    "periodsPerYear": 26,
    "wagesCents": 275291,
    "w4": {
+    "legacy": false,
+    "allowances": 3,
     "filingStatus": "married",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -16100,6 +16462,8 @@
    "periodsPerYear": 24,
    "wagesCents": 759457,
    "w4": {
+    "legacy": false,
+    "allowances": 2,
     "filingStatus": "single",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -16121,6 +16485,8 @@
    "periodsPerYear": 52,
    "wagesCents": 4949695,
    "w4": {
+    "legacy": false,
+    "allowances": 3,
     "filingStatus": "married",
     "multipleJobs": true,
     "dependentsCents": 150000,
@@ -16142,6 +16508,8 @@
    "periodsPerYear": 24,
    "wagesCents": 1121522,
    "w4": {
+    "legacy": false,
+    "allowances": 7,
     "filingStatus": "single",
     "multipleJobs": false,
     "dependentsCents": 300000,
@@ -16163,6 +16531,8 @@
    "periodsPerYear": 26,
    "wagesCents": 217284,
    "w4": {
+    "legacy": false,
+    "allowances": 0,
     "filingStatus": "married",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -16184,6 +16554,8 @@
    "periodsPerYear": 12,
    "wagesCents": 218588,
    "w4": {
+    "legacy": true,
+    "allowances": 3,
     "filingStatus": "single",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -16194,7 +16566,7 @@
    },
    "priorYtdWagesCents": 1614536,
    "expected": {
-    "federalIncomeTaxCents": 17857,
+    "federalIncomeTaxCents": 4859,
     "socialSecurityCents": 13552,
     "medicareCents": 3170
    }
@@ -16205,6 +16577,8 @@
    "periodsPerYear": 26,
    "wagesCents": 4623180,
    "w4": {
+    "legacy": false,
+    "allowances": 3,
     "filingStatus": "single",
     "multipleJobs": true,
     "dependentsCents": 250000,
@@ -16226,6 +16600,8 @@
    "periodsPerYear": 12,
    "wagesCents": 917524,
    "w4": {
+    "legacy": false,
+    "allowances": 5,
     "filingStatus": "married",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -16247,6 +16623,8 @@
    "periodsPerYear": 24,
    "wagesCents": 614598,
    "w4": {
+    "legacy": false,
+    "allowances": 4,
     "filingStatus": "married",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -16268,6 +16646,8 @@
    "periodsPerYear": 26,
    "wagesCents": 761982,
    "w4": {
+    "legacy": true,
+    "allowances": 0,
     "filingStatus": "head",
     "multipleJobs": false,
     "dependentsCents": 300000,
@@ -16278,7 +16658,7 @@
    },
    "priorYtdWagesCents": 8622905,
    "expected": {
-    "federalIncomeTaxCents": 113611,
+    "federalIncomeTaxCents": 147483,
     "socialSecurityCents": 47243,
     "medicareCents": 11049
    }
@@ -16289,6 +16669,8 @@
    "periodsPerYear": 12,
    "wagesCents": 284951,
    "w4": {
+    "legacy": false,
+    "allowances": 0,
     "filingStatus": "single",
     "multipleJobs": true,
     "dependentsCents": 200000,
@@ -16310,6 +16692,8 @@
    "periodsPerYear": 12,
    "wagesCents": 350774,
    "w4": {
+    "legacy": false,
+    "allowances": 6,
     "filingStatus": "single",
     "multipleJobs": true,
     "dependentsCents": 50000,
@@ -16331,6 +16715,8 @@
    "periodsPerYear": 24,
    "wagesCents": 285249,
    "w4": {
+    "legacy": false,
+    "allowances": 6,
     "filingStatus": "head",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -16352,6 +16738,8 @@
    "periodsPerYear": 12,
    "wagesCents": 93770,
    "w4": {
+    "legacy": false,
+    "allowances": 6,
     "filingStatus": "head",
     "multipleJobs": false,
     "dependentsCents": 200000,
@@ -16373,6 +16761,8 @@
    "periodsPerYear": 52,
    "wagesCents": 13037,
    "w4": {
+    "legacy": false,
+    "allowances": 0,
     "filingStatus": "married",
     "multipleJobs": true,
     "dependentsCents": 150000,
@@ -16394,6 +16784,8 @@
    "periodsPerYear": 12,
    "wagesCents": 968202,
    "w4": {
+    "legacy": true,
+    "allowances": 0,
     "filingStatus": "single",
     "multipleJobs": true,
     "dependentsCents": 0,
@@ -16415,6 +16807,8 @@
    "periodsPerYear": 26,
    "wagesCents": 670052,
    "w4": {
+    "legacy": false,
+    "allowances": 5,
     "filingStatus": "single",
     "multipleJobs": false,
     "dependentsCents": 50000,
@@ -16436,6 +16830,8 @@
    "periodsPerYear": 12,
    "wagesCents": 361733,
    "w4": {
+    "legacy": true,
+    "allowances": 8,
     "filingStatus": "married",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -16446,7 +16842,7 @@
    },
    "priorYtdWagesCents": 4808159,
    "expected": {
-    "federalIncomeTaxCents": 9340,
+    "federalIncomeTaxCents": 0,
     "socialSecurityCents": 22427,
     "medicareCents": 5245
    }
@@ -16457,6 +16853,8 @@
    "periodsPerYear": 12,
    "wagesCents": 685177,
    "w4": {
+    "legacy": false,
+    "allowances": 3,
     "filingStatus": "single",
     "multipleJobs": true,
     "dependentsCents": 350000,
@@ -16478,6 +16876,8 @@
    "periodsPerYear": 24,
    "wagesCents": 700749,
    "w4": {
+    "legacy": false,
+    "allowances": 0,
     "filingStatus": "single",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -16499,6 +16899,8 @@
    "periodsPerYear": 12,
    "wagesCents": 1046238,
    "w4": {
+    "legacy": false,
+    "allowances": 0,
     "filingStatus": "single",
     "multipleJobs": false,
     "dependentsCents": 150000,
@@ -16520,6 +16922,8 @@
    "periodsPerYear": 24,
    "wagesCents": 268579,
    "w4": {
+    "legacy": false,
+    "allowances": 5,
     "filingStatus": "married",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -16541,6 +16945,8 @@
    "periodsPerYear": 24,
    "wagesCents": 201269,
    "w4": {
+    "legacy": false,
+    "allowances": 7,
     "filingStatus": "head",
     "multipleJobs": false,
     "dependentsCents": 250000,
@@ -16562,6 +16968,8 @@
    "periodsPerYear": 26,
    "wagesCents": 909087,
    "w4": {
+    "legacy": true,
+    "allowances": 3,
     "filingStatus": "married",
     "multipleJobs": true,
     "dependentsCents": 0,
@@ -16572,7 +16980,7 @@
    },
    "priorYtdWagesCents": 25164415,
    "expected": {
-    "federalIncomeTaxCents": 180539,
+    "federalIncomeTaxCents": 132076,
     "socialSecurityCents": 0,
     "medicareCents": 21364
    }
@@ -16583,6 +16991,8 @@
    "periodsPerYear": 52,
    "wagesCents": 828145,
    "w4": {
+    "legacy": true,
+    "allowances": 7,
     "filingStatus": "single",
     "multipleJobs": true,
     "dependentsCents": 150000,
@@ -16593,7 +17003,7 @@
    },
    "priorYtdWagesCents": 2035703,
    "expected": {
-    "federalIncomeTaxCents": 255452,
+    "federalIncomeTaxCents": 204484,
     "socialSecurityCents": 51345,
     "medicareCents": 12008
    }
@@ -16604,6 +17014,8 @@
    "periodsPerYear": 12,
    "wagesCents": 341138,
    "w4": {
+    "legacy": true,
+    "allowances": 8,
     "filingStatus": "married",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -16614,7 +17026,7 @@
    },
    "priorYtdWagesCents": 4916265,
    "expected": {
-    "federalIncomeTaxCents": 16907,
+    "federalIncomeTaxCents": 9814,
     "socialSecurityCents": 21151,
     "medicareCents": 4947
    }
@@ -16625,6 +17037,8 @@
    "periodsPerYear": 12,
    "wagesCents": 859244,
    "w4": {
+    "legacy": false,
+    "allowances": 0,
     "filingStatus": "single",
     "multipleJobs": true,
     "dependentsCents": 0,
@@ -16646,6 +17060,8 @@
    "periodsPerYear": 52,
    "wagesCents": 183532,
    "w4": {
+    "legacy": true,
+    "allowances": 5,
     "filingStatus": "head",
     "multipleJobs": false,
     "dependentsCents": 300000,
@@ -16656,7 +17072,7 @@
    },
    "priorYtdWagesCents": 13749146,
    "expected": {
-    "federalIncomeTaxCents": 11898,
+    "federalIncomeTaxCents": 22741,
     "socialSecurityCents": 11379,
     "medicareCents": 2661
    }
@@ -16667,6 +17083,8 @@
    "periodsPerYear": 26,
    "wagesCents": 1145562,
    "w4": {
+    "legacy": false,
+    "allowances": 4,
     "filingStatus": "head",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -16688,6 +17106,8 @@
    "periodsPerYear": 12,
    "wagesCents": 517748,
    "w4": {
+    "legacy": false,
+    "allowances": 1,
     "filingStatus": "married",
     "multipleJobs": true,
     "dependentsCents": 0,
@@ -16709,6 +17129,8 @@
    "periodsPerYear": 52,
    "wagesCents": 330552,
    "w4": {
+    "legacy": false,
+    "allowances": 7,
     "filingStatus": "single",
     "multipleJobs": true,
     "dependentsCents": 200000,
@@ -16730,6 +17152,8 @@
    "periodsPerYear": 12,
    "wagesCents": 74919,
    "w4": {
+    "legacy": true,
+    "allowances": 0,
     "filingStatus": "head",
     "multipleJobs": false,
     "dependentsCents": 50000,
@@ -16751,6 +17175,8 @@
    "periodsPerYear": 52,
    "wagesCents": 665244,
    "w4": {
+    "legacy": false,
+    "allowances": 3,
     "filingStatus": "single",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -16772,6 +17198,8 @@
    "periodsPerYear": 24,
    "wagesCents": 371233,
    "w4": {
+    "legacy": true,
+    "allowances": 8,
     "filingStatus": "married",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -16782,7 +17210,7 @@
    },
    "priorYtdWagesCents": 9403074,
    "expected": {
-    "federalIncomeTaxCents": 23050,
+    "federalIncomeTaxCents": 15631,
     "socialSecurityCents": 23016,
     "medicareCents": 5383
    }
@@ -16793,6 +17221,8 @@
    "periodsPerYear": 12,
    "wagesCents": 819001,
    "w4": {
+    "legacy": false,
+    "allowances": 2,
     "filingStatus": "head",
     "multipleJobs": false,
     "dependentsCents": 50000,
@@ -16814,6 +17244,8 @@
    "periodsPerYear": 12,
    "wagesCents": 465073,
    "w4": {
+    "legacy": false,
+    "allowances": 0,
     "filingStatus": "head",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -16835,6 +17267,8 @@
    "periodsPerYear": 24,
    "wagesCents": 99617,
    "w4": {
+    "legacy": false,
+    "allowances": 3,
     "filingStatus": "head",
     "multipleJobs": false,
     "dependentsCents": 250000,
@@ -16856,6 +17290,8 @@
    "periodsPerYear": 24,
    "wagesCents": 343565,
    "w4": {
+    "legacy": false,
+    "allowances": 0,
     "filingStatus": "head",
     "multipleJobs": false,
     "dependentsCents": 300000,
@@ -16877,6 +17313,8 @@
    "periodsPerYear": 24,
    "wagesCents": 701336,
    "w4": {
+    "legacy": false,
+    "allowances": 4,
     "filingStatus": "head",
     "multipleJobs": false,
     "dependentsCents": 100000,
@@ -16898,6 +17336,8 @@
    "periodsPerYear": 12,
    "wagesCents": 216318,
    "w4": {
+    "legacy": true,
+    "allowances": 8,
     "filingStatus": "head",
     "multipleJobs": true,
     "dependentsCents": 300000,
@@ -16919,6 +17359,8 @@
    "periodsPerYear": 24,
    "wagesCents": 341426,
    "w4": {
+    "legacy": false,
+    "allowances": 3,
     "filingStatus": "head",
     "multipleJobs": false,
     "dependentsCents": 100000,
@@ -16940,6 +17382,8 @@
    "periodsPerYear": 24,
    "wagesCents": 1094406,
    "w4": {
+    "legacy": false,
+    "allowances": 1,
     "filingStatus": "head",
     "multipleJobs": true,
     "dependentsCents": 0,
@@ -16961,6 +17405,8 @@
    "periodsPerYear": 24,
    "wagesCents": 3030,
    "w4": {
+    "legacy": true,
+    "allowances": 6,
     "filingStatus": "head",
     "multipleJobs": false,
     "dependentsCents": 400000,
@@ -16982,6 +17428,8 @@
    "periodsPerYear": 24,
    "wagesCents": 1004921,
    "w4": {
+    "legacy": false,
+    "allowances": 7,
     "filingStatus": "single",
     "multipleJobs": true,
     "dependentsCents": 0,
@@ -17003,6 +17451,8 @@
    "periodsPerYear": 52,
    "wagesCents": 519279,
    "w4": {
+    "legacy": false,
+    "allowances": 0,
     "filingStatus": "married",
     "multipleJobs": true,
     "dependentsCents": 0,
@@ -17024,6 +17474,8 @@
    "periodsPerYear": 24,
    "wagesCents": 1014635,
    "w4": {
+    "legacy": false,
+    "allowances": 6,
     "filingStatus": "married",
     "multipleJobs": true,
     "dependentsCents": 0,
@@ -17045,6 +17497,8 @@
    "periodsPerYear": 26,
    "wagesCents": 329259,
    "w4": {
+    "legacy": false,
+    "allowances": 8,
     "filingStatus": "head",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -17066,6 +17520,8 @@
    "periodsPerYear": 26,
    "wagesCents": 279405,
    "w4": {
+    "legacy": false,
+    "allowances": 8,
     "filingStatus": "married",
     "multipleJobs": false,
     "dependentsCents": 350000,
@@ -17087,6 +17543,8 @@
    "periodsPerYear": 26,
    "wagesCents": 117051,
    "w4": {
+    "legacy": false,
+    "allowances": 0,
     "filingStatus": "single",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -17108,6 +17566,8 @@
    "periodsPerYear": 24,
    "wagesCents": 762619,
    "w4": {
+    "legacy": true,
+    "allowances": 7,
     "filingStatus": "married",
     "multipleJobs": true,
     "dependentsCents": 200000,
@@ -17118,7 +17578,7 @@
    },
    "priorYtdWagesCents": 2153383,
    "expected": {
-    "federalIncomeTaxCents": 127754,
+    "federalIncomeTaxCents": 78426,
     "socialSecurityCents": 47282,
     "medicareCents": 11058
    }
@@ -17129,6 +17589,8 @@
    "periodsPerYear": 24,
    "wagesCents": 405673,
    "w4": {
+    "legacy": false,
+    "allowances": 7,
     "filingStatus": "single",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -17150,6 +17612,8 @@
    "periodsPerYear": 24,
    "wagesCents": 428866,
    "w4": {
+    "legacy": false,
+    "allowances": 5,
     "filingStatus": "single",
     "multipleJobs": false,
     "dependentsCents": 100000,
@@ -17171,6 +17635,8 @@
    "periodsPerYear": 52,
    "wagesCents": 816344,
    "w4": {
+    "legacy": false,
+    "allowances": 2,
     "filingStatus": "single",
     "multipleJobs": true,
     "dependentsCents": 0,
@@ -17192,6 +17658,8 @@
    "periodsPerYear": 52,
    "wagesCents": 450955,
    "w4": {
+    "legacy": true,
+    "allowances": 5,
     "filingStatus": "married",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -17202,7 +17670,7 @@
    },
    "priorYtdWagesCents": 14672671,
    "expected": {
-    "federalIncomeTaxCents": 62111,
+    "federalIncomeTaxCents": 61610,
     "socialSecurityCents": 27959,
     "medicareCents": 6539
    }
@@ -17213,6 +17681,8 @@
    "periodsPerYear": 52,
    "wagesCents": 450675,
    "w4": {
+    "legacy": false,
+    "allowances": 0,
     "filingStatus": "head",
     "multipleJobs": false,
     "dependentsCents": 300000,
@@ -17234,6 +17704,8 @@
    "periodsPerYear": 24,
    "wagesCents": 682191,
    "w4": {
+    "legacy": false,
+    "allowances": 6,
     "filingStatus": "single",
     "multipleJobs": true,
     "dependentsCents": 0,
@@ -17255,6 +17727,8 @@
    "periodsPerYear": 12,
    "wagesCents": 10799886,
    "w4": {
+    "legacy": true,
+    "allowances": 0,
     "filingStatus": "single",
     "multipleJobs": true,
     "dependentsCents": 0,
@@ -17276,6 +17750,8 @@
    "periodsPerYear": 24,
    "wagesCents": 45765,
    "w4": {
+    "legacy": false,
+    "allowances": 5,
     "filingStatus": "married",
     "multipleJobs": true,
     "dependentsCents": 400000,
@@ -17297,6 +17773,8 @@
    "periodsPerYear": 26,
    "wagesCents": 167335,
    "w4": {
+    "legacy": false,
+    "allowances": 5,
     "filingStatus": "head",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -17318,6 +17796,8 @@
    "periodsPerYear": 52,
    "wagesCents": 883764,
    "w4": {
+    "legacy": false,
+    "allowances": 0,
     "filingStatus": "married",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -17339,6 +17819,8 @@
    "periodsPerYear": 12,
    "wagesCents": 996760,
    "w4": {
+    "legacy": false,
+    "allowances": 0,
     "filingStatus": "married",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -17360,6 +17842,8 @@
    "periodsPerYear": 52,
    "wagesCents": 878358,
    "w4": {
+    "legacy": false,
+    "allowances": 0,
     "filingStatus": "single",
     "multipleJobs": true,
     "dependentsCents": 0,
@@ -17381,6 +17865,8 @@
    "periodsPerYear": 12,
    "wagesCents": 750050,
    "w4": {
+    "legacy": false,
+    "allowances": 8,
     "filingStatus": "married",
     "multipleJobs": true,
     "dependentsCents": 0,
@@ -17402,6 +17888,8 @@
    "periodsPerYear": 24,
    "wagesCents": 807089,
    "w4": {
+    "legacy": false,
+    "allowances": 8,
     "filingStatus": "head",
     "multipleJobs": true,
     "dependentsCents": 150000,
@@ -17423,6 +17911,8 @@
    "periodsPerYear": 26,
    "wagesCents": 2262,
    "w4": {
+    "legacy": false,
+    "allowances": 4,
     "filingStatus": "head",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -17444,6 +17934,8 @@
    "periodsPerYear": 24,
    "wagesCents": 753236,
    "w4": {
+    "legacy": false,
+    "allowances": 2,
     "filingStatus": "single",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -17465,6 +17957,8 @@
    "periodsPerYear": 26,
    "wagesCents": 1053598,
    "w4": {
+    "legacy": false,
+    "allowances": 0,
     "filingStatus": "head",
     "multipleJobs": false,
     "dependentsCents": 250000,
@@ -17486,6 +17980,8 @@
    "periodsPerYear": 12,
    "wagesCents": 1092207,
    "w4": {
+    "legacy": false,
+    "allowances": 1,
     "filingStatus": "single",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -17507,6 +18003,8 @@
    "periodsPerYear": 52,
    "wagesCents": 476858,
    "w4": {
+    "legacy": true,
+    "allowances": 5,
     "filingStatus": "married",
     "multipleJobs": false,
     "dependentsCents": 50000,
@@ -17517,7 +18015,7 @@
    },
    "priorYtdWagesCents": 7098965,
    "expected": {
-    "federalIncomeTaxCents": 89302,
+    "federalIncomeTaxCents": 86458,
     "socialSecurityCents": 29565,
     "medicareCents": 6914
    }
@@ -17528,6 +18026,8 @@
    "periodsPerYear": 12,
    "wagesCents": 880168,
    "w4": {
+    "legacy": false,
+    "allowances": 2,
     "filingStatus": "married",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -17549,6 +18049,8 @@
    "periodsPerYear": 12,
    "wagesCents": 73737,
    "w4": {
+    "legacy": false,
+    "allowances": 5,
     "filingStatus": "single",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -17570,6 +18072,8 @@
    "periodsPerYear": 52,
    "wagesCents": 101330,
    "w4": {
+    "legacy": false,
+    "allowances": 5,
     "filingStatus": "married",
     "multipleJobs": false,
     "dependentsCents": 100000,
@@ -17591,6 +18095,8 @@
    "periodsPerYear": 26,
    "wagesCents": 1105610,
    "w4": {
+    "legacy": false,
+    "allowances": 5,
     "filingStatus": "head",
     "multipleJobs": true,
     "dependentsCents": 350000,
@@ -17612,6 +18118,8 @@
    "periodsPerYear": 12,
    "wagesCents": 1015346,
    "w4": {
+    "legacy": false,
+    "allowances": 0,
     "filingStatus": "married",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -17633,6 +18141,8 @@
    "periodsPerYear": 12,
    "wagesCents": 38033,
    "w4": {
+    "legacy": true,
+    "allowances": 6,
     "filingStatus": "head",
     "multipleJobs": true,
     "dependentsCents": 0,
@@ -17654,6 +18164,8 @@
    "periodsPerYear": 52,
    "wagesCents": 170713,
    "w4": {
+    "legacy": false,
+    "allowances": 6,
     "filingStatus": "head",
     "multipleJobs": false,
     "dependentsCents": 250000,
@@ -17675,6 +18187,8 @@
    "periodsPerYear": 24,
    "wagesCents": 613569,
    "w4": {
+    "legacy": true,
+    "allowances": 0,
     "filingStatus": "married",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -17685,7 +18199,7 @@
    },
    "priorYtdWagesCents": 20574407,
    "expected": {
-    "federalIncomeTaxCents": 59802,
+    "federalIncomeTaxCents": 75063,
     "socialSecurityCents": 0,
     "medicareCents": 14419
    }
@@ -17696,6 +18210,8 @@
    "periodsPerYear": 26,
    "wagesCents": 967364,
    "w4": {
+    "legacy": false,
+    "allowances": 0,
     "filingStatus": "head",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -17717,6 +18233,8 @@
    "periodsPerYear": 52,
    "wagesCents": 343472,
    "w4": {
+    "legacy": true,
+    "allowances": 6,
     "filingStatus": "single",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -17727,7 +18245,7 @@
    },
    "priorYtdWagesCents": 6007277,
    "expected": {
-    "federalIncomeTaxCents": 57454,
+    "federalIncomeTaxCents": 52829,
     "socialSecurityCents": 21295,
     "medicareCents": 4980
    }
@@ -17738,6 +18256,8 @@
    "periodsPerYear": 52,
    "wagesCents": 1024523,
    "w4": {
+    "legacy": false,
+    "allowances": 2,
     "filingStatus": "head",
     "multipleJobs": false,
     "dependentsCents": 250000,
@@ -17759,6 +18279,8 @@
    "periodsPerYear": 24,
    "wagesCents": 159765,
    "w4": {
+    "legacy": true,
+    "allowances": 0,
     "filingStatus": "married",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -17769,7 +18291,7 @@
    },
    "priorYtdWagesCents": 27735406,
    "expected": {
-    "federalIncomeTaxCents": 11205,
+    "federalIncomeTaxCents": 16580,
     "socialSecurityCents": 0,
     "medicareCents": 3755
    }
@@ -17780,6 +18302,8 @@
    "periodsPerYear": 12,
    "wagesCents": 1182909,
    "w4": {
+    "legacy": false,
+    "allowances": 0,
     "filingStatus": "head",
     "multipleJobs": true,
     "dependentsCents": 0,
@@ -17801,6 +18325,8 @@
    "periodsPerYear": 26,
    "wagesCents": 659686,
    "w4": {
+    "legacy": true,
+    "allowances": 2,
     "filingStatus": "head",
     "multipleJobs": false,
     "dependentsCents": 300000,
@@ -17811,7 +18337,7 @@
    },
    "priorYtdWagesCents": 18051412,
    "expected": {
-    "federalIncomeTaxCents": 76147,
+    "federalIncomeTaxCents": 114994,
     "socialSecurityCents": 24712,
     "medicareCents": 9565
    }
@@ -17822,6 +18348,8 @@
    "periodsPerYear": 52,
    "wagesCents": 460311,
    "w4": {
+    "legacy": false,
+    "allowances": 4,
     "filingStatus": "married",
     "multipleJobs": true,
     "dependentsCents": 0,
@@ -17843,6 +18371,8 @@
    "periodsPerYear": 24,
    "wagesCents": 9458195,
    "w4": {
+    "legacy": false,
+    "allowances": 3,
     "filingStatus": "head",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -17864,6 +18394,8 @@
    "periodsPerYear": 24,
    "wagesCents": 636812,
    "w4": {
+    "legacy": false,
+    "allowances": 0,
     "filingStatus": "married",
     "multipleJobs": true,
     "dependentsCents": 0,
@@ -17885,6 +18417,8 @@
    "periodsPerYear": 52,
    "wagesCents": 3677895,
    "w4": {
+    "legacy": false,
+    "allowances": 2,
     "filingStatus": "head",
     "multipleJobs": true,
     "dependentsCents": 0,
@@ -17906,6 +18440,8 @@
    "periodsPerYear": 12,
    "wagesCents": 1011275,
    "w4": {
+    "legacy": false,
+    "allowances": 7,
     "filingStatus": "single",
     "multipleJobs": true,
     "dependentsCents": 0,
@@ -17927,6 +18463,8 @@
    "periodsPerYear": 26,
    "wagesCents": 1019782,
    "w4": {
+    "legacy": true,
+    "allowances": 5,
     "filingStatus": "head",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -17937,7 +18475,7 @@
    },
    "priorYtdWagesCents": 7522201,
    "expected": {
-    "federalIncomeTaxCents": 199096,
+    "federalIncomeTaxCents": 200084,
     "socialSecurityCents": 63226,
     "medicareCents": 14787
    }
@@ -17948,6 +18486,8 @@
    "periodsPerYear": 12,
    "wagesCents": 675629,
    "w4": {
+    "legacy": false,
+    "allowances": 3,
     "filingStatus": "married",
     "multipleJobs": true,
     "dependentsCents": 200000,
@@ -17969,6 +18509,8 @@
    "periodsPerYear": 52,
    "wagesCents": 336031,
    "w4": {
+    "legacy": false,
+    "allowances": 0,
     "filingStatus": "single",
     "multipleJobs": false,
     "dependentsCents": 400000,
@@ -17990,6 +18532,8 @@
    "periodsPerYear": 24,
    "wagesCents": 519177,
    "w4": {
+    "legacy": false,
+    "allowances": 0,
     "filingStatus": "head",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -18011,6 +18555,8 @@
    "periodsPerYear": 52,
    "wagesCents": 958943,
    "w4": {
+    "legacy": false,
+    "allowances": 8,
     "filingStatus": "head",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -18032,6 +18578,8 @@
    "periodsPerYear": 24,
    "wagesCents": 432282,
    "w4": {
+    "legacy": false,
+    "allowances": 2,
     "filingStatus": "head",
     "multipleJobs": true,
     "dependentsCents": 0,
@@ -18053,6 +18601,8 @@
    "periodsPerYear": 52,
    "wagesCents": 5540,
    "w4": {
+    "legacy": false,
+    "allowances": 0,
     "filingStatus": "married",
     "multipleJobs": true,
     "dependentsCents": 100000,
@@ -18074,6 +18624,8 @@
    "periodsPerYear": 52,
    "wagesCents": 419697,
    "w4": {
+    "legacy": false,
+    "allowances": 2,
     "filingStatus": "single",
     "multipleJobs": false,
     "dependentsCents": 250000,
@@ -18095,6 +18647,8 @@
    "periodsPerYear": 24,
    "wagesCents": 1130848,
    "w4": {
+    "legacy": false,
+    "allowances": 2,
     "filingStatus": "single",
     "multipleJobs": false,
     "dependentsCents": 200000,
@@ -18116,6 +18670,8 @@
    "periodsPerYear": 26,
    "wagesCents": 535038,
    "w4": {
+    "legacy": false,
+    "allowances": 0,
     "filingStatus": "single",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -18137,6 +18693,8 @@
    "periodsPerYear": 24,
    "wagesCents": 290290,
    "w4": {
+    "legacy": false,
+    "allowances": 8,
     "filingStatus": "head",
     "multipleJobs": false,
     "dependentsCents": 400000,
@@ -18158,6 +18716,8 @@
    "periodsPerYear": 26,
    "wagesCents": 50256,
    "w4": {
+    "legacy": false,
+    "allowances": 0,
     "filingStatus": "head",
     "multipleJobs": false,
     "dependentsCents": 350000,
@@ -18179,6 +18739,8 @@
    "periodsPerYear": 12,
    "wagesCents": 1189277,
    "w4": {
+    "legacy": false,
+    "allowances": 8,
     "filingStatus": "single",
     "multipleJobs": true,
     "dependentsCents": 0,
@@ -18200,6 +18762,8 @@
    "periodsPerYear": 26,
    "wagesCents": 1021563,
    "w4": {
+    "legacy": true,
+    "allowances": 6,
     "filingStatus": "married",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -18210,7 +18774,7 @@
    },
    "priorYtdWagesCents": 5095179,
    "expected": {
-    "federalIncomeTaxCents": 158514,
+    "federalIncomeTaxCents": 146606,
     "socialSecurityCents": 63337,
     "medicareCents": 14813
    }
@@ -18221,6 +18785,8 @@
    "periodsPerYear": 12,
    "wagesCents": 516280,
    "w4": {
+    "legacy": false,
+    "allowances": 0,
     "filingStatus": "single",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -18242,6 +18808,8 @@
    "periodsPerYear": 24,
    "wagesCents": 1020854,
    "w4": {
+    "legacy": true,
+    "allowances": 8,
     "filingStatus": "married",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -18252,7 +18820,7 @@
    },
    "priorYtdWagesCents": 6722121,
    "expected": {
-    "federalIncomeTaxCents": 158382,
+    "federalIncomeTaxCents": 131296,
     "socialSecurityCents": 63293,
     "medicareCents": 14802
    }
@@ -18263,6 +18831,8 @@
    "periodsPerYear": 24,
    "wagesCents": 906088,
    "w4": {
+    "legacy": false,
+    "allowances": 5,
     "filingStatus": "single",
     "multipleJobs": false,
     "dependentsCents": 150000,
@@ -18284,6 +18854,8 @@
    "periodsPerYear": 26,
    "wagesCents": 28160,
    "w4": {
+    "legacy": true,
+    "allowances": 4,
     "filingStatus": "head",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -18305,6 +18877,8 @@
    "periodsPerYear": 12,
    "wagesCents": 695176,
    "w4": {
+    "legacy": false,
+    "allowances": 3,
     "filingStatus": "head",
     "multipleJobs": true,
     "dependentsCents": 350000,
@@ -18326,6 +18900,8 @@
    "periodsPerYear": 26,
    "wagesCents": 978386,
    "w4": {
+    "legacy": false,
+    "allowances": 0,
     "filingStatus": "head",
     "multipleJobs": true,
     "dependentsCents": 400000,
@@ -18347,6 +18923,8 @@
    "periodsPerYear": 52,
    "wagesCents": 1032045,
    "w4": {
+    "legacy": true,
+    "allowances": 4,
     "filingStatus": "head",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -18357,7 +18935,7 @@
    },
    "priorYtdWagesCents": 4850726,
    "expected": {
-    "federalIncomeTaxCents": 288478,
+    "federalIncomeTaxCents": 284532,
     "socialSecurityCents": 63987,
     "medicareCents": 14965
    }
@@ -18368,6 +18946,8 @@
    "periodsPerYear": 52,
    "wagesCents": 9863127,
    "w4": {
+    "legacy": true,
+    "allowances": 0,
     "filingStatus": "married",
     "multipleJobs": false,
     "dependentsCents": 250000,
@@ -18378,7 +18958,7 @@
    },
    "priorYtdWagesCents": 11916228,
    "expected": {
-    "federalIncomeTaxCents": 3465525,
+    "federalIncomeTaxCents": 3485941,
     "socialSecurityCents": 405094,
     "medicareCents": 159029
    }
@@ -18389,6 +18969,8 @@
    "periodsPerYear": 52,
    "wagesCents": 993994,
    "w4": {
+    "legacy": true,
+    "allowances": 1,
     "filingStatus": "head",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -18399,7 +18981,7 @@
    },
    "priorYtdWagesCents": 7468341,
    "expected": {
-    "federalIncomeTaxCents": 278718,
+    "federalIncomeTaxCents": 290507,
     "socialSecurityCents": 61628,
     "medicareCents": 14413
    }
@@ -18410,6 +18992,8 @@
    "periodsPerYear": 24,
    "wagesCents": 1141030,
    "w4": {
+    "legacy": true,
+    "allowances": 5,
     "filingStatus": "single",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -18431,6 +19015,8 @@
    "periodsPerYear": 12,
    "wagesCents": 348776,
    "w4": {
+    "legacy": false,
+    "allowances": 0,
     "filingStatus": "married",
     "multipleJobs": false,
     "dependentsCents": 100000,
@@ -18452,6 +19038,8 @@
    "periodsPerYear": 26,
    "wagesCents": 744550,
    "w4": {
+    "legacy": false,
+    "allowances": 0,
     "filingStatus": "head",
     "multipleJobs": false,
     "dependentsCents": 250000,
@@ -18473,6 +19061,8 @@
    "periodsPerYear": 24,
    "wagesCents": 932595,
    "w4": {
+    "legacy": false,
+    "allowances": 3,
     "filingStatus": "married",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -18494,6 +19084,8 @@
    "periodsPerYear": 24,
    "wagesCents": 861974,
    "w4": {
+    "legacy": false,
+    "allowances": 4,
     "filingStatus": "single",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -18515,6 +19107,8 @@
    "periodsPerYear": 12,
    "wagesCents": 579718,
    "w4": {
+    "legacy": false,
+    "allowances": 6,
     "filingStatus": "married",
     "multipleJobs": true,
     "dependentsCents": 150000,
@@ -18536,6 +19130,8 @@
    "periodsPerYear": 26,
    "wagesCents": 1146971,
    "w4": {
+    "legacy": false,
+    "allowances": 7,
     "filingStatus": "single",
     "multipleJobs": false,
     "dependentsCents": 200000,
@@ -18557,6 +19153,8 @@
    "periodsPerYear": 52,
    "wagesCents": 8085273,
    "w4": {
+    "legacy": true,
+    "allowances": 8,
     "filingStatus": "single",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -18567,7 +19165,7 @@
    },
    "priorYtdWagesCents": 13099099,
    "expected": {
-    "federalIncomeTaxCents": 2889413,
+    "federalIncomeTaxCents": 2877040,
     "socialSecurityCents": 331756,
     "medicareCents": 127895
    }
@@ -18578,6 +19176,8 @@
    "periodsPerYear": 12,
    "wagesCents": 936244,
    "w4": {
+    "legacy": false,
+    "allowances": 8,
     "filingStatus": "head",
     "multipleJobs": true,
     "dependentsCents": 0,
@@ -18601,6 +19201,8 @@
    "wagesCents": 659469,
    "periodsPerYear": 24,
    "w4": {
+    "legacy": false,
+    "allowances": 0,
     "filingStatus": "head",
     "multipleJobs": false,
     "dependentsCents": 150000,
@@ -18629,6 +19231,8 @@
    "wagesCents": 310175,
    "periodsPerYear": 52,
    "w4": {
+    "legacy": false,
+    "allowances": 6,
     "filingStatus": "married",
     "multipleJobs": false,
     "dependentsCents": 300000,
@@ -18657,6 +19261,8 @@
    "wagesCents": 692454,
    "periodsPerYear": 12,
    "w4": {
+    "legacy": false,
+    "allowances": 3,
     "filingStatus": "head",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -18685,6 +19291,8 @@
    "wagesCents": 267918,
    "periodsPerYear": 52,
    "w4": {
+    "legacy": false,
+    "allowances": 3,
     "filingStatus": "married",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -18713,6 +19321,8 @@
    "wagesCents": 253650,
    "periodsPerYear": 52,
    "w4": {
+    "legacy": false,
+    "allowances": 3,
     "filingStatus": "head",
     "multipleJobs": true,
     "dependentsCents": 0,
@@ -18741,6 +19351,8 @@
    "wagesCents": 245704,
    "periodsPerYear": 26,
    "w4": {
+    "legacy": false,
+    "allowances": 4,
     "filingStatus": "single",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -18769,6 +19381,8 @@
    "wagesCents": 413421,
    "periodsPerYear": 26,
    "w4": {
+    "legacy": true,
+    "allowances": 5,
     "filingStatus": "single",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -18797,6 +19411,8 @@
    "wagesCents": 419340,
    "periodsPerYear": 24,
    "w4": {
+    "legacy": false,
+    "allowances": 3,
     "filingStatus": "single",
     "multipleJobs": true,
     "dependentsCents": 0,
@@ -18825,6 +19441,8 @@
    "wagesCents": 798031,
    "periodsPerYear": 24,
    "w4": {
+    "legacy": false,
+    "allowances": 4,
     "filingStatus": "married",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -18853,6 +19471,8 @@
    "wagesCents": 727453,
    "periodsPerYear": 26,
    "w4": {
+    "legacy": false,
+    "allowances": 1,
     "filingStatus": "single",
     "multipleJobs": true,
     "dependentsCents": 50000,
@@ -18881,6 +19501,8 @@
    "wagesCents": 703006,
    "periodsPerYear": 26,
    "w4": {
+    "legacy": true,
+    "allowances": 6,
     "filingStatus": "head",
     "multipleJobs": true,
     "dependentsCents": 400000,
@@ -18909,6 +19531,8 @@
    "wagesCents": 562901,
    "periodsPerYear": 26,
    "w4": {
+    "legacy": false,
+    "allowances": 0,
     "filingStatus": "married",
     "multipleJobs": false,
     "dependentsCents": 400000,
@@ -18937,6 +19561,8 @@
    "wagesCents": 115136,
    "periodsPerYear": 24,
    "w4": {
+    "legacy": false,
+    "allowances": 6,
     "filingStatus": "head",
     "multipleJobs": true,
     "dependentsCents": 0,
@@ -18965,6 +19591,8 @@
    "wagesCents": 682384,
    "periodsPerYear": 12,
    "w4": {
+    "legacy": true,
+    "allowances": 8,
     "filingStatus": "married",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -18993,6 +19621,8 @@
    "wagesCents": 395888,
    "periodsPerYear": 12,
    "w4": {
+    "legacy": false,
+    "allowances": 6,
     "filingStatus": "head",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -19021,6 +19651,8 @@
    "wagesCents": 578622,
    "periodsPerYear": 52,
    "w4": {
+    "legacy": true,
+    "allowances": 0,
     "filingStatus": "single",
     "multipleJobs": true,
     "dependentsCents": 50000,
@@ -19049,6 +19681,8 @@
    "wagesCents": 411994,
    "periodsPerYear": 26,
    "w4": {
+    "legacy": false,
+    "allowances": 0,
     "filingStatus": "married",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -19077,6 +19711,8 @@
    "wagesCents": 678455,
    "periodsPerYear": 12,
    "w4": {
+    "legacy": false,
+    "allowances": 1,
     "filingStatus": "head",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -19105,6 +19741,8 @@
    "wagesCents": 746964,
    "periodsPerYear": 12,
    "w4": {
+    "legacy": false,
+    "allowances": 0,
     "filingStatus": "single",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -19133,6 +19771,8 @@
    "wagesCents": 610962,
    "periodsPerYear": 52,
    "w4": {
+    "legacy": false,
+    "allowances": 1,
     "filingStatus": "head",
     "multipleJobs": false,
     "dependentsCents": 400000,
@@ -19161,6 +19801,8 @@
    "wagesCents": 305178,
    "periodsPerYear": 52,
    "w4": {
+    "legacy": false,
+    "allowances": 8,
     "filingStatus": "married",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -19189,6 +19831,8 @@
    "wagesCents": 787417,
    "periodsPerYear": 52,
    "w4": {
+    "legacy": false,
+    "allowances": 0,
     "filingStatus": "married",
     "multipleJobs": false,
     "dependentsCents": 200000,
@@ -19217,6 +19861,8 @@
    "wagesCents": 224497,
    "periodsPerYear": 12,
    "w4": {
+    "legacy": false,
+    "allowances": 8,
     "filingStatus": "single",
     "multipleJobs": true,
     "dependentsCents": 300000,
@@ -19245,6 +19891,8 @@
    "wagesCents": 626079,
    "periodsPerYear": 52,
    "w4": {
+    "legacy": false,
+    "allowances": 8,
     "filingStatus": "head",
     "multipleJobs": true,
     "dependentsCents": 0,
@@ -19273,6 +19921,8 @@
    "wagesCents": 723739,
    "periodsPerYear": 26,
    "w4": {
+    "legacy": false,
+    "allowances": 6,
     "filingStatus": "head",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -19301,6 +19951,8 @@
    "wagesCents": 145324,
    "periodsPerYear": 52,
    "w4": {
+    "legacy": false,
+    "allowances": 8,
     "filingStatus": "head",
     "multipleJobs": false,
     "dependentsCents": 50000,
@@ -19329,6 +19981,8 @@
    "wagesCents": 289804,
    "periodsPerYear": 52,
    "w4": {
+    "legacy": false,
+    "allowances": 0,
     "filingStatus": "head",
     "multipleJobs": true,
     "dependentsCents": 0,
@@ -19357,6 +20011,8 @@
    "wagesCents": 796606,
    "periodsPerYear": 52,
    "w4": {
+    "legacy": false,
+    "allowances": 0,
     "filingStatus": "single",
     "multipleJobs": true,
     "dependentsCents": 50000,
@@ -19385,6 +20041,8 @@
    "wagesCents": 618313,
    "periodsPerYear": 26,
    "w4": {
+    "legacy": false,
+    "allowances": 7,
     "filingStatus": "single",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -19413,6 +20071,8 @@
    "wagesCents": 138296,
    "periodsPerYear": 52,
    "w4": {
+    "legacy": false,
+    "allowances": 6,
     "filingStatus": "head",
     "multipleJobs": false,
     "dependentsCents": 200000,
@@ -19441,6 +20101,8 @@
    "wagesCents": 298146,
    "periodsPerYear": 52,
    "w4": {
+    "legacy": false,
+    "allowances": 1,
     "filingStatus": "single",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -19469,6 +20131,8 @@
    "wagesCents": 562300,
    "periodsPerYear": 52,
    "w4": {
+    "legacy": false,
+    "allowances": 8,
     "filingStatus": "married",
     "multipleJobs": false,
     "dependentsCents": 50000,
@@ -19497,6 +20161,8 @@
    "wagesCents": 181154,
    "periodsPerYear": 12,
    "w4": {
+    "legacy": false,
+    "allowances": 1,
     "filingStatus": "single",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -19525,6 +20191,8 @@
    "wagesCents": 6515,
    "periodsPerYear": 24,
    "w4": {
+    "legacy": false,
+    "allowances": 1,
     "filingStatus": "single",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -19553,6 +20221,8 @@
    "wagesCents": 369233,
    "periodsPerYear": 52,
    "w4": {
+    "legacy": false,
+    "allowances": 0,
     "filingStatus": "married",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -19581,6 +20251,8 @@
    "wagesCents": 198447,
    "periodsPerYear": 52,
    "w4": {
+    "legacy": false,
+    "allowances": 2,
     "filingStatus": "married",
     "multipleJobs": true,
     "dependentsCents": 200000,
@@ -19609,6 +20281,8 @@
    "wagesCents": 647876,
    "periodsPerYear": 12,
    "w4": {
+    "legacy": false,
+    "allowances": 2,
     "filingStatus": "single",
     "multipleJobs": true,
     "dependentsCents": 200000,
@@ -19637,6 +20311,8 @@
    "wagesCents": 41896,
    "periodsPerYear": 52,
    "w4": {
+    "legacy": false,
+    "allowances": 1,
     "filingStatus": "single",
     "multipleJobs": true,
     "dependentsCents": 400000,
@@ -19665,6 +20341,8 @@
    "wagesCents": 397092,
    "periodsPerYear": 12,
    "w4": {
+    "legacy": false,
+    "allowances": 5,
     "filingStatus": "single",
     "multipleJobs": true,
     "dependentsCents": 0,
@@ -19693,6 +20371,8 @@
    "wagesCents": 402125,
    "periodsPerYear": 52,
    "w4": {
+    "legacy": false,
+    "allowances": 6,
     "filingStatus": "head",
     "multipleJobs": true,
     "dependentsCents": 250000,
@@ -19721,6 +20401,8 @@
    "wagesCents": 615526,
    "periodsPerYear": 26,
    "w4": {
+    "legacy": false,
+    "allowances": 4,
     "filingStatus": "single",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -19749,6 +20431,8 @@
    "wagesCents": 626625,
    "periodsPerYear": 52,
    "w4": {
+    "legacy": false,
+    "allowances": 2,
     "filingStatus": "single",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -19777,6 +20461,8 @@
    "wagesCents": 213128,
    "periodsPerYear": 12,
    "w4": {
+    "legacy": true,
+    "allowances": 0,
     "filingStatus": "head",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -19805,6 +20491,8 @@
    "wagesCents": 471333,
    "periodsPerYear": 12,
    "w4": {
+    "legacy": false,
+    "allowances": 2,
     "filingStatus": "married",
     "multipleJobs": false,
     "dependentsCents": 400000,
@@ -19833,6 +20521,8 @@
    "wagesCents": 397028,
    "periodsPerYear": 24,
    "w4": {
+    "legacy": false,
+    "allowances": 1,
     "filingStatus": "head",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -19861,6 +20551,8 @@
    "wagesCents": 372851,
    "periodsPerYear": 52,
    "w4": {
+    "legacy": true,
+    "allowances": 0,
     "filingStatus": "head",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -19889,6 +20581,8 @@
    "wagesCents": 8407,
    "periodsPerYear": 24,
    "w4": {
+    "legacy": false,
+    "allowances": 1,
     "filingStatus": "married",
     "multipleJobs": false,
     "dependentsCents": 150000,
@@ -19917,6 +20611,8 @@
    "wagesCents": 501736,
    "periodsPerYear": 26,
    "w4": {
+    "legacy": true,
+    "allowances": 6,
     "filingStatus": "single",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -19945,6 +20641,8 @@
    "wagesCents": 128477,
    "periodsPerYear": 26,
    "w4": {
+    "legacy": false,
+    "allowances": 4,
     "filingStatus": "head",
     "multipleJobs": true,
     "dependentsCents": 250000,
@@ -19973,6 +20671,8 @@
    "wagesCents": 350304,
    "periodsPerYear": 12,
    "w4": {
+    "legacy": true,
+    "allowances": 2,
     "filingStatus": "married",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -20001,6 +20701,8 @@
    "wagesCents": 129954,
    "periodsPerYear": 12,
    "w4": {
+    "legacy": false,
+    "allowances": 3,
     "filingStatus": "married",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -20029,6 +20731,8 @@
    "wagesCents": 718778,
    "periodsPerYear": 52,
    "w4": {
+    "legacy": false,
+    "allowances": 0,
     "filingStatus": "head",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -20057,6 +20761,8 @@
    "wagesCents": 123748,
    "periodsPerYear": 12,
    "w4": {
+    "legacy": true,
+    "allowances": 6,
     "filingStatus": "head",
     "multipleJobs": true,
     "dependentsCents": 100000,
@@ -20086,6 +20792,8 @@
    "wagesCents": 90932,
    "periodsPerYear": 26,
    "w4": {
+    "legacy": false,
+    "allowances": 2,
     "filingStatus": "married",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -20115,6 +20823,8 @@
    "wagesCents": 284863,
    "periodsPerYear": 52,
    "w4": {
+    "legacy": false,
+    "allowances": 1,
     "filingStatus": "married",
     "multipleJobs": true,
     "dependentsCents": 0,
@@ -20144,6 +20854,8 @@
    "wagesCents": 184819,
    "periodsPerYear": 12,
    "w4": {
+    "legacy": false,
+    "allowances": 6,
     "filingStatus": "single",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -20172,6 +20884,8 @@
    "wagesCents": 343119,
    "periodsPerYear": 12,
    "w4": {
+    "legacy": false,
+    "allowances": 1,
     "filingStatus": "married",
     "multipleJobs": true,
     "dependentsCents": 0,
@@ -20200,6 +20914,8 @@
    "wagesCents": 355286,
    "periodsPerYear": 52,
    "w4": {
+    "legacy": false,
+    "allowances": 0,
     "filingStatus": "single",
     "multipleJobs": true,
     "dependentsCents": 0,
@@ -20228,6 +20944,8 @@
    "wagesCents": 681032,
    "periodsPerYear": 26,
    "w4": {
+    "legacy": false,
+    "allowances": 5,
     "filingStatus": "head",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -20256,6 +20974,8 @@
    "wagesCents": 414174,
    "periodsPerYear": 24,
    "w4": {
+    "legacy": false,
+    "allowances": 6,
     "filingStatus": "married",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -20284,6 +21004,8 @@
    "wagesCents": 123177,
    "periodsPerYear": 52,
    "w4": {
+    "legacy": false,
+    "allowances": 7,
     "filingStatus": "married",
     "multipleJobs": true,
     "dependentsCents": 0,
@@ -20312,6 +21034,8 @@
    "wagesCents": 570199,
    "periodsPerYear": 24,
    "w4": {
+    "legacy": false,
+    "allowances": 2,
     "filingStatus": "head",
     "multipleJobs": true,
     "dependentsCents": 250000,
@@ -20340,6 +21064,8 @@
    "wagesCents": 302343,
    "periodsPerYear": 12,
    "w4": {
+    "legacy": true,
+    "allowances": 6,
     "filingStatus": "head",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -20368,6 +21094,8 @@
    "wagesCents": 710542,
    "periodsPerYear": 12,
    "w4": {
+    "legacy": false,
+    "allowances": 0,
     "filingStatus": "single",
     "multipleJobs": false,
     "dependentsCents": 100000,
@@ -20396,6 +21124,8 @@
    "wagesCents": 20368,
    "periodsPerYear": 26,
    "w4": {
+    "legacy": false,
+    "allowances": 6,
     "filingStatus": "head",
     "multipleJobs": true,
     "dependentsCents": 0,
@@ -20424,6 +21154,8 @@
    "wagesCents": 418557,
    "periodsPerYear": 24,
    "w4": {
+    "legacy": false,
+    "allowances": 1,
     "filingStatus": "married",
     "multipleJobs": false,
     "dependentsCents": 250000,
@@ -20452,6 +21184,8 @@
    "wagesCents": 20771,
    "periodsPerYear": 52,
    "w4": {
+    "legacy": false,
+    "allowances": 7,
     "filingStatus": "single",
     "multipleJobs": true,
     "dependentsCents": 0,
@@ -20480,6 +21214,8 @@
    "wagesCents": 279741,
    "periodsPerYear": 24,
    "w4": {
+    "legacy": false,
+    "allowances": 1,
     "filingStatus": "single",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -20508,6 +21244,8 @@
    "wagesCents": 118564,
    "periodsPerYear": 26,
    "w4": {
+    "legacy": false,
+    "allowances": 1,
     "filingStatus": "married",
     "multipleJobs": true,
     "dependentsCents": 0,
@@ -20537,6 +21275,8 @@
    "wagesCents": 130700,
    "periodsPerYear": 26,
    "w4": {
+    "legacy": true,
+    "allowances": 5,
     "filingStatus": "head",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -20566,6 +21306,8 @@
    "wagesCents": 736094,
    "periodsPerYear": 52,
    "w4": {
+    "legacy": false,
+    "allowances": 0,
     "filingStatus": "head",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -20595,6 +21337,8 @@
    "wagesCents": 260948,
    "periodsPerYear": 26,
    "w4": {
+    "legacy": false,
+    "allowances": 6,
     "filingStatus": "single",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -20623,6 +21367,8 @@
    "wagesCents": 554517,
    "periodsPerYear": 26,
    "w4": {
+    "legacy": false,
+    "allowances": 8,
     "filingStatus": "head",
     "multipleJobs": true,
     "dependentsCents": 0,
@@ -20651,6 +21397,8 @@
    "wagesCents": 412649,
    "periodsPerYear": 52,
    "w4": {
+    "legacy": false,
+    "allowances": 0,
     "filingStatus": "married",
     "multipleJobs": false,
     "dependentsCents": 250000,
@@ -20679,6 +21427,8 @@
    "wagesCents": 536845,
    "periodsPerYear": 24,
    "w4": {
+    "legacy": false,
+    "allowances": 4,
     "filingStatus": "married",
     "multipleJobs": true,
     "dependentsCents": 0,
@@ -20707,6 +21457,8 @@
    "wagesCents": 224050,
    "periodsPerYear": 26,
    "w4": {
+    "legacy": false,
+    "allowances": 4,
     "filingStatus": "married",
     "multipleJobs": false,
     "dependentsCents": 100000,
@@ -20735,6 +21487,8 @@
    "wagesCents": 8268,
    "periodsPerYear": 52,
    "w4": {
+    "legacy": false,
+    "allowances": 3,
     "filingStatus": "single",
     "multipleJobs": true,
     "dependentsCents": 50000,
@@ -20763,6 +21517,8 @@
    "wagesCents": 372758,
    "periodsPerYear": 52,
    "w4": {
+    "legacy": true,
+    "allowances": 0,
     "filingStatus": "married",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -20791,6 +21547,8 @@
    "wagesCents": 12251,
    "periodsPerYear": 26,
    "w4": {
+    "legacy": false,
+    "allowances": 6,
     "filingStatus": "married",
     "multipleJobs": false,
     "dependentsCents": 50000,
@@ -20819,6 +21577,8 @@
    "wagesCents": 609431,
    "periodsPerYear": 12,
    "w4": {
+    "legacy": false,
+    "allowances": 0,
     "filingStatus": "head",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -20847,6 +21607,8 @@
    "wagesCents": 404989,
    "periodsPerYear": 52,
    "w4": {
+    "legacy": false,
+    "allowances": 0,
     "filingStatus": "head",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -20875,6 +21637,8 @@
    "wagesCents": 668129,
    "periodsPerYear": 24,
    "w4": {
+    "legacy": true,
+    "allowances": 8,
     "filingStatus": "married",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -20903,6 +21667,8 @@
    "wagesCents": 297268,
    "periodsPerYear": 24,
    "w4": {
+    "legacy": false,
+    "allowances": 0,
     "filingStatus": "single",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -20931,6 +21697,8 @@
    "wagesCents": 406492,
    "periodsPerYear": 24,
    "w4": {
+    "legacy": false,
+    "allowances": 1,
     "filingStatus": "single",
     "multipleJobs": false,
     "dependentsCents": 350000,
@@ -20959,6 +21727,8 @@
    "wagesCents": 651773,
    "periodsPerYear": 12,
    "w4": {
+    "legacy": false,
+    "allowances": 7,
     "filingStatus": "head",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -20987,6 +21757,8 @@
    "wagesCents": 58212,
    "periodsPerYear": 52,
    "w4": {
+    "legacy": true,
+    "allowances": 0,
     "filingStatus": "single",
     "multipleJobs": false,
     "dependentsCents": 250000,
@@ -21015,6 +21787,8 @@
    "wagesCents": 342206,
    "periodsPerYear": 24,
    "w4": {
+    "legacy": true,
+    "allowances": 2,
     "filingStatus": "head",
     "multipleJobs": false,
     "dependentsCents": 50000,
@@ -21043,6 +21817,8 @@
    "wagesCents": 695204,
    "periodsPerYear": 24,
    "w4": {
+    "legacy": false,
+    "allowances": 8,
     "filingStatus": "married",
     "multipleJobs": false,
     "dependentsCents": 100000,
@@ -21071,6 +21847,8 @@
    "wagesCents": 85836,
    "periodsPerYear": 12,
    "w4": {
+    "legacy": true,
+    "allowances": 0,
     "filingStatus": "married",
     "multipleJobs": true,
     "dependentsCents": 0,
@@ -21099,6 +21877,8 @@
    "wagesCents": 600135,
    "periodsPerYear": 26,
    "w4": {
+    "legacy": true,
+    "allowances": 0,
     "filingStatus": "single",
     "multipleJobs": true,
     "dependentsCents": 0,
@@ -21127,6 +21907,8 @@
    "wagesCents": 92069,
    "periodsPerYear": 52,
    "w4": {
+    "legacy": false,
+    "allowances": 5,
     "filingStatus": "head",
     "multipleJobs": true,
     "dependentsCents": 300000,
@@ -21155,6 +21937,8 @@
    "wagesCents": 83981,
    "periodsPerYear": 24,
    "w4": {
+    "legacy": false,
+    "allowances": 1,
     "filingStatus": "head",
     "multipleJobs": true,
     "dependentsCents": 400000,
@@ -21183,6 +21967,8 @@
    "wagesCents": 41272,
    "periodsPerYear": 12,
    "w4": {
+    "legacy": false,
+    "allowances": 6,
     "filingStatus": "head",
     "multipleJobs": true,
     "dependentsCents": 0,
@@ -21211,6 +21997,8 @@
    "wagesCents": 311673,
    "periodsPerYear": 24,
    "w4": {
+    "legacy": false,
+    "allowances": 4,
     "filingStatus": "married",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -21239,6 +22027,8 @@
    "wagesCents": 779468,
    "periodsPerYear": 12,
    "w4": {
+    "legacy": false,
+    "allowances": 0,
     "filingStatus": "married",
     "multipleJobs": false,
     "dependentsCents": 300000,
@@ -21267,6 +22057,8 @@
    "wagesCents": 548667,
    "periodsPerYear": 24,
    "w4": {
+    "legacy": false,
+    "allowances": 0,
     "filingStatus": "married",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -21295,6 +22087,8 @@
    "wagesCents": 532365,
    "periodsPerYear": 12,
    "w4": {
+    "legacy": false,
+    "allowances": 2,
     "filingStatus": "head",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -21323,6 +22117,8 @@
    "wagesCents": 525779,
    "periodsPerYear": 26,
    "w4": {
+    "legacy": true,
+    "allowances": 7,
     "filingStatus": "married",
     "multipleJobs": true,
     "dependentsCents": 0,
@@ -21351,6 +22147,8 @@
    "wagesCents": 179728,
    "periodsPerYear": 26,
    "w4": {
+    "legacy": false,
+    "allowances": 0,
     "filingStatus": "single",
     "multipleJobs": false,
     "dependentsCents": 250000,
@@ -21379,6 +22177,8 @@
    "wagesCents": 352844,
    "periodsPerYear": 12,
    "w4": {
+    "legacy": true,
+    "allowances": 0,
     "filingStatus": "head",
     "multipleJobs": false,
     "dependentsCents": 200000,
@@ -21407,6 +22207,8 @@
    "wagesCents": 455986,
    "periodsPerYear": 52,
    "w4": {
+    "legacy": false,
+    "allowances": 0,
     "filingStatus": "single",
     "multipleJobs": false,
     "dependentsCents": 350000,
@@ -21435,6 +22237,8 @@
    "wagesCents": 673271,
    "periodsPerYear": 12,
    "w4": {
+    "legacy": false,
+    "allowances": 0,
     "filingStatus": "single",
     "multipleJobs": false,
     "dependentsCents": 150000,
@@ -21463,6 +22267,8 @@
    "wagesCents": 328826,
    "periodsPerYear": 12,
    "w4": {
+    "legacy": true,
+    "allowances": 0,
     "filingStatus": "married",
     "multipleJobs": true,
     "dependentsCents": 0,
@@ -21491,6 +22297,8 @@
    "wagesCents": 247060,
    "periodsPerYear": 26,
    "w4": {
+    "legacy": false,
+    "allowances": 8,
     "filingStatus": "married",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -21519,6 +22327,8 @@
    "wagesCents": 364528,
    "periodsPerYear": 12,
    "w4": {
+    "legacy": false,
+    "allowances": 0,
     "filingStatus": "single",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -21547,6 +22357,8 @@
    "wagesCents": 646640,
    "periodsPerYear": 26,
    "w4": {
+    "legacy": false,
+    "allowances": 0,
     "filingStatus": "single",
     "multipleJobs": true,
     "dependentsCents": 50000,
@@ -21575,6 +22387,8 @@
    "wagesCents": 534482,
    "periodsPerYear": 26,
    "w4": {
+    "legacy": false,
+    "allowances": 7,
     "filingStatus": "married",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -21603,6 +22417,8 @@
    "wagesCents": 226933,
    "periodsPerYear": 26,
    "w4": {
+    "legacy": false,
+    "allowances": 8,
     "filingStatus": "single",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -21631,6 +22447,8 @@
    "wagesCents": 524360,
    "periodsPerYear": 26,
    "w4": {
+    "legacy": false,
+    "allowances": 8,
     "filingStatus": "single",
     "multipleJobs": false,
     "dependentsCents": 200000,
@@ -21659,6 +22477,8 @@
    "wagesCents": 531128,
    "periodsPerYear": 12,
    "w4": {
+    "legacy": false,
+    "allowances": 6,
     "filingStatus": "single",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -21687,6 +22507,8 @@
    "wagesCents": 327900,
    "periodsPerYear": 24,
    "w4": {
+    "legacy": false,
+    "allowances": 8,
     "filingStatus": "single",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -21715,6 +22537,8 @@
    "wagesCents": 614762,
    "periodsPerYear": 26,
    "w4": {
+    "legacy": false,
+    "allowances": 0,
     "filingStatus": "head",
     "multipleJobs": false,
     "dependentsCents": 100000,
@@ -21743,6 +22567,8 @@
    "wagesCents": 729081,
    "periodsPerYear": 26,
    "w4": {
+    "legacy": false,
+    "allowances": 3,
     "filingStatus": "married",
     "multipleJobs": true,
     "dependentsCents": 0,
@@ -21771,6 +22597,8 @@
    "wagesCents": 216210,
    "periodsPerYear": 24,
    "w4": {
+    "legacy": false,
+    "allowances": 4,
     "filingStatus": "single",
     "multipleJobs": true,
     "dependentsCents": 250000,
@@ -21799,6 +22627,8 @@
    "wagesCents": 782408,
    "periodsPerYear": 52,
    "w4": {
+    "legacy": false,
+    "allowances": 6,
     "filingStatus": "married",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -21827,6 +22657,8 @@
    "wagesCents": 19806,
    "periodsPerYear": 24,
    "w4": {
+    "legacy": false,
+    "allowances": 0,
     "filingStatus": "single",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -21855,6 +22687,8 @@
    "wagesCents": 198487,
    "periodsPerYear": 12,
    "w4": {
+    "legacy": false,
+    "allowances": 0,
     "filingStatus": "head",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -21883,6 +22717,8 @@
    "wagesCents": 80643,
    "periodsPerYear": 12,
    "w4": {
+    "legacy": false,
+    "allowances": 6,
     "filingStatus": "head",
     "multipleJobs": false,
     "dependentsCents": 350000,
@@ -21911,6 +22747,8 @@
    "wagesCents": 50583,
    "periodsPerYear": 12,
    "w4": {
+    "legacy": false,
+    "allowances": 0,
     "filingStatus": "single",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -21939,6 +22777,8 @@
    "wagesCents": 433342,
    "periodsPerYear": 52,
    "w4": {
+    "legacy": false,
+    "allowances": 4,
     "filingStatus": "single",
     "multipleJobs": true,
     "dependentsCents": 0,
@@ -21967,6 +22807,8 @@
    "wagesCents": 576040,
    "periodsPerYear": 12,
    "w4": {
+    "legacy": false,
+    "allowances": 1,
     "filingStatus": "married",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -21995,6 +22837,8 @@
    "wagesCents": 726194,
    "periodsPerYear": 52,
    "w4": {
+    "legacy": false,
+    "allowances": 2,
     "filingStatus": "married",
     "multipleJobs": true,
     "dependentsCents": 50000,
@@ -22023,6 +22867,8 @@
    "wagesCents": 67749,
    "periodsPerYear": 26,
    "w4": {
+    "legacy": true,
+    "allowances": 6,
     "filingStatus": "single",
     "multipleJobs": true,
     "dependentsCents": 350000,
@@ -22051,6 +22897,8 @@
    "wagesCents": 44903,
    "periodsPerYear": 12,
    "w4": {
+    "legacy": false,
+    "allowances": 3,
     "filingStatus": "married",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -22079,6 +22927,8 @@
    "wagesCents": 560061,
    "periodsPerYear": 26,
    "w4": {
+    "legacy": false,
+    "allowances": 7,
     "filingStatus": "single",
     "multipleJobs": true,
     "dependentsCents": 200000,
@@ -22107,6 +22957,8 @@
    "wagesCents": 413791,
    "periodsPerYear": 12,
    "w4": {
+    "legacy": false,
+    "allowances": 8,
     "filingStatus": "head",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -22135,6 +22987,8 @@
    "wagesCents": 448142,
    "periodsPerYear": 52,
    "w4": {
+    "legacy": false,
+    "allowances": 6,
     "filingStatus": "single",
     "multipleJobs": false,
     "dependentsCents": 100000,
@@ -22163,6 +23017,8 @@
    "wagesCents": 735190,
    "periodsPerYear": 12,
    "w4": {
+    "legacy": true,
+    "allowances": 3,
     "filingStatus": "head",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -22191,6 +23047,8 @@
    "wagesCents": 83875,
    "periodsPerYear": 26,
    "w4": {
+    "legacy": false,
+    "allowances": 0,
     "filingStatus": "single",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -22219,6 +23077,8 @@
    "wagesCents": 185025,
    "periodsPerYear": 24,
    "w4": {
+    "legacy": false,
+    "allowances": 8,
     "filingStatus": "married",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -22247,6 +23107,8 @@
    "wagesCents": 206047,
    "periodsPerYear": 26,
    "w4": {
+    "legacy": false,
+    "allowances": 8,
     "filingStatus": "single",
     "multipleJobs": true,
     "dependentsCents": 100000,
@@ -22275,6 +23137,8 @@
    "wagesCents": 731866,
    "periodsPerYear": 52,
    "w4": {
+    "legacy": false,
+    "allowances": 4,
     "filingStatus": "married",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -22303,6 +23167,8 @@
    "wagesCents": 78029,
    "periodsPerYear": 52,
    "w4": {
+    "legacy": false,
+    "allowances": 5,
     "filingStatus": "single",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -22332,6 +23198,8 @@
    "wagesCents": 444505,
    "periodsPerYear": 24,
    "w4": {
+    "legacy": false,
+    "allowances": 0,
     "filingStatus": "single",
     "multipleJobs": true,
     "dependentsCents": 0,
@@ -22361,6 +23229,8 @@
    "wagesCents": 308514,
    "periodsPerYear": 26,
    "w4": {
+    "legacy": false,
+    "allowances": 4,
     "filingStatus": "single",
     "multipleJobs": false,
     "dependentsCents": 100000,
@@ -22390,6 +23260,8 @@
    "wagesCents": 93333,
    "periodsPerYear": 52,
    "w4": {
+    "legacy": true,
+    "allowances": 3,
     "filingStatus": "head",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -22418,6 +23290,8 @@
    "wagesCents": 131018,
    "periodsPerYear": 52,
    "w4": {
+    "legacy": false,
+    "allowances": 3,
     "filingStatus": "single",
     "multipleJobs": true,
     "dependentsCents": 0,
@@ -22446,6 +23320,8 @@
    "wagesCents": 643935,
    "periodsPerYear": 52,
    "w4": {
+    "legacy": false,
+    "allowances": 8,
     "filingStatus": "single",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -22474,6 +23350,8 @@
    "wagesCents": 707522,
    "periodsPerYear": 12,
    "w4": {
+    "legacy": true,
+    "allowances": 6,
     "filingStatus": "head",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -22502,6 +23380,8 @@
    "wagesCents": 477342,
    "periodsPerYear": 24,
    "w4": {
+    "legacy": true,
+    "allowances": 8,
     "filingStatus": "head",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -22530,6 +23410,8 @@
    "wagesCents": 599574,
    "periodsPerYear": 26,
    "w4": {
+    "legacy": false,
+    "allowances": 0,
     "filingStatus": "married",
     "multipleJobs": false,
     "dependentsCents": 50000,
@@ -22558,6 +23440,8 @@
    "wagesCents": 328955,
    "periodsPerYear": 26,
    "w4": {
+    "legacy": false,
+    "allowances": 3,
     "filingStatus": "head",
     "multipleJobs": true,
     "dependentsCents": 350000,
@@ -22586,6 +23470,8 @@
    "wagesCents": 512041,
    "periodsPerYear": 52,
    "w4": {
+    "legacy": false,
+    "allowances": 0,
     "filingStatus": "single",
     "multipleJobs": false,
     "dependentsCents": 100000,
@@ -22614,6 +23500,8 @@
    "wagesCents": 111375,
    "periodsPerYear": 12,
    "w4": {
+    "legacy": false,
+    "allowances": 7,
     "filingStatus": "head",
     "multipleJobs": true,
     "dependentsCents": 50000,
@@ -22642,6 +23530,8 @@
    "wagesCents": 652030,
    "periodsPerYear": 24,
    "w4": {
+    "legacy": false,
+    "allowances": 8,
     "filingStatus": "married",
     "multipleJobs": false,
     "dependentsCents": 250000,
@@ -22670,6 +23560,8 @@
    "wagesCents": 114952,
    "periodsPerYear": 12,
    "w4": {
+    "legacy": true,
+    "allowances": 1,
     "filingStatus": "married",
     "multipleJobs": false,
     "dependentsCents": 350000,
@@ -22698,6 +23590,8 @@
    "wagesCents": 274402,
    "periodsPerYear": 24,
    "w4": {
+    "legacy": false,
+    "allowances": 7,
     "filingStatus": "head",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -22726,6 +23620,8 @@
    "wagesCents": 324694,
    "periodsPerYear": 26,
    "w4": {
+    "legacy": true,
+    "allowances": 0,
     "filingStatus": "married",
     "multipleJobs": true,
     "dependentsCents": 0,
@@ -22754,6 +23650,8 @@
    "wagesCents": 729898,
    "periodsPerYear": 52,
    "w4": {
+    "legacy": false,
+    "allowances": 2,
     "filingStatus": "married",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -22782,6 +23680,8 @@
    "wagesCents": 526502,
    "periodsPerYear": 24,
    "w4": {
+    "legacy": true,
+    "allowances": 6,
     "filingStatus": "single",
     "multipleJobs": false,
     "dependentsCents": 150000,
@@ -22810,6 +23710,8 @@
    "wagesCents": 427683,
    "periodsPerYear": 12,
    "w4": {
+    "legacy": false,
+    "allowances": 8,
     "filingStatus": "head",
     "multipleJobs": false,
     "dependentsCents": 150000,
@@ -22838,6 +23740,8 @@
    "wagesCents": 395331,
    "periodsPerYear": 26,
    "w4": {
+    "legacy": false,
+    "allowances": 7,
     "filingStatus": "head",
     "multipleJobs": true,
     "dependentsCents": 50000,
@@ -22866,6 +23770,8 @@
    "wagesCents": 673779,
    "periodsPerYear": 12,
    "w4": {
+    "legacy": false,
+    "allowances": 8,
     "filingStatus": "married",
     "multipleJobs": false,
     "dependentsCents": 250000,
@@ -22895,6 +23801,8 @@
    "wagesCents": 68054,
    "periodsPerYear": 26,
    "w4": {
+    "legacy": false,
+    "allowances": 0,
     "filingStatus": "head",
     "multipleJobs": false,
     "dependentsCents": 250000,
@@ -22924,6 +23832,8 @@
    "wagesCents": 321955,
    "periodsPerYear": 52,
    "w4": {
+    "legacy": false,
+    "allowances": 2,
     "filingStatus": "married",
     "multipleJobs": true,
     "dependentsCents": 0,
@@ -22953,6 +23863,8 @@
    "wagesCents": 200703,
    "periodsPerYear": 12,
    "w4": {
+    "legacy": false,
+    "allowances": 0,
     "filingStatus": "head",
     "multipleJobs": true,
     "dependentsCents": 0,
@@ -22981,6 +23893,8 @@
    "wagesCents": 798391,
    "periodsPerYear": 26,
    "w4": {
+    "legacy": true,
+    "allowances": 7,
     "filingStatus": "married",
     "multipleJobs": true,
     "dependentsCents": 250000,
@@ -23009,6 +23923,8 @@
    "wagesCents": 563670,
    "periodsPerYear": 26,
    "w4": {
+    "legacy": false,
+    "allowances": 0,
     "filingStatus": "single",
     "multipleJobs": true,
     "dependentsCents": 0,
@@ -23037,6 +23953,8 @@
    "wagesCents": 785553,
    "periodsPerYear": 52,
    "w4": {
+    "legacy": false,
+    "allowances": 6,
     "filingStatus": "married",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -23065,6 +23983,8 @@
    "wagesCents": 146598,
    "periodsPerYear": 24,
    "w4": {
+    "legacy": true,
+    "allowances": 5,
     "filingStatus": "married",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -23093,6 +24013,8 @@
    "wagesCents": 249779,
    "periodsPerYear": 24,
    "w4": {
+    "legacy": true,
+    "allowances": 1,
     "filingStatus": "single",
     "multipleJobs": false,
     "dependentsCents": 150000,
@@ -23121,6 +24043,8 @@
    "wagesCents": 148354,
    "periodsPerYear": 52,
    "w4": {
+    "legacy": false,
+    "allowances": 1,
     "filingStatus": "head",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -23149,6 +24073,8 @@
    "wagesCents": 76136,
    "periodsPerYear": 12,
    "w4": {
+    "legacy": false,
+    "allowances": 1,
     "filingStatus": "married",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -23177,6 +24103,8 @@
    "wagesCents": 154572,
    "periodsPerYear": 52,
    "w4": {
+    "legacy": false,
+    "allowances": 1,
     "filingStatus": "single",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -23205,6 +24133,8 @@
    "wagesCents": 73939,
    "periodsPerYear": 12,
    "w4": {
+    "legacy": false,
+    "allowances": 8,
     "filingStatus": "single",
     "multipleJobs": false,
     "dependentsCents": 150000,
@@ -23233,6 +24163,8 @@
    "wagesCents": 572881,
    "periodsPerYear": 26,
    "w4": {
+    "legacy": true,
+    "allowances": 5,
     "filingStatus": "married",
     "multipleJobs": false,
     "dependentsCents": 150000,
@@ -23261,6 +24193,8 @@
    "wagesCents": 694232,
    "periodsPerYear": 26,
    "w4": {
+    "legacy": false,
+    "allowances": 1,
     "filingStatus": "married",
     "multipleJobs": false,
     "dependentsCents": 100000,
@@ -23289,6 +24223,8 @@
    "wagesCents": 87335,
    "periodsPerYear": 12,
    "w4": {
+    "legacy": false,
+    "allowances": 5,
     "filingStatus": "married",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -23317,6 +24253,8 @@
    "wagesCents": 33369,
    "periodsPerYear": 52,
    "w4": {
+    "legacy": false,
+    "allowances": 4,
     "filingStatus": "head",
     "multipleJobs": false,
     "dependentsCents": 150000,
@@ -23345,6 +24283,8 @@
    "wagesCents": 178950,
    "periodsPerYear": 26,
    "w4": {
+    "legacy": false,
+    "allowances": 2,
     "filingStatus": "single",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -23373,6 +24313,8 @@
    "wagesCents": 111365,
    "periodsPerYear": 24,
    "w4": {
+    "legacy": false,
+    "allowances": 2,
     "filingStatus": "single",
     "multipleJobs": true,
     "dependentsCents": 250000,
@@ -23401,6 +24343,8 @@
    "wagesCents": 126982,
    "periodsPerYear": 26,
    "w4": {
+    "legacy": false,
+    "allowances": 0,
     "filingStatus": "married",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -23429,6 +24373,8 @@
    "wagesCents": 49981,
    "periodsPerYear": 26,
    "w4": {
+    "legacy": false,
+    "allowances": 0,
     "filingStatus": "married",
     "multipleJobs": true,
     "dependentsCents": 0,
@@ -23457,6 +24403,8 @@
    "wagesCents": 625810,
    "periodsPerYear": 24,
    "w4": {
+    "legacy": false,
+    "allowances": 7,
     "filingStatus": "head",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -23485,6 +24433,8 @@
    "wagesCents": 546814,
    "periodsPerYear": 52,
    "w4": {
+    "legacy": false,
+    "allowances": 0,
     "filingStatus": "single",
     "multipleJobs": true,
     "dependentsCents": 250000,
@@ -23513,6 +24463,8 @@
    "wagesCents": 556709,
    "periodsPerYear": 26,
    "w4": {
+    "legacy": false,
+    "allowances": 3,
     "filingStatus": "married",
     "multipleJobs": false,
     "dependentsCents": 350000,
@@ -23541,6 +24493,8 @@
    "wagesCents": 357005,
    "periodsPerYear": 52,
    "w4": {
+    "legacy": false,
+    "allowances": 3,
     "filingStatus": "single",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -23569,6 +24523,8 @@
    "wagesCents": 292417,
    "periodsPerYear": 24,
    "w4": {
+    "legacy": false,
+    "allowances": 0,
     "filingStatus": "married",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -23597,6 +24553,8 @@
    "wagesCents": 216138,
    "periodsPerYear": 26,
    "w4": {
+    "legacy": false,
+    "allowances": 8,
     "filingStatus": "head",
     "multipleJobs": false,
     "dependentsCents": 100000,
@@ -23625,6 +24583,8 @@
    "wagesCents": 583181,
    "periodsPerYear": 24,
    "w4": {
+    "legacy": false,
+    "allowances": 3,
     "filingStatus": "married",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -23653,6 +24613,8 @@
    "wagesCents": 373952,
    "periodsPerYear": 52,
    "w4": {
+    "legacy": false,
+    "allowances": 7,
     "filingStatus": "single",
     "multipleJobs": true,
     "dependentsCents": 0,
@@ -23681,6 +24643,8 @@
    "wagesCents": 793617,
    "periodsPerYear": 26,
    "w4": {
+    "legacy": false,
+    "allowances": 0,
     "filingStatus": "married",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -23709,6 +24673,8 @@
    "wagesCents": 523135,
    "periodsPerYear": 24,
    "w4": {
+    "legacy": false,
+    "allowances": 7,
     "filingStatus": "single",
     "multipleJobs": true,
     "dependentsCents": 350000,
@@ -23737,6 +24703,8 @@
    "wagesCents": 298214,
    "periodsPerYear": 24,
    "w4": {
+    "legacy": false,
+    "allowances": 1,
     "filingStatus": "head",
     "multipleJobs": true,
     "dependentsCents": 0,
@@ -23765,6 +24733,8 @@
    "wagesCents": 795927,
    "periodsPerYear": 24,
    "w4": {
+    "legacy": false,
+    "allowances": 0,
     "filingStatus": "head",
     "multipleJobs": true,
     "dependentsCents": 150000,
@@ -23793,6 +24763,8 @@
    "wagesCents": 182050,
    "periodsPerYear": 24,
    "w4": {
+    "legacy": true,
+    "allowances": 2,
     "filingStatus": "single",
     "multipleJobs": false,
     "dependentsCents": 250000,
@@ -23821,6 +24793,8 @@
    "wagesCents": 255051,
    "periodsPerYear": 26,
    "w4": {
+    "legacy": false,
+    "allowances": 5,
     "filingStatus": "head",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -23849,6 +24823,8 @@
    "wagesCents": 55896,
    "periodsPerYear": 12,
    "w4": {
+    "legacy": false,
+    "allowances": 6,
     "filingStatus": "single",
     "multipleJobs": false,
     "dependentsCents": 50000,
@@ -23877,6 +24853,8 @@
    "wagesCents": 387119,
    "periodsPerYear": 52,
    "w4": {
+    "legacy": false,
+    "allowances": 6,
     "filingStatus": "head",
     "multipleJobs": false,
     "dependentsCents": 250000,
@@ -23905,6 +24883,8 @@
    "wagesCents": 404177,
    "periodsPerYear": 24,
    "w4": {
+    "legacy": true,
+    "allowances": 0,
     "filingStatus": "single",
     "multipleJobs": false,
     "dependentsCents": 150000,
@@ -23933,6 +24913,8 @@
    "wagesCents": 775877,
    "periodsPerYear": 12,
    "w4": {
+    "legacy": false,
+    "allowances": 0,
     "filingStatus": "married",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -23961,6 +24943,8 @@
    "wagesCents": 701039,
    "periodsPerYear": 24,
    "w4": {
+    "legacy": true,
+    "allowances": 0,
     "filingStatus": "head",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -23989,6 +24973,8 @@
    "wagesCents": 571195,
    "periodsPerYear": 12,
    "w4": {
+    "legacy": true,
+    "allowances": 0,
     "filingStatus": "single",
     "multipleJobs": true,
     "dependentsCents": 50000,
@@ -24017,6 +25003,8 @@
    "wagesCents": 627046,
    "periodsPerYear": 12,
    "w4": {
+    "legacy": false,
+    "allowances": 8,
     "filingStatus": "single",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -24045,6 +25033,8 @@
    "wagesCents": 44536,
    "periodsPerYear": 26,
    "w4": {
+    "legacy": false,
+    "allowances": 3,
     "filingStatus": "married",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -24073,6 +25063,8 @@
    "wagesCents": 50046,
    "periodsPerYear": 24,
    "w4": {
+    "legacy": false,
+    "allowances": 0,
     "filingStatus": "head",
     "multipleJobs": false,
     "dependentsCents": 250000,
@@ -24101,6 +25093,8 @@
    "wagesCents": 4890,
    "periodsPerYear": 26,
    "w4": {
+    "legacy": false,
+    "allowances": 2,
     "filingStatus": "married",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -24129,6 +25123,8 @@
    "wagesCents": 527133,
    "periodsPerYear": 24,
    "w4": {
+    "legacy": false,
+    "allowances": 0,
     "filingStatus": "married",
     "multipleJobs": true,
     "dependentsCents": 200000,
@@ -24157,6 +25153,8 @@
    "wagesCents": 261773,
    "periodsPerYear": 26,
    "w4": {
+    "legacy": false,
+    "allowances": 8,
     "filingStatus": "head",
     "multipleJobs": true,
     "dependentsCents": 0,
@@ -24185,6 +25183,8 @@
    "wagesCents": 635306,
    "periodsPerYear": 12,
    "w4": {
+    "legacy": false,
+    "allowances": 0,
     "filingStatus": "single",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -24213,6 +25213,8 @@
    "wagesCents": 569319,
    "periodsPerYear": 24,
    "w4": {
+    "legacy": true,
+    "allowances": 2,
     "filingStatus": "married",
     "multipleJobs": true,
     "dependentsCents": 0,
@@ -24241,6 +25243,8 @@
    "wagesCents": 111480,
    "periodsPerYear": 12,
    "w4": {
+    "legacy": false,
+    "allowances": 3,
     "filingStatus": "single",
     "multipleJobs": false,
     "dependentsCents": 400000,
@@ -24269,6 +25273,8 @@
    "wagesCents": 191049,
    "periodsPerYear": 12,
    "w4": {
+    "legacy": false,
+    "allowances": 0,
     "filingStatus": "head",
     "multipleJobs": false,
     "dependentsCents": 0,
@@ -24297,6 +25303,8 @@
    "wagesCents": 647150,
    "periodsPerYear": 26,
    "w4": {
+    "legacy": true,
+    "allowances": 2,
     "filingStatus": "single",
     "multipleJobs": true,
     "dependentsCents": 0,
@@ -24326,6 +25334,8 @@
     "profile": {
      "calculate": true,
      "w4": {
+      "legacy": false,
+      "allowances": 1,
       "filingStatus": "single",
       "multipleJobs": false,
       "dependentsCents": 0,
@@ -24468,6 +25478,8 @@
     "profile": {
      "calculate": true,
      "w4": {
+      "legacy": false,
+      "allowances": 4,
       "filingStatus": "married",
       "multipleJobs": false,
       "dependentsCents": 0,
@@ -24626,6 +25638,8 @@
     "profile": {
      "calculate": true,
      "w4": {
+      "legacy": false,
+      "allowances": 2,
       "filingStatus": "single",
       "multipleJobs": true,
       "dependentsCents": 250000,
@@ -24816,6 +25830,8 @@
     "profile": {
      "calculate": true,
      "w4": {
+      "legacy": true,
+      "allowances": 4,
       "filingStatus": "single",
       "multipleJobs": false,
       "dependentsCents": 100000,
@@ -24974,6 +25990,8 @@
     "profile": {
      "calculate": true,
      "w4": {
+      "legacy": false,
+      "allowances": 5,
       "filingStatus": "head",
       "multipleJobs": false,
       "dependentsCents": 0,
@@ -25100,6 +26118,8 @@
     "profile": {
      "calculate": true,
      "w4": {
+      "legacy": false,
+      "allowances": 3,
       "filingStatus": "married",
       "multipleJobs": true,
       "dependentsCents": 100000,
@@ -25234,6 +26254,8 @@
     "profile": {
      "calculate": true,
      "w4": {
+      "legacy": false,
+      "allowances": 8,
       "filingStatus": "single",
       "multipleJobs": false,
       "dependentsCents": 0,
@@ -25358,6 +26380,8 @@
     "profile": {
      "calculate": false,
      "w4": {
+      "legacy": false,
+      "allowances": 0,
       "filingStatus": "single",
       "multipleJobs": true,
       "dependentsCents": 0,
@@ -25508,6 +26532,8 @@
     "profile": {
      "calculate": true,
      "w4": {
+      "legacy": false,
+      "allowances": 7,
       "filingStatus": "married",
       "multipleJobs": false,
       "dependentsCents": 150000,
@@ -25650,6 +26676,8 @@
     "profile": {
      "calculate": true,
      "w4": {
+      "legacy": false,
+      "allowances": 1,
       "filingStatus": "married",
       "multipleJobs": false,
       "dependentsCents": 250000,
@@ -25774,6 +26802,8 @@
     "profile": {
      "calculate": true,
      "w4": {
+      "legacy": true,
+      "allowances": 4,
       "filingStatus": "single",
       "multipleJobs": true,
       "dependentsCents": 100000,
@@ -25829,7 +26859,7 @@
      "label": "Federal income tax",
      "minutes": null,
      "rateCents": null,
-     "amountCents": 171326,
+     "amountCents": 132013,
      "source": "calculated",
      "taxCode": "fit"
     },
@@ -25892,7 +26922,7 @@
       "label": "Federal income tax",
       "minutes": null,
       "rateCents": null,
-      "amountCents": 350249,
+      "amountCents": 302050,
       "source": "calculated",
       "taxCode": "fit"
      },
@@ -25932,6 +26962,8 @@
     "profile": {
      "calculate": true,
      "w4": {
+      "legacy": false,
+      "allowances": 1,
       "filingStatus": "head",
       "multipleJobs": false,
       "dependentsCents": 0,
@@ -26018,6 +27050,8 @@
     "profile": {
      "calculate": true,
      "w4": {
+      "legacy": false,
+      "allowances": 7,
       "filingStatus": "single",
       "multipleJobs": true,
       "dependentsCents": 100000,
@@ -26160,6 +27194,8 @@
     "profile": {
      "calculate": true,
      "w4": {
+      "legacy": false,
+      "allowances": 3,
       "filingStatus": "married",
       "multipleJobs": false,
       "dependentsCents": 0,
@@ -26302,6 +27338,8 @@
     "profile": {
      "calculate": true,
      "w4": {
+      "legacy": false,
+      "allowances": 7,
       "filingStatus": "married",
       "multipleJobs": false,
       "dependentsCents": 0,
@@ -26460,6 +27498,8 @@
     "profile": {
      "calculate": true,
      "w4": {
+      "legacy": false,
+      "allowances": 0,
       "filingStatus": "single",
       "multipleJobs": true,
       "dependentsCents": 150000,
@@ -26546,6 +27586,8 @@
     "profile": {
      "calculate": true,
      "w4": {
+      "legacy": false,
+      "allowances": 6,
       "filingStatus": "single",
       "multipleJobs": true,
       "dependentsCents": 0,
@@ -26648,6 +27690,8 @@
     "profile": {
      "calculate": true,
      "w4": {
+      "legacy": false,
+      "allowances": 3,
       "filingStatus": "head",
       "multipleJobs": false,
       "dependentsCents": 400000,
@@ -26790,6 +27834,8 @@
     "profile": {
      "calculate": true,
      "w4": {
+      "legacy": false,
+      "allowances": 0,
       "filingStatus": "single",
       "multipleJobs": false,
       "dependentsCents": 50000,
@@ -26964,6 +28010,8 @@
     "profile": {
      "calculate": true,
      "w4": {
+      "legacy": false,
+      "allowances": 0,
       "filingStatus": "single",
       "multipleJobs": false,
       "dependentsCents": 50000,
@@ -27106,6 +28154,8 @@
     "profile": {
      "calculate": true,
      "w4": {
+      "legacy": false,
+      "allowances": 1,
       "filingStatus": "head",
       "multipleJobs": false,
       "dependentsCents": 0,
@@ -27344,6 +28394,8 @@
     "profile": {
      "calculate": false,
      "w4": {
+      "legacy": false,
+      "allowances": 8,
       "filingStatus": "married",
       "multipleJobs": false,
       "dependentsCents": 50000,
@@ -27446,6 +28498,8 @@
     "profile": {
      "calculate": true,
      "w4": {
+      "legacy": false,
+      "allowances": 0,
       "filingStatus": "married",
       "multipleJobs": false,
       "dependentsCents": 0,
@@ -27588,6 +28642,8 @@
     "profile": {
      "calculate": true,
      "w4": {
+      "legacy": false,
+      "allowances": 7,
       "filingStatus": "married",
       "multipleJobs": false,
       "dependentsCents": 50000,
@@ -27762,6 +28818,8 @@
     "profile": {
      "calculate": true,
      "w4": {
+      "legacy": false,
+      "allowances": 0,
       "filingStatus": "married",
       "multipleJobs": false,
       "dependentsCents": 0,
@@ -27936,6 +28994,8 @@
     "profile": {
      "calculate": true,
      "w4": {
+      "legacy": false,
+      "allowances": 1,
       "filingStatus": "married",
       "multipleJobs": true,
       "dependentsCents": 0,
@@ -28094,6 +29154,8 @@
     "profile": {
      "calculate": true,
      "w4": {
+      "legacy": false,
+      "allowances": 0,
       "filingStatus": "head",
       "multipleJobs": false,
       "dependentsCents": 350000,
@@ -28252,6 +29314,8 @@
     "profile": {
      "calculate": true,
      "w4": {
+      "legacy": false,
+      "allowances": 0,
       "filingStatus": "head",
       "multipleJobs": true,
       "dependentsCents": 0,
@@ -28410,6 +29474,8 @@
     "profile": {
      "calculate": true,
      "w4": {
+      "legacy": false,
+      "allowances": 0,
       "filingStatus": "single",
       "multipleJobs": true,
       "dependentsCents": 400000,
@@ -28568,6 +29634,8 @@
     "profile": {
      "calculate": true,
      "w4": {
+      "legacy": false,
+      "allowances": 0,
       "filingStatus": "married",
       "multipleJobs": true,
       "dependentsCents": 250000,
@@ -28710,6 +29778,8 @@
     "profile": {
      "calculate": true,
      "w4": {
+      "legacy": false,
+      "allowances": 3,
       "filingStatus": "married",
       "multipleJobs": false,
       "dependentsCents": 350000,
@@ -28834,6 +29904,8 @@
     "profile": {
      "calculate": true,
      "w4": {
+      "legacy": false,
+      "allowances": 7,
       "filingStatus": "single",
       "multipleJobs": false,
       "dependentsCents": 0,
@@ -28976,6 +30048,8 @@
     "profile": {
      "calculate": true,
      "w4": {
+      "legacy": false,
+      "allowances": 3,
       "filingStatus": "head",
       "multipleJobs": false,
       "dependentsCents": 0,
@@ -29116,6 +30190,8 @@
     "profile": {
      "calculate": true,
      "w4": {
+      "legacy": false,
+      "allowances": 4,
       "filingStatus": "single",
       "multipleJobs": false,
       "dependentsCents": 350000,
@@ -29402,6 +30478,8 @@
     "profile": {
      "calculate": true,
      "w4": {
+      "legacy": false,
+      "allowances": 2,
       "filingStatus": "single",
       "multipleJobs": true,
       "dependentsCents": 0,
@@ -29544,6 +30622,8 @@
     "profile": {
      "calculate": true,
      "w4": {
+      "legacy": false,
+      "allowances": 0,
       "filingStatus": "single",
       "multipleJobs": false,
       "dependentsCents": 0,
@@ -29702,6 +30782,8 @@
     "profile": {
      "calculate": true,
      "w4": {
+      "legacy": false,
+      "allowances": 5,
       "filingStatus": "single",
       "multipleJobs": false,
       "dependentsCents": 350000,
@@ -29858,6 +30940,8 @@
     "profile": {
      "calculate": true,
      "w4": {
+      "legacy": false,
+      "allowances": 5,
       "filingStatus": "married",
       "multipleJobs": false,
       "dependentsCents": 0,
@@ -29982,6 +31066,8 @@
     "profile": {
      "calculate": true,
      "w4": {
+      "legacy": false,
+      "allowances": 3,
       "filingStatus": "married",
       "multipleJobs": false,
       "dependentsCents": 50000,
@@ -30052,6 +31138,8 @@
     "profile": {
      "calculate": true,
      "w4": {
+      "legacy": false,
+      "allowances": 6,
       "filingStatus": "married",
       "multipleJobs": false,
       "dependentsCents": 0,
@@ -30194,6 +31282,8 @@
     "profile": {
      "calculate": true,
      "w4": {
+      "legacy": true,
+      "allowances": 0,
       "filingStatus": "married",
       "multipleJobs": false,
       "dependentsCents": 0,
@@ -30352,6 +31442,8 @@
     "profile": {
      "calculate": true,
      "w4": {
+      "legacy": false,
+      "allowances": 0,
       "filingStatus": "single",
       "multipleJobs": true,
       "dependentsCents": 0,
@@ -30526,6 +31618,8 @@
     "profile": {
      "calculate": true,
      "w4": {
+      "legacy": false,
+      "allowances": 0,
       "filingStatus": "single",
       "multipleJobs": false,
       "dependentsCents": 250000,
@@ -30668,6 +31762,8 @@
     "profile": {
      "calculate": true,
      "w4": {
+      "legacy": true,
+      "allowances": 8,
       "filingStatus": "single",
       "multipleJobs": false,
       "dependentsCents": 400000,
@@ -30707,7 +31803,7 @@
      "label": "Federal income tax",
      "minutes": null,
      "rateCents": null,
-     "amountCents": 26330,
+     "amountCents": 25627,
      "source": "calculated",
      "taxCode": "fit"
     },
@@ -30754,7 +31850,7 @@
       "label": "Federal income tax",
       "minutes": null,
       "rateCents": null,
-      "amountCents": 154232,
+      "amountCents": 148567,
       "source": "calculated",
       "taxCode": "fit"
      },
@@ -30794,6 +31890,8 @@
     "profile": {
      "calculate": true,
      "w4": {
+      "legacy": false,
+      "allowances": 4,
       "filingStatus": "single",
       "multipleJobs": false,
       "dependentsCents": 0,
@@ -30952,6 +32050,8 @@
     "profile": {
      "calculate": true,
      "w4": {
+      "legacy": false,
+      "allowances": 0,
       "filingStatus": "single",
       "multipleJobs": false,
       "dependentsCents": 0,
@@ -31078,6 +32178,8 @@
     "profile": {
      "calculate": true,
      "w4": {
+      "legacy": false,
+      "allowances": 2,
       "filingStatus": "single",
       "multipleJobs": false,
       "dependentsCents": 0,
@@ -31202,6 +32304,8 @@
     "profile": {
      "calculate": true,
      "w4": {
+      "legacy": true,
+      "allowances": 8,
       "filingStatus": "head",
       "multipleJobs": false,
       "dependentsCents": 0,
@@ -31288,6 +32392,8 @@
     "profile": {
      "calculate": true,
      "w4": {
+      "legacy": true,
+      "allowances": 3,
       "filingStatus": "head",
       "multipleJobs": false,
       "dependentsCents": 0,
@@ -31374,7 +32480,7 @@
       "label": "Federal income tax",
       "minutes": null,
       "rateCents": null,
-      "amountCents": 22959,
+      "amountCents": 17582,
       "source": "calculated",
       "taxCode": "fit"
      },
@@ -31414,6 +32520,8 @@
     "profile": {
      "calculate": true,
      "w4": {
+      "legacy": false,
+      "allowances": 7,
       "filingStatus": "head",
       "multipleJobs": false,
       "dependentsCents": 250000,
@@ -31554,6 +32662,8 @@
     "profile": {
      "calculate": false,
      "w4": {
+      "legacy": false,
+      "allowances": 8,
       "filingStatus": "married",
       "multipleJobs": false,
       "dependentsCents": 0,
@@ -31640,6 +32750,8 @@
     "profile": {
      "calculate": true,
      "w4": {
+      "legacy": false,
+      "allowances": 8,
       "filingStatus": "married",
       "multipleJobs": false,
       "dependentsCents": 300000,
@@ -31846,6 +32958,8 @@
     "profile": {
      "calculate": true,
      "w4": {
+      "legacy": true,
+      "allowances": 0,
       "filingStatus": "head",
       "multipleJobs": false,
       "dependentsCents": 300000,
@@ -32004,6 +33118,8 @@
     "profile": {
      "calculate": true,
      "w4": {
+      "legacy": false,
+      "allowances": 0,
       "filingStatus": "head",
       "multipleJobs": false,
       "dependentsCents": 150000,
@@ -32130,6 +33246,8 @@
     "profile": {
      "calculate": true,
      "w4": {
+      "legacy": false,
+      "allowances": 4,
       "filingStatus": "head",
       "multipleJobs": false,
       "dependentsCents": 0,
@@ -32288,6 +33406,8 @@
     "profile": {
      "calculate": true,
      "w4": {
+      "legacy": false,
+      "allowances": 2,
       "filingStatus": "married",
       "multipleJobs": false,
       "dependentsCents": 0,
@@ -32374,6 +33494,8 @@
     "profile": {
      "calculate": true,
      "w4": {
+      "legacy": false,
+      "allowances": 2,
       "filingStatus": "head",
       "multipleJobs": false,
       "dependentsCents": 400000,
@@ -32532,6 +33654,8 @@
     "profile": {
      "calculate": true,
      "w4": {
+      "legacy": true,
+      "allowances": 3,
       "filingStatus": "head",
       "multipleJobs": true,
       "dependentsCents": 0,
@@ -32571,7 +33695,7 @@
      "label": "Federal income tax",
      "minutes": null,
      "rateCents": null,
-     "amountCents": 12345,
+     "amountCents": 4579,
      "source": "calculated",
      "taxCode": "fit"
     },
@@ -32640,6 +33764,8 @@
     "profile": {
      "calculate": true,
      "w4": {
+      "legacy": false,
+      "allowances": 5,
       "filingStatus": "single",
       "multipleJobs": false,
       "dependentsCents": 250000,
@@ -32782,6 +33908,8 @@
     "profile": {
      "calculate": true,
      "w4": {
+      "legacy": false,
+      "allowances": 0,
       "filingStatus": "head",
       "multipleJobs": false,
       "dependentsCents": 0,
@@ -32940,6 +34068,8 @@
     "profile": {
      "calculate": true,
      "w4": {
+      "legacy": false,
+      "allowances": 6,
       "filingStatus": "head",
       "multipleJobs": false,
       "dependentsCents": 300000,
@@ -33080,6 +34210,8 @@
     "profile": {
      "calculate": false,
      "w4": {
+      "legacy": false,
+      "allowances": 7,
       "filingStatus": "single",
       "multipleJobs": true,
       "dependentsCents": 350000,
@@ -33166,6 +34298,8 @@
     "profile": {
      "calculate": true,
      "w4": {
+      "legacy": false,
+      "allowances": 8,
       "filingStatus": "single",
       "multipleJobs": false,
       "dependentsCents": 0,
@@ -33236,6 +34370,8 @@
     "profile": {
      "calculate": false,
      "w4": {
+      "legacy": false,
+      "allowances": 0,
       "filingStatus": "single",
       "multipleJobs": false,
       "dependentsCents": 0,
@@ -33290,6 +34426,8 @@
     "profile": {
      "calculate": true,
      "w4": {
+      "legacy": false,
+      "allowances": 0,
       "filingStatus": "head",
       "multipleJobs": true,
       "dependentsCents": 0,
@@ -33512,6 +34650,8 @@
     "profile": {
      "calculate": false,
      "w4": {
+      "legacy": false,
+      "allowances": 5,
       "filingStatus": "married",
       "multipleJobs": false,
       "dependentsCents": 50000,
@@ -33582,6 +34722,8 @@
     "profile": {
      "calculate": true,
      "w4": {
+      "legacy": false,
+      "allowances": 7,
       "filingStatus": "head",
       "multipleJobs": false,
       "dependentsCents": 50000,
@@ -33724,6 +34866,8 @@
     "profile": {
      "calculate": true,
      "w4": {
+      "legacy": false,
+      "allowances": 3,
       "filingStatus": "married",
       "multipleJobs": false,
       "dependentsCents": 0,
@@ -33826,6 +34970,8 @@
     "profile": {
      "calculate": true,
      "w4": {
+      "legacy": false,
+      "allowances": 0,
       "filingStatus": "head",
       "multipleJobs": false,
       "dependentsCents": 200000,
@@ -34000,6 +35146,8 @@
     "profile": {
      "calculate": true,
      "w4": {
+      "legacy": true,
+      "allowances": 6,
       "filingStatus": "single",
       "multipleJobs": false,
       "dependentsCents": 150000,
@@ -34039,7 +35187,7 @@
      "label": "Federal income tax",
      "minutes": null,
      "rateCents": null,
-     "amountCents": 9001,
+     "amountCents": 5307,
      "source": "calculated",
      "taxCode": "fit"
     },
@@ -34188,6 +35336,8 @@
     "profile": {
      "calculate": true,
      "w4": {
+      "legacy": true,
+      "allowances": 0,
       "filingStatus": "single",
       "multipleJobs": false,
       "dependentsCents": 200000,
@@ -34330,6 +35480,8 @@
     "profile": {
      "calculate": true,
      "w4": {
+      "legacy": false,
+      "allowances": 8,
       "filingStatus": "head",
       "multipleJobs": false,
       "dependentsCents": 0,
@@ -34472,6 +35624,8 @@
     "profile": {
      "calculate": true,
      "w4": {
+      "legacy": true,
+      "allowances": 4,
       "filingStatus": "married",
       "multipleJobs": false,
       "dependentsCents": 0,
@@ -34612,6 +35766,8 @@
     "profile": {
      "calculate": true,
      "w4": {
+      "legacy": true,
+      "allowances": 8,
       "filingStatus": "married",
       "multipleJobs": true,
       "dependentsCents": 100000,
@@ -34651,7 +35807,7 @@
      "label": "Federal income tax",
      "minutes": null,
      "rateCents": null,
-     "amountCents": 51471,
+     "amountCents": 29729,
      "source": "calculated",
      "taxCode": "fit"
     },
@@ -34706,7 +35862,7 @@
       "label": "Federal income tax",
       "minutes": null,
       "rateCents": null,
-      "amountCents": 6631,
+      "amountCents": 2105,
       "source": "calculated",
       "taxCode": "fit"
      },
@@ -34834,6 +35990,8 @@
     "profile": {
      "calculate": true,
      "w4": {
+      "legacy": false,
+      "allowances": 1,
       "filingStatus": "married",
       "multipleJobs": false,
       "dependentsCents": 0,
@@ -34992,6 +36150,8 @@
     "profile": {
      "calculate": true,
      "w4": {
+      "legacy": false,
+      "allowances": 6,
       "filingStatus": "single",
       "multipleJobs": false,
       "dependentsCents": 400000,
@@ -35148,6 +36308,8 @@
     "profile": {
      "calculate": true,
      "w4": {
+      "legacy": false,
+      "allowances": 8,
       "filingStatus": "head",
       "multipleJobs": true,
       "dependentsCents": 0,
@@ -35306,6 +36468,8 @@
     "profile": {
      "calculate": true,
      "w4": {
+      "legacy": false,
+      "allowances": 0,
       "filingStatus": "head",
       "multipleJobs": false,
       "dependentsCents": 100000,
@@ -35446,6 +36610,8 @@
     "profile": {
      "calculate": false,
      "w4": {
+      "legacy": false,
+      "allowances": 0,
       "filingStatus": "single",
       "multipleJobs": false,
       "dependentsCents": 350000,
@@ -35532,6 +36698,8 @@
     "profile": {
      "calculate": true,
      "w4": {
+      "legacy": false,
+      "allowances": 7,
       "filingStatus": "single",
       "multipleJobs": false,
       "dependentsCents": 0,
@@ -35690,6 +36858,8 @@
     "profile": {
      "calculate": true,
      "w4": {
+      "legacy": false,
+      "allowances": 7,
       "filingStatus": "married",
       "multipleJobs": false,
       "dependentsCents": 0,
@@ -35792,6 +36962,8 @@
     "profile": {
      "calculate": true,
      "w4": {
+      "legacy": true,
+      "allowances": 5,
       "filingStatus": "married",
       "multipleJobs": true,
       "dependentsCents": 0,
@@ -35950,6 +37122,8 @@
     "profile": {
      "calculate": true,
      "w4": {
+      "legacy": false,
+      "allowances": 0,
       "filingStatus": "head",
       "multipleJobs": false,
       "dependentsCents": 0,
@@ -36076,6 +37250,8 @@
     "profile": {
      "calculate": false,
      "w4": {
+      "legacy": false,
+      "allowances": 0,
       "filingStatus": "married",
       "multipleJobs": false,
       "dependentsCents": 0,
@@ -36178,6 +37354,8 @@
     "profile": {
      "calculate": true,
      "w4": {
+      "legacy": false,
+      "allowances": 0,
       "filingStatus": "head",
       "multipleJobs": false,
       "dependentsCents": 0,
@@ -36320,6 +37498,8 @@
     "profile": {
      "calculate": false,
      "w4": {
+      "legacy": false,
+      "allowances": 1,
       "filingStatus": "head",
       "multipleJobs": false,
       "dependentsCents": 0,
@@ -36390,6 +37570,8 @@
     "profile": {
      "calculate": true,
      "w4": {
+      "legacy": false,
+      "allowances": 2,
       "filingStatus": "married",
       "multipleJobs": true,
       "dependentsCents": 0,
@@ -36564,6 +37746,8 @@
     "profile": {
      "calculate": true,
      "w4": {
+      "legacy": false,
+      "allowances": 7,
       "filingStatus": "head",
       "multipleJobs": false,
       "dependentsCents": 0,
@@ -36704,6 +37888,8 @@
     "profile": {
      "calculate": true,
      "w4": {
+      "legacy": false,
+      "allowances": 4,
       "filingStatus": "single",
       "multipleJobs": false,
       "dependentsCents": 350000,
@@ -36860,6 +38046,8 @@
     "profile": {
      "calculate": true,
      "w4": {
+      "legacy": false,
+      "allowances": 4,
       "filingStatus": "head",
       "multipleJobs": true,
       "dependentsCents": 0,
@@ -37002,6 +38190,8 @@
     "profile": {
      "calculate": true,
      "w4": {
+      "legacy": true,
+      "allowances": 0,
       "filingStatus": "married",
       "multipleJobs": false,
       "dependentsCents": 0,
@@ -37126,6 +38316,8 @@
     "profile": {
      "calculate": true,
      "w4": {
+      "legacy": true,
+      "allowances": 0,
       "filingStatus": "head",
       "multipleJobs": false,
       "dependentsCents": 0,
@@ -37165,7 +38357,7 @@
      "label": "Federal income tax",
      "minutes": null,
      "rateCents": null,
-     "amountCents": 34025,
+     "amountCents": 45674,
      "source": "calculated",
      "taxCode": "fit"
     },
@@ -37220,7 +38412,7 @@
       "label": "Federal income tax",
       "minutes": null,
       "rateCents": null,
-      "amountCents": 34025,
+      "amountCents": 45674,
       "source": "calculated",
       "taxCode": "fit"
      },
@@ -37268,6 +38460,8 @@
     "profile": {
      "calculate": true,
      "w4": {
+      "legacy": false,
+      "allowances": 6,
       "filingStatus": "married",
       "multipleJobs": true,
       "dependentsCents": 0,
@@ -37426,6 +38620,8 @@
     "profile": {
      "calculate": true,
      "w4": {
+      "legacy": false,
+      "allowances": 0,
       "filingStatus": "head",
       "multipleJobs": false,
       "dependentsCents": 0,
@@ -37600,6 +38796,8 @@
     "profile": {
      "calculate": true,
      "w4": {
+      "legacy": true,
+      "allowances": 1,
       "filingStatus": "head",
       "multipleJobs": false,
       "dependentsCents": 350000,
@@ -37742,6 +38940,8 @@
     "profile": {
      "calculate": true,
      "w4": {
+      "legacy": true,
+      "allowances": 0,
       "filingStatus": "single",
       "multipleJobs": false,
       "dependentsCents": 0,
@@ -37930,6 +39130,8 @@
     "profile": {
      "calculate": false,
      "w4": {
+      "legacy": false,
+      "allowances": 4,
       "filingStatus": "head",
       "multipleJobs": false,
       "dependentsCents": 0,
@@ -38000,6 +39202,8 @@
     "profile": {
      "calculate": true,
      "w4": {
+      "legacy": false,
+      "allowances": 8,
       "filingStatus": "single",
       "multipleJobs": false,
       "dependentsCents": 350000,
@@ -38124,6 +39328,8 @@
     "profile": {
      "calculate": true,
      "w4": {
+      "legacy": false,
+      "allowances": 7,
       "filingStatus": "single",
       "multipleJobs": true,
       "dependentsCents": 400000,
@@ -38248,6 +39454,8 @@
     "profile": {
      "calculate": false,
      "w4": {
+      "legacy": false,
+      "allowances": 8,
       "filingStatus": "single",
       "multipleJobs": false,
       "dependentsCents": 0,
@@ -38318,6 +39526,8 @@
     "profile": {
      "calculate": true,
      "w4": {
+      "legacy": false,
+      "allowances": 3,
       "filingStatus": "head",
       "multipleJobs": false,
       "dependentsCents": 200000,
@@ -38460,6 +39670,8 @@
     "profile": {
      "calculate": true,
      "w4": {
+      "legacy": false,
+      "allowances": 6,
       "filingStatus": "married",
       "multipleJobs": false,
       "dependentsCents": 0,
@@ -38584,6 +39796,8 @@
     "profile": {
      "calculate": true,
      "w4": {
+      "legacy": false,
+      "allowances": 6,
       "filingStatus": "head",
       "multipleJobs": false,
       "dependentsCents": 0,
@@ -38774,6 +39988,8 @@
     "profile": {
      "calculate": true,
      "w4": {
+      "legacy": false,
+      "allowances": 0,
       "filingStatus": "single",
       "multipleJobs": false,
       "dependentsCents": 100000,
@@ -38916,6 +40132,8 @@
     "profile": {
      "calculate": true,
      "w4": {
+      "legacy": false,
+      "allowances": 6,
       "filingStatus": "head",
       "multipleJobs": true,
       "dependentsCents": 0,
@@ -38970,6 +40188,8 @@
     "profile": {
      "calculate": true,
      "w4": {
+      "legacy": false,
+      "allowances": 0,
       "filingStatus": "single",
       "multipleJobs": false,
       "dependentsCents": 300000,
@@ -39094,6 +40314,8 @@
     "profile": {
      "calculate": true,
      "w4": {
+      "legacy": false,
+      "allowances": 0,
       "filingStatus": "head",
       "multipleJobs": true,
       "dependentsCents": 0,
@@ -39236,6 +40458,8 @@
     "profile": {
      "calculate": true,
      "w4": {
+      "legacy": false,
+      "allowances": 6,
       "filingStatus": "single",
       "multipleJobs": true,
       "dependentsCents": 0,
@@ -39378,6 +40602,8 @@
     "profile": {
      "calculate": true,
      "w4": {
+      "legacy": true,
+      "allowances": 2,
       "filingStatus": "single",
       "multipleJobs": false,
       "dependentsCents": 0,
@@ -39433,7 +40659,7 @@
      "label": "Federal income tax",
      "minutes": null,
      "rateCents": null,
-     "amountCents": 166917,
+     "amountCents": 168878,
      "source": "calculated",
      "taxCode": "fit"
     },
@@ -39504,7 +40730,7 @@
       "label": "Federal income tax",
       "minutes": null,
       "rateCents": null,
-      "amountCents": 249068,
+      "amountCents": 251029,
       "source": "calculated",
       "taxCode": "fit"
      },

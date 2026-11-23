@@ -83,6 +83,7 @@ export function WorkerForm({ existing, onConflict }: { existing: Worker | null; 
   };
   const [name, setName] = useState(existing?.name ?? '');
   const [address, setAddress] = useState(existing?.address ?? '');
+  const [email, setEmail] = useState(existing?.email ?? '');
   const [type, setType] = useState<Worker['type']>(existing?.type ?? 'employee');
   const [payType, setPayType] = useState<Worker['payType']>(existing?.payType ?? 'hourly');
   const [rate, setRate] = useState(existing ? (existing.rateCents / 100).toFixed(2) : '');
@@ -110,9 +111,14 @@ export function WorkerForm({ existing, onConflict }: { existing: Worker | null; 
     if (rateCents === null || rateCents === 0) {
       return Alert.alert('Pay rate needed', payType === 'hourly' ? 'Enter the hourly rate, for example 24.00.' : 'Enter the salary per pay period.');
     }
+    const cleanEmail = email.trim().toLowerCase();
+    if (cleanEmail !== '' && !/^[^@\s]+@[^@\s.]+(\.[^@\s.]+)+$/.test(cleanEmail)) {
+      return Alert.alert('Check the email', 'Enter it like name@example.com, or leave it empty.');
+    }
     const worker: NewWorker = {
       name: name.trim(),
       address: address.trim(),
+      email: cleanEmail,
       type,
       payType,
       rateCents,
@@ -158,7 +164,18 @@ export function WorkerForm({ existing, onConflict }: { existing: Worker | null; 
         <Sheet style={{ gap: 12 }}>
           <SubCard>
             <Field label="Full name" value={name} onChangeText={setName} autoCapitalize="words" autoCorrect={false} />
-            <Field label="Address" value={address} onChangeText={setAddress} autoCapitalize="words" autoCorrect={false} last />
+            <Field label="Address" value={address} onChangeText={setAddress} autoCapitalize="words" autoCorrect={false} />
+            <Field
+              label="Email (to send stubs to)"
+              value={email}
+              onChangeText={setEmail}
+              keyboardType="email-address"
+              autoCapitalize="none"
+              autoCorrect={false}
+              textContentType="emailAddress"
+              placeholder="Optional"
+              last
+            />
           </SubCard>
 
           <View style={{ gap: 6 }}>
@@ -251,41 +268,76 @@ export function WorkerForm({ existing, onConflict }: { existing: Worker | null; 
               />
               {tax.calculate ? (
                 <>
-                  <View style={{ padding: 10, gap: 6, borderBottomWidth: 1, borderBottomColor: c.border }}>
-                    <Text style={{ fontSize: 12, color: c.muted, marginHorizontal: 2 }}>Filing status (Form W-4, Step 1c)</Text>
-                    <Segmented<FilingStatus>
-                      value={tax.w4.filingStatus}
-                      onChange={(filingStatus) => setW4({ filingStatus })}
-                      options={[
-                        { value: 'single', label: 'Single' },
-                        { value: 'married', label: 'Married' },
-                        { value: 'head', label: 'Head of house' },
-                      ]}
-                    />
-                  </View>
                   <Row
-                    title="Two jobs, or spouse also works"
-                    subtitle="Step 2(c) box is checked"
+                    title="Form W-4 is from 2019 or earlier"
+                    subtitle="For workers who never filed the newer form: uses allowances"
                     minHeight={56}
                     right={
                       <Switch
-                        value={tax.w4.multipleJobs}
-                        onValueChange={(multipleJobs) => setW4({ multipleJobs })}
+                        value={tax.w4.legacy}
+                        // The old form has no Head of Household status.
+                        onValueChange={(legacy) => setW4({ legacy, ...(legacy && tax.w4.filingStatus === 'head' ? { filingStatus: 'single' as const } : {}) })}
                         trackColor={{ true: c.primary }}
-                        accessibilityLabel="Step 2(c) box is checked"
+                        accessibilityLabel="Form W-4 is from 2019 or earlier"
                       />
                     }
                   />
-                  {W4_AMOUNTS.map((item, index) => (
-                    <Row
-                      key={item.key}
-                      title={item.title}
-                      subtitle={item.step}
-                      minHeight={56}
-                      right={<Amount value={formatCents(tax.w4[item.key])} />}
-                      onPress={() => setSheet({ kind: 'w4Amount', index })}
+                  <View style={{ padding: 10, gap: 6, borderBottomWidth: 1, borderBottomColor: c.border }}>
+                    <Text style={{ fontSize: 12, color: c.muted, marginHorizontal: 2 }}>
+                      {tax.w4.legacy ? 'Marital status (Form W-4, line 3)' : 'Filing status (Form W-4, Step 1c)'}
+                    </Text>
+                    <Segmented<FilingStatus>
+                      value={tax.w4.filingStatus}
+                      onChange={(filingStatus) => setW4({ filingStatus })}
+                      options={
+                        tax.w4.legacy
+                          ? [
+                              { value: 'single', label: 'Single' },
+                              { value: 'married', label: 'Married' },
+                            ]
+                          : [
+                              { value: 'single', label: 'Single' },
+                              { value: 'married', label: 'Married' },
+                              { value: 'head', label: 'Head of house' },
+                            ]
+                      }
                     />
-                  ))}
+                  </View>
+                  {tax.w4.legacy ? (
+                    <Field
+                      label="Allowances (Form W-4, line 5)"
+                      value={String(tax.w4.allowances)}
+                      onChangeText={(text) => setW4({ allowances: Math.min(99, Number(text.replace(/\D/g, '')) || 0) })}
+                      keyboardType="number-pad"
+                      selectTextOnFocus
+                    />
+                  ) : (
+                    <Row
+                      title="Two jobs, or spouse also works"
+                      subtitle="Step 2(c) box is checked"
+                      minHeight={56}
+                      right={
+                        <Switch
+                          value={tax.w4.multipleJobs}
+                          onValueChange={(multipleJobs) => setW4({ multipleJobs })}
+                          trackColor={{ true: c.primary }}
+                          accessibilityLabel="Step 2(c) box is checked"
+                        />
+                      }
+                    />
+                  )}
+                  {W4_AMOUNTS.map((item, index) =>
+                    tax.w4.legacy && item.key !== 'extraWithholdingCents' ? null : (
+                      <Row
+                        key={item.key}
+                        title={item.title}
+                        subtitle={tax.w4.legacy ? 'Line 6 · each pay period' : item.step}
+                        minHeight={56}
+                        right={<Amount value={formatCents(tax.w4[item.key])} />}
+                        onPress={() => setSheet({ kind: 'w4Amount', index })}
+                      />
+                    ),
+                  )}
                   <Row
                     title="Exempt from federal income tax"
                     subtitle="Only if the worker claimed it on Form W-4"

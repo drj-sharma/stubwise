@@ -63,6 +63,26 @@ describe('federal income tax: IRS Pub. 15-T (2026) percentage method', () => {
     expect(tax).toBe(25_00);
   });
 
+  it('uses the allowances method for a Form W-4 from 2019 or earlier (Worksheet 1A lines 1j-1l)', () => {
+    // Weekly $1,000 single, 1 allowance: 1c 52,000; 1k 4,300; 1l 47,700; 1,240 + 12% x 27,800 = 4,576; / 52 = 88.00.
+    expect(federalIncomeTax({ data, wagesCents: 1_000_00, periodsPerYear: 52, w4: w4({ legacy: true, allowances: 1 }) })).toBe(88_00);
+    // Married, 2 allowances, biweekly $2,000: 52,000 - 8,600 = 43,400 -> 10% x 24,100 = 2,410; / 26 = 92.69.
+    expect(federalIncomeTax({ data, wagesCents: 2_000_00, periodsPerYear: 26, w4: w4({ legacy: true, filingStatus: 'married', allowances: 2 }) })).toBe(92_69);
+  });
+
+  it('ignores Step 2, 3 and 4(a)/(b) on an old form, adds extra withholding, never uses Head of Household', () => {
+    const base = { legacy: true, allowances: 1 };
+    const plain = federalIncomeTax({ data, wagesCents: 1_000_00, periodsPerYear: 52, w4: w4(base) });
+    const noisy = w4({ ...base, multipleJobs: true, dependentsCents: 2_000_00, otherIncomeCents: 5_000_00, deductionsCents: 3_000_00, extraWithholdingCents: 10_00 });
+    expect(federalIncomeTax({ data, wagesCents: 1_000_00, periodsPerYear: 52, w4: noisy })).toBe(plain + 10_00);
+    expect(federalIncomeTax({ data, wagesCents: 1_000_00, periodsPerYear: 52, w4: w4({ ...base, filingStatus: 'head' }) })).toBe(plain);
+  });
+
+  it('withholds nothing on an old form when the allowances cover the wage, and nothing when exempt', () => {
+    expect(federalIncomeTax({ data, wagesCents: 100_00, periodsPerYear: 52, w4: w4({ legacy: true, allowances: 3 }) })).toBe(0);
+    expect(federalIncomeTax({ data, wagesCents: 5_000_00, periodsPerYear: 26, w4: w4({ legacy: true, allowances: 1, exempt: true }) })).toBe(0);
+  });
+
   it('withholds nothing when the employee claimed exempt, or was paid nothing', () => {
     expect(federalIncomeTax({ data, wagesCents: 5_000_00, periodsPerYear: 26, w4: w4({ exempt: true, extraWithholdingCents: 50_00 }) })).toBe(0);
     expect(federalIncomeTax({ data, wagesCents: 0, periodsPerYear: 26, w4: w4({ extraWithholdingCents: 50_00 }) })).toBe(0);

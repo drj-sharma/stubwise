@@ -85,6 +85,15 @@ export default function Reports() {
             facts={[`Taxes ${formatCents(data.deductions.totals.taxesCents)}`, `Other ${formatCents(data.deductions.totals.otherCents)}`]}
             onPress={() => open('deductions')}
           />
+          <ReportCard
+            icon="calendar"
+            title="Year-end totals"
+            detail="Per worker, for their W-2 or 1099-NEC"
+            figure={formatCents(data.earnings.totals.grossCents)}
+            figureLabel="Gross pay in these dates"
+            facts={['Pick a year inside']}
+            onPress={() => router.push('/year-end')}
+          />
         </>
       )}
     </View>

@@ -33,23 +33,25 @@ def order_json(order: Order) -> dict[str, Any]:
     }
 
 
+StubFilter = Annotated[
+    str | None,
+    Query(alias="stubId", description="Only purchases of this stub: a paid stub can be corrected again at no charge."),
+]
+
+
 @router.get("", summary="Purchases, newest first")
 def list_orders(
     limit: Limit = records.DEFAULT_PAGE,
     cursor: Cursor = None,
+    stub_id: StubFilter = None,
     user_id: str = Depends(reader),
     db: Session = Depends(get_session),
 ) -> dict[str, Any]:
     offset = records.decode_cursor(cursor)
-    rows = list(
-        db.scalars(
-            select(Order)
-            .where(Order.user_id == user_id)
-            .order_by(Order.created_at.desc(), Order.id)
-            .offset(offset)
-            .limit(limit + 1)
-        )
-    )
+    query = select(Order).where(Order.user_id == user_id)
+    if stub_id is not None:
+        query = query.where(Order.stub_id == stub_id)
+    rows = list(db.scalars(query.order_by(Order.created_at.desc(), Order.id).offset(offset).limit(limit + 1)))
     more = len(rows) > limit
     return {
         "items": [order_json(order) for order in rows[:limit]],

@@ -58,6 +58,7 @@ export interface WorkerOut {
   id: string;
   name: string;
   address: string;
+  email: string;
   type: 'employee' | 'contractor';
   payType: 'hourly' | 'salary';
   rateCents: number;

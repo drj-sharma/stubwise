@@ -173,6 +173,8 @@ class Worker(Base):
     business_id: Mapped[str] = mapped_column(ForeignKey("businesses.id", ondelete="CASCADE"), index=True)
     name: Mapped[str] = mapped_column(String(120))
     address: Mapped[str] = mapped_column(String(240), default="")
+    # Where "Send to worker" addresses the stub. Empty when not given.
+    email: Mapped[str] = mapped_column(String(254), default="")
     type: Mapped[str] = mapped_column(String(10))
     pay_type: Mapped[str] = mapped_column(String(6))
     rate_cents: Mapped[int] = mapped_column(BigInteger)

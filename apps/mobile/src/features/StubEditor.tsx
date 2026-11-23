@@ -4,6 +4,7 @@ import { router } from 'expo-router';
 import { useState } from 'react';
 import { ActivityIndicator, Alert, Modal, Pressable, ScrollView, Text, View } from 'react-native';
 import { isConflict } from '@/api';
+import { isStubPaid } from '@/api/orders';
 import { deleteStub, getStub, getWorker, replaceStubLines, updateStubDates } from '@/api/records';
 import type { Stub } from '@/db/types';
 import { useQuery } from '@/state/useQuery';
@@ -37,6 +38,8 @@ export function StubEditor({ stubId, onChanged, footer }: { stubId: string; onCh
     const worker = await getWorker(stub.workerId);
     return worker ? { stub, worker } : null;
   }, [stubId]);
+  // A paid stub can be corrected again at no charge; say so, so nobody hesitates to fix a mistake.
+  const paid = useQuery(() => isStubPaid(stubId), [stubId]).data === true;
 
   if (data === undefined) return error ? <ErrorState title="Could not load this stub" error={error} onRetry={() => void reload()} /> : <Loading />;
   if (data === null) {
@@ -141,6 +144,12 @@ export function StubEditor({ stubId, onChanged, footer }: { stubId: string; onCh
   return (
     <>
       <ScrollView contentContainerStyle={{ padding: 12, gap: 10 }} refreshControl={<Refresher refreshing={refreshing} onRefresh={() => void refresh()} />}>
+        {paid ? (
+          <Sheet style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+            <Pill tone="success" label="Corrections are free" />
+            <Text style={{ flex: 1, fontSize: 12, color: c.muted }}>This stub is paid for. Edit it and send it again as often as you need, at no charge.</Text>
+          </Sheet>
+        ) : null}
         <Sheet>
           <Pressable
             onPress={() => setSheet({ kind: 'dates' })}
