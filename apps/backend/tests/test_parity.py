@@ -198,3 +198,44 @@ def test_next_stub(case: dict[str, Any]) -> None:
     schedule, today, pct = case["schedule"], case["today"], case["overtimePct"]
     assert draft_next_stub(case["worker"], schedule, None, today, pct) == case["first"]
     assert draft_next_stub(case["changedRate"], schedule, case["previous"], today, pct) == case["second"]
+
+
+def _legacy(**over: Any) -> dict[str, Any]:
+    return {
+        "legacy": True,
+        "allowances": 0,
+        "filingStatus": "single",
+        "multipleJobs": False,
+        "dependentsCents": 0,
+        "otherIncomeCents": 0,
+        "deductionsCents": 0,
+        "extraWithholdingCents": 0,
+        "exempt": False,
+    } | over
+
+
+def test_federal_form_w4_2019_or_earlier() -> None:
+    """Hand-worked from Pub. 15-T Worksheet 1A lines 1j-1l; mirrors the TypeScript tests."""
+    data = federal_tax_data(2026)
+    assert data is not None
+
+    def tax(wages: int, periods: int, **w4: Any) -> int:
+        return federal_income_tax(data=data, wages_cents=wages, periods_per_year=periods, w4=_legacy(**w4))  # type: ignore[arg-type]
+
+    assert tax(1_000_00, 52, allowances=1) == 88_00
+    assert tax(2_000_00, 26, filingStatus="married", allowances=2) == 92_69
+    plain = tax(1_000_00, 52, allowances=1)
+    noisy = tax(
+        1_000_00,
+        52,
+        allowances=1,
+        multipleJobs=True,
+        dependentsCents=2_000_00,
+        otherIncomeCents=5_000_00,
+        deductionsCents=3_000_00,
+        extraWithholdingCents=10_00,
+    )
+    assert noisy == plain + 10_00
+    assert tax(1_000_00, 52, allowances=1, filingStatus="head") == plain
+    assert tax(100_00, 52, allowances=3) == 0
+    assert tax(5_000_00, 26, allowances=1, exempt=True) == 0

@@ -170,6 +170,7 @@ export function Onboarding() {
         const worker: NewWorker = {
           name: workerName.trim(),
           address: '',
+          email: '',
           type: workerType,
           payType,
           rateCents,

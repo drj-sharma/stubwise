@@ -71,6 +71,7 @@ function Navigator() {
           <Stack.Screen name="settings/orders" />
           <Stack.Screen name="settings/appearance" />
           <Stack.Screen name="report/[kind]" />
+          <Stack.Screen name="year-end" />
           <Stack.Screen name="stubs" />
           <Stack.Screen name="pick-worker" options={{ presentation: 'modal' }} />
           <Stack.Screen name="worker/new" options={{ presentation: 'modal' }} />

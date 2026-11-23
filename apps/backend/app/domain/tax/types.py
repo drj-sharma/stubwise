@@ -15,7 +15,12 @@ TAX_CODES: tuple[TaxCode, ...] = get_args(TaxCode)
 
 
 class W4(TypedDict):
-    """What an employee wrote on a 2020-or-later Form W-4."""
+    """What an employee wrote on their Form W-4: a 2020-or-later form, or (``legacy``) a 2019-or-earlier one."""
+
+    legacy: bool
+    """True for a Form W-4 from 2019 or earlier: only filingStatus, allowances and extraWithholdingCents apply."""
+    allowances: int
+    """Line 5 of a 2019-or-earlier Form W-4: the number of withholding allowances."""
 
     filingStatus: FilingStatus
     multipleJobs: bool
@@ -71,6 +76,8 @@ class TaxProfile(TypedDict):
 # The IRS rule for an employee who gives no Form W-4: withhold as a single filer
 # with no other entries (Pub. 15-T, "New employee fails to furnish Form W-4").
 DEFAULT_W4: W4 = {
+    "legacy": False,
+    "allowances": 0,
     "filingStatus": "single",
     "multipleJobs": False,
     "dependentsCents": 0,
@@ -148,6 +155,8 @@ def normalize_tax_profile(value: Any) -> TaxProfile:
         "state": state if is_us_state_code(state) else None,
         "stateW4": _state_w4(state_w4),
         "w4": {
+            "legacy": w4.get("legacy") is True,
+            "allowances": _count(w4.get("allowances")),
             "filingStatus": status if status in ("married", "head") else "single",
             "multipleJobs": w4.get("multipleJobs") is True,
             "dependentsCents": _cents_or_zero(w4.get("dependentsCents")),

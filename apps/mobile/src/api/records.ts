@@ -49,6 +49,7 @@ export function toWorker(row: WorkerOut): Worker {
     id: row.id,
     name: row.name,
     address: row.address,
+    email: row.email ?? '',
     type: row.type,
     payType: row.payType,
     rateCents: row.rateCents,

@@ -1,5 +1,7 @@
+import { formatPeriod, formatShortDate } from '@stubwise/domain';
 import { type StubDocument, buildStubDocument, renderStubHtml, stubFileName } from '@stubwise/templates';
 import { File, Paths } from 'expo-file-system';
+import * as MailComposer from 'expo-mail-composer';
 import * as Print from 'expo-print';
 import * as Sharing from 'expo-sharing';
 import { getStub, getWorker, listStubs } from '@/api/records';
@@ -47,6 +49,32 @@ export async function shareStubPdf(rendered: RenderedStub): Promise<void> {
     throw new Error('Sharing is not available on this device.');
   }
   await Sharing.shareAsync(uri, { mimeType: 'application/pdf', UTI: 'com.adobe.pdf', dialogTitle: 'Share pay stub' });
+}
+
+/** Why a stub could not be emailed from this phone; the screen offers Share PDF instead. */
+export class MailUnavailableError extends Error {
+  constructor() {
+    super('No email account is set up on this phone. Use Share PDF to send the stub another way.');
+  }
+}
+
+/**
+ * Opens the phone's own mail composer addressed to the worker, with the PDF
+ * attached. The PDF is made on the device and goes out from the owner's own
+ * email account: the app's server never sees it. Returns false when the owner
+ * closed the composer without sending.
+ */
+export async function emailStubPdf(rendered: RenderedStub, businessName: string): Promise<boolean> {
+  if (!(await MailComposer.isAvailableAsync())) throw new MailUnavailableError();
+  const uri = await createStubPdf(rendered);
+  const { stub, worker } = rendered;
+  const result = await MailComposer.composeAsync({
+    recipients: [worker.email],
+    subject: `Your pay stub from ${businessName} · paid ${formatShortDate(stub.payDate)}`,
+    body: `Hi ${worker.name.split(' ')[0]},\n\nYour pay stub for ${formatPeriod(stub.period)} is attached.\n\n${businessName}`,
+    attachments: [uri],
+  });
+  return result.status === MailComposer.MailComposerStatus.SENT;
 }
 
 export async function printStub(rendered: RenderedStub): Promise<void> {

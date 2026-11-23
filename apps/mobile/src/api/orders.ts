@@ -25,3 +25,13 @@ export async function listOrders(): Promise<Order[]> {
   } while (cursor);
   return items;
 }
+
+/**
+ * True when this stub has been paid for. A paid stub can be edited and sent
+ * again as often as needed at no charge: only the payment confirmation ever
+ * writes an order, so a correction never makes a second one.
+ */
+export async function isStubPaid(stubId: string): Promise<boolean> {
+  const page = await api.request<{ items: Order[] }>('GET', '/v1/orders', { query: { limit: 1, stubId } });
+  return page.items.some((order) => order.status === 'paid');
+}

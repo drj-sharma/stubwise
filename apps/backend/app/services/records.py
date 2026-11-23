@@ -185,6 +185,7 @@ def create_worker(db: Session, user_id: str, plan: str, body: WorkerCreate) -> W
         business_id=business.id,
         name=body.name,
         address=body.address,
+        email=body.email,
         type=body.type,
         pay_type=body.payType,
         rate_cents=body.rateCents,
@@ -200,6 +201,7 @@ def create_worker(db: Session, user_id: str, plan: str, body: WorkerCreate) -> W
 _WORKER_COLUMNS = {
     "name": "name",
     "address": "address",
+    "email": "email",
     "type": "type",
     "payType": "pay_type",
     "rateCents": "rate_cents",
@@ -226,6 +228,7 @@ def worker_json(worker: Worker) -> dict[str, Any]:
         "id": worker.id,
         "name": worker.name,
         "address": worker.address,
+        "email": worker.email,
         "type": worker.type,
         "payType": worker.pay_type,
         "rateCents": worker.rate_cents,
