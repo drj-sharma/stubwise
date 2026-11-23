@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from datetime import date
 from typing import Any
 
 from fastapi import APIRouter, Depends, Request
@@ -10,11 +11,12 @@ from ..config import API_VERSION, MIN_APP_VERSION
 from ..db import get_session
 from ..domain.tax.data import FEDERAL_DATA
 from ..domain.tax.state import state_tax_support
-from ..domain.us_states import US_STATES
+from ..domain.us_states import US_STATES, is_us_state_code
 from ..errors import ApiError
 from ..filing import CONSENT_VERSION
 from ..filing_schemas import SUPPORTED_TAX_YEARS
 from ..schemas import TEMPLATES
+from ..services.tax_view import federal_view, state_view
 from ..tax_rules.store import RULES
 
 router = APIRouter(tags=["Service"])
@@ -99,3 +101,29 @@ def tax_coverage(db: Session = Depends(get_session)) -> dict[str, Any]:
             states[code] = entry
         coverage.append({"year": year, "federal": year in FEDERAL_DATA, "states": states})
     return {"years": coverage}
+
+
+@router.get("/v1/meta/tax-rules", summary="Every figure used for federal tax or one state, laid out to read")
+def tax_rules(jurisdiction: str = "US", year: int | None = None, db: Session = Depends(get_session)) -> dict[str, Any]:
+    """``jurisdiction`` is ``US`` for federal or a state code. ``year`` defaults to the latest loaded."""
+    code = jurisdiction.upper()
+    years = sorted(set(FEDERAL_DATA) | set(RULES.years(db)))
+    if year is None and years:
+        this_year = date.today().year
+        year = this_year if this_year in years else years[-1]
+    if code == "US":
+        data = FEDERAL_DATA.get(year) if year is not None else None
+        if not data:
+            raise ApiError(404, "not_found", "No federal figures for that year.")
+        return federal_view(year, data)  # type: ignore[arg-type]
+    if not is_us_state_code(code):
+        raise ApiError(
+            400,
+            "invalid_request",
+            "The request is not valid.",
+            [{"path": "jurisdiction", "message": "must be US or a state code"}],
+        )
+    rules = RULES.for_state(db, year, code) if year is not None else []
+    if not rules:
+        raise ApiError(404, "not_found", "No rules for that state and year.")
+    return state_view(year, code, rules)  # type: ignore[arg-type]

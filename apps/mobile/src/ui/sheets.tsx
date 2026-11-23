@@ -291,8 +291,10 @@ export function StateSheet({
   noneLabel,
   onSelectNone,
   onClose,
+  title = 'Choose your state',
 }: {
   visible: boolean;
+  title?: string;
   selected: UsStateCode | null;
   onSelect: (code: UsStateCode) => void;
   /** With this, the list starts with a choice that clears the state. */
@@ -302,7 +304,7 @@ export function StateSheet({
 }) {
   const c = useTheme();
   return (
-    <BottomSheet visible={visible} title="Choose your state" onClose={onClose}>
+    <BottomSheet visible={visible} title={title} onClose={onClose}>
       {() => (
         <ScrollView style={{ maxHeight: 420 }} contentContainerStyle={{ paddingBottom: 4 }}>
           {noneLabel && onSelectNone ? (

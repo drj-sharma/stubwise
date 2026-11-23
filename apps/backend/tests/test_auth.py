@@ -212,7 +212,7 @@ def test_every_private_route_needs_a_valid_access_token(client: TestClient) -> N
         "another-secret-another-secret-another-secret",
         algorithm="HS256",
     )
-    public = {"/health", "/ready", "/v1/meta", "/v1/meta/tax-coverage"}
+    public = {"/health", "/ready", "/v1/meta", "/v1/meta/tax-coverage", "/v1/meta/tax-rules"}
     unauthenticated = {"/v1/auth/google", "/v1/auth/apple", "/v1/auth/refresh"}
     credentials = (
         {},
