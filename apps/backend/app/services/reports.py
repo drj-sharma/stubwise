@@ -168,6 +168,52 @@ def deductions(db: Session, user_id: str, start: str, end: str) -> dict[str, Any
     }
 
 
+def _months_between(start: str, end: str) -> list[str]:
+    """Every calendar month from the one holding ``start`` to the one holding ``end``, as YYYY-MM."""
+    year, month = int(start[:4]), int(start[5:7])
+    last = (int(end[:4]), int(end[5:7]))
+    months: list[str] = []
+    while (year, month) <= last:
+        months.append(f"{year:04d}-{month:02d}")
+        year, month = (year + 1, 1) if month == 12 else (year, month + 1)
+    return months
+
+
+def monthly(db: Session, user_id: str, start: str, end: str) -> dict[str, Any]:
+    """Gross, taxes and net for each calendar month of the range (by pay date), oldest first.
+
+    Months with no stubs are included as zeros so a chart has no gaps.
+    """
+    rows = {
+        month: {"month": month, "stubCount": 0, "grossCents": 0, "taxesCents": 0, "otherCents": 0}
+        for month in _months_between(start, end)
+    }
+    for stub in _stubs(db, user_id, start, end):
+        row = rows[stub.pay_date[:7]]
+        row["stubCount"] += 1
+        for line in stub.lines:
+            if line.kind == "earning":
+                row["grossCents"] += line.amount_cents
+            elif line.tax_code:
+                row["taxesCents"] += line.amount_cents
+            else:
+                row["otherCents"] += line.amount_cents
+    months = []
+    for row in rows.values():
+        deductions_cents = row["taxesCents"] + row["otherCents"]
+        months.append(
+            {
+                "month": row["month"],
+                "stubCount": row["stubCount"],
+                "grossCents": row["grossCents"],
+                "taxesCents": row["taxesCents"],
+                "deductionsCents": deductions_cents,
+                "netCents": row["grossCents"] - deductions_cents,
+            }
+        )
+    return {"from": start, "to": end, "months": months}
+
+
 def _money(cents: Cents) -> str:
     sign = "-" if cents < 0 else ""
     cents = abs(cents)

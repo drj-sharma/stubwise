@@ -57,3 +57,9 @@ def deductions(
     start, end = _range(start, end)
     report = reports.deductions(db, user_id, start, end)
     return _csv(reports.deductions_csv(report), "deductions", start, end) if format == "csv" else report
+
+
+@router.get("/monthly", summary="Gross, taxes and net for each month in a range, for charts")
+def monthly(start: From, end: To, user_id: str = Depends(reader), db: Session = Depends(get_session)) -> Any:
+    start, end = _range(start, end)
+    return reports.monthly(db, user_id, start, end)

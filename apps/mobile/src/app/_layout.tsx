@@ -60,11 +60,9 @@ function Navigator() {
           <Stack.Screen name="setup" options={{ animation: 'none' }} />
         </Stack.Protected>
         <Stack.Protected guard={signedIn && !!business}>
-          {/* The tabs swap without a push animation, like a tab bar. */}
-          <Stack.Screen name="home" options={{ animation: 'none' }} />
-          <Stack.Screen name="workers" options={{ animation: 'none' }} />
-          <Stack.Screen name="reports" options={{ animation: 'none' }} />
-          <Stack.Screen name="settings/index" options={{ animation: 'none' }} />
+          {/* Home, Workers, Insights and Settings are the native tab bar; they open without a push animation. */}
+          <Stack.Screen name="(tabs)" options={{ animation: 'none' }} />
+          <Stack.Screen name="reports" />
           <Stack.Screen name="settings/account" />
           <Stack.Screen name="settings/stubs" />
           <Stack.Screen name="settings/taxes" />

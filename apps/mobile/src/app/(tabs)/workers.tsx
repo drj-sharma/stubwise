@@ -11,7 +11,7 @@ import { useBusiness } from '@/state/business';
 import { useQuery } from '@/state/useQuery';
 import { useIsWide } from '@/ui/layout';
 import { Avatar, Button, CircleButton, Heading, Icon, Pill, Screen, Segmented, Sheet, StatTile } from '@/ui/primitives';
-import { BusinessHeader, SideRail, TabBar } from '@/ui/TabBar';
+import { BusinessHeader } from '@/ui/TabBar';
 import { ErrorState, Loading, Refresher, StaleBanner, alertError } from '@/ui/states';
 import { useTheme } from '@/ui/theme';
 
@@ -178,9 +178,8 @@ export default function Workers() {
 
   if (wide) {
     return (
-      <Screen>
+      <Screen padBottom={false}>
         <View style={{ flex: 1, flexDirection: 'row', gap: 12, paddingHorizontal: 16, paddingTop: 8 }}>
-          <SideRail active="workers" />
           <ScrollView
             style={{ flex: 0, width: 372 }}
             contentContainerStyle={{ flexGrow: 1 }}
@@ -194,7 +193,7 @@ export default function Workers() {
   }
 
   return (
-    <Screen footer={<TabBar active="workers" />}>
+    <Screen padBottom={false}>
       <BusinessHeader right={<CircleButton icon="plus" label="Add worker" onPress={() => router.push('/worker/new')} />} />
       <ScrollView
         contentContainerStyle={{ padding: 12, paddingTop: 14, flexGrow: 1 }}

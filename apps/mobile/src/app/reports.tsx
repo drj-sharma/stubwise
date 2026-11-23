@@ -7,8 +7,7 @@ import { getDeductionsReport, getEarningsReport, type ReportKind } from '@/api/r
 import { formatRange, rangeChoices } from '@/services/reports';
 import { useQuery } from '@/state/useQuery';
 import { useIsWide } from '@/ui/layout';
-import { Heading, Icon, Screen, Sheet } from '@/ui/primitives';
-import { BusinessHeader, SideRail, TabBar } from '@/ui/TabBar';
+import { CircleButton, Heading, Icon, Screen, Sheet, TopBar } from '@/ui/primitives';
 import { ErrorState, Loading, Refresher, StaleBanner } from '@/ui/states';
 import { useTheme } from '@/ui/theme';
 
@@ -99,22 +98,12 @@ export default function Reports() {
     </View>
   );
 
-  if (wide) {
-    return (
-      <Screen>
-        <View style={{ flex: 1, flexDirection: 'row', gap: 12, paddingHorizontal: 16, paddingTop: 8 }}>
-          <SideRail active="reports" />
-          <ScrollView style={{ flex: 1 }} contentContainerStyle={{ maxWidth: 720 }} refreshControl={<Refresher refreshing={refreshing} onRefresh={() => void refresh()} />}>
-            {body}
-          </ScrollView>
-        </View>
-      </Screen>
-    );
-  }
   return (
-    <Screen footer={<TabBar active="reports" />}>
-      <BusinessHeader />
-      <ScrollView contentContainerStyle={{ padding: 12, paddingTop: 14 }} refreshControl={<Refresher refreshing={refreshing} onRefresh={() => void refresh()} />}>
+    <Screen padBottom={false}>
+      <TopBar left={<CircleButton icon="arrow.left" label="Back" onPress={() => router.back()} />} />
+      <ScrollView
+        contentContainerStyle={{ padding: 12, paddingTop: 8, width: '100%', maxWidth: wide ? 720 : undefined, alignSelf: 'center' }}
+        refreshControl={<Refresher refreshing={refreshing} onRefresh={() => void refresh()} />}>
         {body}
       </ScrollView>
     </Screen>

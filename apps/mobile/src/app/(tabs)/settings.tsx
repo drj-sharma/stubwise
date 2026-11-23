@@ -11,7 +11,7 @@ import { useQuery } from '@/state/useQuery';
 import { useIsWide } from '@/ui/layout';
 import { Heading, Icon, Screen } from '@/ui/primitives';
 import { Refresher } from '@/ui/states';
-import { BusinessHeader, SideRail, TabBar } from '@/ui/TabBar';
+import { BusinessHeader } from '@/ui/TabBar';
 import { useTheme } from '@/ui/theme';
 
 const APPEARANCE_LABELS = { automatic: 'Automatic', light: 'Light', dark: 'Dark' } as const;
@@ -96,9 +96,8 @@ export default function Settings() {
 
   if (wide) {
     return (
-      <Screen>
+      <Screen padBottom={false}>
         <View style={{ flex: 1, flexDirection: 'row', gap: 12, paddingHorizontal: 16, paddingTop: 8 }}>
-          <SideRail active="settings" />
           <ScrollView style={{ flex: 1 }} contentContainerStyle={{ maxWidth: 640 }} refreshControl={<Refresher refreshing={refreshing} onRefresh={() => void refresh()} />}>
             {body}
           </ScrollView>
@@ -107,7 +106,7 @@ export default function Settings() {
     );
   }
   return (
-    <Screen footer={<TabBar active="settings" />}>
+    <Screen padBottom={false}>
       <BusinessHeader />
       <ScrollView contentContainerStyle={{ padding: 12, paddingTop: 10 }} refreshControl={<Refresher refreshing={refreshing} onRefresh={() => void refresh()} />}>
         {body}

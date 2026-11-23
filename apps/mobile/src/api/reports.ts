@@ -62,6 +62,21 @@ export interface DeductionsReport extends ReportRange {
   totals: DeductionsSummary;
 }
 
+export interface MonthlyRow {
+  /** Calendar month of the pay dates, YYYY-MM. */
+  month: string;
+  stubCount: number;
+  grossCents: number;
+  taxesCents: number;
+  deductionsCents: number;
+  netCents: number;
+}
+
+export interface MonthlyReport extends ReportRange {
+  /** Every month in the range, oldest first, including months with no stubs. */
+  months: MonthlyRow[];
+}
+
 export type ReportKind = 'earnings' | 'deductions';
 
 export function getEarningsReport(range: ReportRange): Promise<EarningsReport> {
@@ -70,6 +85,10 @@ export function getEarningsReport(range: ReportRange): Promise<EarningsReport> {
 
 export function getDeductionsReport(range: ReportRange): Promise<DeductionsReport> {
   return api.request<DeductionsReport>('GET', '/v1/reports/deductions', { query: { from: range.from, to: range.to } });
+}
+
+export function getMonthlyReport(range: ReportRange): Promise<MonthlyReport> {
+  return api.request<MonthlyReport>('GET', '/v1/reports/monthly', { query: { from: range.from, to: range.to } });
 }
 
 /** The report as a spreadsheet file's text (CSV), worked out by the server. */

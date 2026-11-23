@@ -86,3 +86,41 @@ def test_reports_only_show_your_own_stubs_and_check_dates(
         client.get("/v1/reports/earnings", headers=auth, params={"from": "nope", "to": "2026-01-01"}).status_code == 400
     )
     assert client.get("/v1/reports/earnings", params={"from": pay_date, "to": pay_date}).status_code == 401
+
+
+def test_monthly_report_has_a_row_for_every_month_and_matches_the_other_reports(
+    client: TestClient, auth: dict[str, str]
+) -> None:
+    made = seed(client, auth)
+    stub = _stub_with(
+        client,
+        auth,
+        made["stub"]["id"],
+        [hourly("Regular", 80 * 60, 2400), flat("deduction", "Health insurance", 8500)],
+    )
+    pay_date = stub["payDate"]
+    year = int(pay_date[:4])
+
+    report = client.get("/v1/reports/monthly", headers=auth, params={"from": f"{year}-01-01", "to": f"{year}-12-31"})
+    assert report.status_code == 200, report.text
+    months = report.json()["months"]
+    assert [row["month"] for row in months] == [f"{year}-{month:02d}" for month in range(1, 13)]
+
+    busy = [row for row in months if row["stubCount"]]
+    assert [row["month"] for row in busy] == [pay_date[:7]]
+    totals = client.get("/v1/reports/deductions", headers=auth, params={"from": pay_date, "to": pay_date}).json()[
+        "totals"
+    ]
+    assert busy[0]["grossCents"] == totals["grossCents"] == stub["totals"]["grossCents"]
+    assert busy[0]["taxesCents"] == totals["taxesCents"]
+    assert busy[0]["deductionsCents"] == totals["deductionsCents"]
+    assert busy[0]["netCents"] == totals["netCents"] == stub["totals"]["netCents"]
+    assert all(row["grossCents"] == row["netCents"] == 0 for row in months if not row["stubCount"])
+
+    # Months run across a year end, and a bad range is refused like the other reports.
+    across = client.get("/v1/reports/monthly", headers=auth, params={"from": "2025-11-05", "to": "2026-02-01"}).json()
+    assert [row["month"] for row in across["months"]] == ["2025-11", "2025-12", "2026-01", "2026-02"]
+    assert (
+        client.get("/v1/reports/monthly", headers=auth, params={"from": "2026-02-01", "to": "2026-01-01"}).status_code
+        == 400
+    )
