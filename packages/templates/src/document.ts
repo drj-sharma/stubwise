@@ -10,7 +10,11 @@ import {
   calcStub,
   computeYtd,
   formatDateWithYear,
+  QUANTITY_PAY_WORDS,
   isHourlyLine,
+  isQuantityLine,
+  isQuantityPayType,
+  type PayType,
   lineAmount,
   lineKey,
   yearOf,
@@ -54,6 +58,11 @@ export interface StubDocumentRow {
   label: string;
   /** Worked minutes for hourly lines, otherwise null. */
   minutes: number | null;
+  /** Units of work in thousandths for per-mile, per-load, per-day and per-piece lines, otherwise null. */
+  quantityMilli?: number | null;
+  /** What the quantity counts ("mile", "load", "day", "piece"), or null. */
+  unit?: string | null;
+  /** The hourly rate, or the rate per unit for a per-unit line. */
   rateCents: Cents | null;
   currentCents: Cents;
   ytdCents: Cents;
@@ -73,7 +82,7 @@ export interface BuildStubDocumentInput {
     name: string;
     address: string;
     type: 'employee' | 'contractor';
-    payType: 'hourly' | 'salary';
+    payType: PayType;
     rateCents: Cents;
     startingYtd: StartingYtd | null;
   };
@@ -90,18 +99,26 @@ export function buildStubDocument(input: BuildStubDocumentInput): StubDocument {
   const row = (line: StubLine): StubDocumentRow => ({
     label: line.label,
     minutes: isHourlyLine(line) ? line.minutes : null,
-    rateCents: isHourlyLine(line) ? line.rateCents : null,
+    quantityMilli: isQuantityLine(line) ? (line.quantityMilli ?? null) : null,
+    unit: isQuantityLine(line) ? (line.unit ?? null) : null,
+    rateCents: isHourlyLine(line) || isQuantityLine(line) ? line.rateCents : null,
     currentCents: lineAmount(line),
     ytdCents: ytd.byLine.get(lineKey(line)) ?? lineAmount(line),
   });
 
   // A line with nothing now and nothing so far this year (unused overtime, say) only adds noise.
-  const hasValue = (r: StubDocumentRow): boolean => r.currentCents !== 0 || r.ytdCents !== 0 || (r.minutes ?? 0) !== 0;
+  const hasValue = (r: StubDocumentRow): boolean => r.currentCents !== 0 || r.ytdCents !== 0 || (r.minutes ?? 0) !== 0 || (r.quantityMilli ?? 0) !== 0;
 
-  const rateLabel =
-    worker.payType === 'hourly'
+  const rateLabel = isQuantityPayType(worker.payType)
+    ? `${dollars(worker.rateCents)} ${QUANTITY_PAY_WORDS[worker.payType].per}`
+    : worker.payType === 'hourly'
       ? `${dollars(worker.rateCents)} per hour`
       : `${dollars(worker.rateCents)} per pay period`;
+  const employeeLabel = isQuantityPayType(worker.payType)
+    ? `Paid ${QUANTITY_PAY_WORDS[worker.payType].per}`
+    : worker.payType === 'hourly'
+      ? 'Hourly employee'
+      : 'Salaried employee';
 
   return {
     business: {
@@ -114,7 +131,7 @@ export function buildStubDocument(input: BuildStubDocumentInput): StubDocument {
     worker: {
       name: worker.name,
       address: worker.address,
-      typeLabel: worker.type === 'contractor' ? '1099 contractor' : worker.payType === 'hourly' ? 'Hourly employee' : 'Salaried employee',
+      typeLabel: worker.type === 'contractor' ? '1099 contractor' : employeeLabel,
       rateLabel,
     },
     period: stub.period,

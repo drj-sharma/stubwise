@@ -21,7 +21,7 @@ from sqlalchemy.orm import Session
 from ..domain.calc_stub import calc_stub, with_computed_amount
 from ..domain.next_stub import draft_next_stub
 from ..domain.pay_period import add_days, current_period, default_pay_date, diff_days, year_of
-from ..domain.tax.apply_taxes import TaxContext, apply_taxes, is_tax_override, work_state
+from ..domain.tax.apply_taxes import TaxContext, apply_taxes, is_tax_override, supplemental_notes, work_state
 from ..domain.tax.types import normalize_tax_profile
 from ..domain.ytd import compute_ytd, prior_ytd_gross
 from ..errors import ApiError
@@ -48,6 +48,12 @@ def _domain_line(row: StubLine) -> Line:
     }
     if row.tax_code is not None:
         line["taxCode"] = row.tax_code
+    # Left out when unset, so a line saved before these existed reads exactly as it did.
+    if row.quantity_milli is not None:
+        line["quantityMilli"] = row.quantity_milli
+        line["unit"] = row.unit
+    if row.supplemental is not None:
+        line["supplemental"] = row.supplemental
     return line
 
 
@@ -116,6 +122,9 @@ def _set_lines(stub: Stub, lines: Sequence[Line]) -> None:
             amount_cents=line["amountCents"],
             source=line["source"],
             tax_code=line.get("taxCode"),
+            quantity_milli=line.get("quantityMilli"),
+            unit=line.get("unit") if line.get("quantityMilli") is not None else None,
+            supplemental=line.get("supplemental"),
         )
         for position, line in enumerate(lines)
     ]
@@ -290,6 +299,7 @@ class StubView:
             "totals": calc_stub(target["lines"]),
             "ytd": {**ytd, "byLine": dict(sorted(ytd["byLine"].items()))},
             "taxStatus": apply_taxes(target["lines"], context)["status"],
+            "taxNotes": supplemental_notes(target["lines"], context),
             "version": stub.version,
             "createdAt": iso_z(stub.created_at),
             "updatedAt": iso_z(stub.updated_at),

@@ -3,7 +3,7 @@ import { router, useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
 import { ScrollView, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { type DeductionLine, type DeductionsSummary, type EarningsSummary, type ReportKind, getDeductionsReport, getEarningsReport } from '@/api/reports';
+import { type DeductionLine, type DeductionsSummary, type EarningsSummary, type ReportKind, getDeductionsReport, getEarningsReport, hoursOrUnits } from '@/api/reports';
 import { deductionsHtml, earningsHtml, formatRange, shareReportCsv, shareReportPdf } from '@/services/reports';
 import { useBusiness } from '@/state/business';
 import { useQuery } from '@/state/useQuery';
@@ -167,7 +167,7 @@ function EarningsBlock({ title, subtitle, summary, seed }: { title: string; subt
         <StatTile label="Hours" value={summary.minutes ? formatDuration(summary.minutes) : '—'} />
       </View>
       <Table
-        rows={summary.lines.map((line) => ({ label: line.label, middle: hours(line.minutes), amount: line.amountCents }))}
+        rows={summary.lines.map((line) => ({ label: line.label, middle: hoursOrUnits(line), amount: line.amountCents }))}
         total={{ label: 'Gross pay', middle: hours(summary.minutes), amount: summary.grossCents }}
       />
     </Sheet>

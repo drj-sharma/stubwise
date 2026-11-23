@@ -1,6 +1,6 @@
 import { type Cents, assertCents, sumCents } from './money';
 import type { TaxCode } from './tax/types';
-import { type Minutes, payForMinutes } from './time';
+import { type Minutes, type QuantityMilli, payForMinutes, payForQuantity } from './time';
 
 export type LineKind = 'earning' | 'deduction';
 
@@ -21,6 +21,20 @@ export interface StubLine {
   amountCents: Cents;
   source: LineSource;
   /**
+   * Units of work for a per-mile, per-load, per-day or per-piece earning, in
+   * thousandths of a unit (12.5 miles is 12_500). Set together with `rateCents`
+   * (the rate per unit) and with `minutes` null. Absent on older stubs.
+   */
+  quantityMilli?: QuantityMilli | null;
+  /** What the quantity counts: "mile", "load", "day" or "piece". */
+  unit?: string | null;
+  /**
+   * Earnings only. True when the line is supplemental wages (a bonus or
+   * commission) that federal income tax is withheld on at the flat
+   * supplemental rate instead of as ordinary pay. Absent or false: ordinary.
+   */
+  supplemental?: boolean;
+  /**
    * Set on tax deductions. With source `calculated` the app worked the amount
    * out; with `manual` the user typed over it and it is left alone.
    */
@@ -40,10 +54,31 @@ export function isHourlyLine(line: Pick<StubLine, 'minutes' | 'rateCents'>): boo
   return line.minutes !== null && line.rateCents !== null;
 }
 
-/** The amount a line should carry: time × rate for hourly lines, the typed amount otherwise. */
-export function lineAmount(line: Pick<StubLine, 'minutes' | 'rateCents' | 'amountCents'>): Cents {
+/** True when the amount is a quantity of units multiplied by a rate per unit. */
+export function isQuantityLine(line: Pick<StubLine, 'minutes' | 'rateCents' | 'quantityMilli'>): boolean {
+  return line.minutes === null && line.rateCents !== null && line.quantityMilli !== null && line.quantityMilli !== undefined;
+}
+
+/** True for an earning line taxed at the flat supplemental rate. */
+export function isSupplementalLine(line: Pick<StubLine, 'kind' | 'supplemental'>): boolean {
+  return line.kind === 'earning' && line.supplemental === true;
+}
+
+/** Whether a new line with this label starts out as supplemental pay: only "Bonus" does. */
+export function defaultSupplemental(label: string): boolean {
+  return label.trim().toLowerCase() === 'bonus';
+}
+
+/**
+ * The amount a line should carry: time × rate for hourly lines, quantity ×
+ * rate for per-unit lines, the typed amount otherwise.
+ */
+export function lineAmount(line: Pick<StubLine, 'minutes' | 'rateCents' | 'amountCents' | 'quantityMilli'>): Cents {
   if (line.minutes !== null && line.rateCents !== null) {
     return payForMinutes(line.minutes, line.rateCents);
+  }
+  if (isQuantityLine(line)) {
+    return payForQuantity(line.quantityMilli as number, line.rateCents as number);
   }
   assertCents(line.amountCents);
   return line.amountCents;

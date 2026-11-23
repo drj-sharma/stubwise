@@ -46,6 +46,14 @@ def pay_for_minutes(minutes: Minutes, hourly_rate_cents: Cents) -> Cents:
     return div_round_half_up(minutes * hourly_rate_cents, 60)
 
 
+def pay_for_quantity(quantity_milli: int, rate_cents: Cents) -> Cents:
+    """Pay for a quantity of units (whole thousandths of a unit) at a rate per unit, rounded once at the end."""
+    if not is_integer(quantity_milli) or quantity_milli < 0:
+        raise ValueError(f"Expected a quantity in whole thousandths of zero or more, got {quantity_milli!r}")
+    assert_cents(rate_cents)
+    return div_round_half_up(quantity_milli * rate_cents, 1000)
+
+
 def overtime_rate_cents(hourly_rate_cents: Cents, multiplier_pct: int = DEFAULT_OVERTIME_MULTIPLIER_PCT) -> Cents:
     assert_cents(hourly_rate_cents)
     if not is_integer(multiplier_pct) or multiplier_pct < 100:

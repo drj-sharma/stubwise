@@ -10,6 +10,7 @@ import {
   parseDollars,
   todayIso,
   usStateName,
+  payRateWords,
 } from '@stubwise/domain';
 import * as Crypto from 'expo-crypto';
 import { router } from 'expo-router';
@@ -19,6 +20,7 @@ import { isConflict } from '@/api';
 import { createWorker, deleteWorker, updateWorker } from '@/api/records';
 import { type CertificateField, useStateCoverage } from '@/api/taxCoverage';
 import type { NewWorker, Worker } from '@/db/types';
+import { PayTypePicker } from '@/features/PayTypePicker';
 import { Amount, Button, CardHeader, Field, Icon, Row, SectionLabel, Segmented, Sheet, StatTile, SubCard, TABULAR } from '@/ui/primitives';
 import { useBusiness } from '@/state/business';
 import { AddLineSheet, AmountSheet, StateSheet } from '@/ui/sheets';
@@ -108,7 +110,7 @@ export function WorkerForm({ existing, onConflict }: { existing: Worker | null; 
     const rateCents = parseDollars(rate);
     if (name.trim() === '') return Alert.alert('Name needed', "Enter the worker's name as it should appear on stubs.");
     if (rateCents === null || rateCents === 0) {
-      return Alert.alert('Pay rate needed', payType === 'hourly' ? 'Enter the hourly rate, for example 24.00.' : 'Enter the salary per pay period.');
+      return Alert.alert('Pay rate needed', payRateWords(payType).missing);
     }
     const worker: NewWorker = {
       name: name.trim(),
@@ -175,41 +177,30 @@ export function WorkerForm({ existing, onConflict }: { existing: Worker | null; 
 
           <View style={{ gap: 6 }}>
             <SectionLabel>Pay</SectionLabel>
-            <View style={{ flexDirection: 'row', gap: 8 }}>
-              <View style={{ flex: 1 }}>
-                <Segmented
-                  value={payType}
-                  onChange={setPayType}
-                  options={[
-                    { value: 'hourly', label: 'Hourly' },
-                    { value: 'salary', label: 'Salary' },
-                  ]}
-                />
-              </View>
-              <View
-                style={{
-                  flex: 1,
-                  height: 52,
-                  paddingHorizontal: 12,
-                  borderWidth: 1,
-                  borderColor: c.border,
-                  borderRadius: 12,
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  gap: 4,
-                }}>
-                <Text style={{ fontSize: 14, color: c.muted }}>$</Text>
-                <TextInput
-                  defaultValue={rate}
-                  onChangeText={setRate}
-                  keyboardType="decimal-pad"
-                  placeholder="0.00"
-                  placeholderTextColor={c.faint}
-                  accessibilityLabel={payType === 'hourly' ? 'Hourly rate in dollars' : 'Salary per pay period in dollars'}
-                  style={[{ flex: 1, padding: 0, fontSize: 15, fontWeight: '600', color: c.text }, TABULAR]}
-                />
-                <Text style={{ fontSize: 12, color: c.muted }}>{payType === 'hourly' ? 'per hour' : 'per period'}</Text>
-              </View>
+            <PayTypePicker value={payType} onChange={setPayType} height={40} />
+            <View
+              style={{
+                height: 52,
+                paddingHorizontal: 12,
+                borderWidth: 1,
+                borderColor: c.border,
+                borderRadius: 12,
+                flexDirection: 'row',
+                alignItems: 'center',
+                gap: 4,
+              }}>
+              <Text style={{ fontSize: 14, color: c.muted }}>$</Text>
+              <TextInput
+                key={payType}
+                defaultValue={rate}
+                onChangeText={setRate}
+                keyboardType="decimal-pad"
+                placeholder="0.00"
+                placeholderTextColor={c.faint}
+                accessibilityLabel={payRateWords(payType).accessibility}
+                style={[{ flex: 1, padding: 0, fontSize: 15, fontWeight: '600', color: c.text }, TABULAR]}
+              />
+              <Text style={{ fontSize: 12, color: c.muted }}>{payRateWords(payType).suffix}</Text>
             </View>
           </View>
 

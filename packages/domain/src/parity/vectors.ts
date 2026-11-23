@@ -1,4 +1,5 @@
 import { type StubLine, calcStub, lineAmount } from '../calcStub';
+import { QUANTITY_PAY_TYPES, QUANTITY_PAY_WORDS } from '../payTypes';
 import { divRoundHalfUp } from '../money';
 import { draftNextStub } from '../nextStub';
 import { PAY_SCHEDULES, addDays, currentPeriod, defaultPayDate, diffDays, nextPayDate, nextPeriod, periodContaining } from '../payPeriod';
@@ -8,7 +9,7 @@ import { STATE_RULES_2026 } from '../tax/data/states-2026';
 import { PAY_PERIODS_PER_YEAR, federalIncomeTax, medicareTax, socialSecurityTax } from '../tax/federal';
 import { NO_WAGE_INCOME_TAX_STATES, stateIncomeTax } from '../tax/state';
 import { DEFAULT_STATE_W4, DEFAULT_W4, type FilingStatus, type StateW4, type TaxProfile, type W4 } from '../tax/types';
-import { overtimeRateCents, payForMinutes } from '../time';
+import { overtimeRateCents, payForMinutes, payForQuantity } from '../time';
 import { US_STATES, type UsStateCode } from '../usStates';
 import { type YtdStub, computeYtd, priorYtdGross } from '../ytd';
 
@@ -245,5 +246,83 @@ export function buildVectors() {
     return { worker, schedule, today, overtimePct, first, previous, changedRate, second: draftNextStub(changedRate, schedule, previous, today, overtimePct) };
   });
 
-  return { version: 1, divRound, hourlyPay, dates, periods, stubTotals, ytd, federal, state, taxLines, nextStub };
+  // Cases added with per-unit pay and supplemental (bonus) tax. They use a generator of their own so
+  // adding them did not change any case above.
+  const more = seeded(20261123);
+  const mint = (min: number, max: number): number => min + Math.floor(more() * (max - min + 1));
+  const mpick = <T>(items: readonly T[]): T => items[mint(0, items.length - 1)] as T;
+  const noWageTaxStates: UsStateCode[] = ['TN', 'FL', 'TX', 'NV'];
+
+  const quantityPay = Array.from({ length: 60 }, () => {
+    const quantityMilli = mint(0, 5_000_000);
+    const rateCents = mint(1, 50_000);
+    return { quantityMilli, rateCents, expected: payForQuantity(quantityMilli, rateCents) };
+  });
+
+  const quantityLine = (type: (typeof QUANTITY_PAY_TYPES)[number]): StubLine => {
+    const quantityMilli = mint(0, 4_000_000);
+    const rateCents = mint(5, 30_000);
+    const { label, unit } = QUANTITY_PAY_WORDS[type];
+    return { kind: 'earning', label, minutes: null, rateCents, quantityMilli, unit, amountCents: payForQuantity(quantityMilli, rateCents), source: 'manual' };
+  };
+
+  const supplementalTax = Array.from({ length: 100 }, () => {
+    const lines: StubLine[] = [];
+    const shape = mint(0, 2);
+    if (shape === 0) {
+      const rateCents = mint(1_000, 9_000);
+      const regular = mint(0, 5_400);
+      lines.push({ kind: 'earning', label: 'Regular', minutes: regular, rateCents, amountCents: payForMinutes(regular, rateCents), source: 'manual' });
+    } else if (shape === 1) {
+      lines.push(quantityLine(mpick(QUANTITY_PAY_TYPES)));
+    } else {
+      lines.push({ kind: 'earning', label: 'Salary', minutes: null, rateCents: null, amountCents: mint(50_000, 1_200_000), source: 'manual' });
+    }
+    // Zero, one or two flat earnings, most of them flagged supplemental, some not (and some with the flag off).
+    for (let index = mint(0, 2); index > 0; index -= 1) {
+      const supplemental = mint(0, 4);
+      lines.push({
+        kind: 'earning',
+        label: mpick(['Bonus', 'Commission', 'Tips']),
+        minutes: null,
+        rateCents: null,
+        amountCents: mint(1_000, 400_000),
+        source: 'manual',
+        ...(supplemental === 0 ? {} : supplemental === 1 ? { supplemental: false } : { supplemental: true }),
+      });
+    }
+    if (more() < 0.4) lines.push({ kind: 'deduction', label: 'Health insurance', minutes: null, rateCents: null, amountCents: mint(1_000, 30_000), source: 'manual' });
+    const context = {
+      profile: { calculate: true, w4: { ...DEFAULT_W4, exempt: more() < 0.1, filingStatus: mpick(statuses), multipleJobs: more() < 0.2, extraWithholdingCents: more() < 0.7 ? 0 : mint(0, 20_000) }, state: null, stateW4: DEFAULT_STATE_W4 },
+      businessState: mpick(noWageTaxStates),
+      year: 2026,
+      schedule: mpick(PAY_SCHEDULES),
+      priorYtdGrossCents: more() < 0.8 ? mint(0, 10_000_000) : mint(17_000_000, 25_000_000),
+    };
+    return { context, input: lines, lineAmounts: lines.map(lineAmount), totals: calcStub(lines), expected: applyTaxes(lines, context) };
+  });
+
+  const nextStubQuantity = Array.from({ length: 60 }, () => {
+    const schedule = mpick(PAY_SCHEDULES);
+    const payType = mpick(QUANTITY_PAY_TYPES);
+    const worker = {
+      payType,
+      rateCents: mint(50, 25_000),
+      type: mpick(['employee', 'contractor'] as const),
+      defaultDeductions: more() < 0.5 ? [] : [{ label: 'Health insurance', amountCents: mint(1_000, 20_000) }],
+    };
+    const today = addDays('2026-01-01', mint(0, 500));
+    const first = draftNextStub(worker, schedule, null, today, 150);
+    const extras: StubLine[] = [
+      ...(more() < 0.4 ? [{ ...quantityLine(mpick(QUANTITY_PAY_TYPES)) }] : []),
+      ...(more() < 0.3 ? [{ kind: 'earning' as const, label: 'Regular', minutes: 600, rateCents: 2_000, amountCents: 20_000, source: 'manual' as const }] : []),
+      ...(more() < 0.4 ? [{ kind: 'earning' as const, label: 'Bonus', minutes: null, rateCents: null, amountCents: 10_000, source: 'manual' as const, supplemental: true }] : []),
+    ];
+    const filled = first.lines.map((line) => (line.quantityMilli === 0 ? { ...line, quantityMilli: mint(1_000, 900_000), amountCents: 0 } : line));
+    const previous = { period: first.period, payDate: first.payDate, lines: [...filled.map((line) => (line.quantityMilli ? { ...line, amountCents: payForQuantity(line.quantityMilli, line.rateCents as number) } : line)), ...extras] };
+    const changedRate = { ...worker, rateCents: worker.rateCents + mint(0, 300) };
+    return { worker, schedule, today, first, previous, changedRate, second: draftNextStub(changedRate, schedule, previous, today, 150) };
+  });
+
+  return { version: 1, divRound, hourlyPay, dates, periods, stubTotals, ytd, federal, state, taxLines, nextStub, quantityPay, supplementalTax, nextStubQuantity };
 }

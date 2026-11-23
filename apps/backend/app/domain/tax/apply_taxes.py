@@ -5,11 +5,18 @@ from __future__ import annotations
 from collections.abc import Sequence
 from typing import Any, Literal, NotRequired, TypedDict
 
-from ..calc_stub import StubLine, calc_stub
+from ..calc_stub import StubLine, calc_stub, is_supplemental_line
 from ..money import Cents
 from ..pay_period import PaySchedule
+from ..us_states import us_state_name
 from .data import PAY_PERIODS_PER_YEAR
-from .federal import federal_income_tax, federal_tax_data, medicare_tax, social_security_tax
+from .federal import (
+    federal_income_tax,
+    federal_tax_data,
+    medicare_tax,
+    social_security_tax,
+    supplemental_income_tax,
+)
 from .state import calculated_codes, state_taxes
 from .states._common import StateInput
 from .types import DEFAULT_STATE_W4, TaxProfile
@@ -78,11 +85,16 @@ def apply_taxes(lines: Sequence[StubLine], context: TaxContext) -> TaxedLines:
 
     # Taxable wages are gross pay: pre-tax deductions are not modelled yet.
     wages = calc_stub(earnings)["grossCents"]
+    # Bonus and commission lines marked supplemental are withheld on at the flat federal rate;
+    # the rest of the pay goes through the percentage method on its own.
+    supplemental_wages = calc_stub([line for line in earnings if is_supplemental_line(line)])["grossCents"]
     periods = PAY_PERIODS_PER_YEAR[context["schedule"]]
     prior = context["priorYtdGrossCents"]
     w4 = profile["w4"]
 
-    fit = federal_income_tax(data=data, wages_cents=wages, periods_per_year=periods, w4=w4)
+    fit = federal_income_tax(
+        data=data, wages_cents=wages - supplemental_wages, periods_per_year=periods, w4=w4
+    ) + supplemental_income_tax(data=data, wages_cents=supplemental_wages, w4=w4)
     ss = social_security_tax(data=data, wages_cents=wages, prior_ytd_wages_cents=prior)
     medicare = medicare_tax(data=data, wages_cents=wages, prior_ytd_wages_cents=prior)
     # (tax code, label, amount, typed by hand)
@@ -125,6 +137,28 @@ def apply_taxes(lines: Sequence[StubLine], context: TaxContext) -> TaxedLines:
         )
     # A typed tax line with no computed figure (state tax in a no-tax state, say) stays as typed.
     return {"lines": [*earnings, *tax_lines, *overrides.values(), *other_deductions], "status": "calculated"}
+
+
+def supplemental_notes(lines: Sequence[StubLine], context: TaxContext) -> list[str]:
+    """What to tell the employer about supplemental (bonus) pay on a stub.
+
+    Only federal income tax has a flat supplemental rate in the tax data, so a
+    state's income tax is worked out on the whole gross pay by its usual formula.
+    """
+    profile = context["profile"]
+    if not profile or not profile["calculate"] or not federal_tax_data(context["year"]):
+        return []
+    if not any(is_supplemental_line(line) for line in lines):
+        return []
+    notes = ["Bonus pay: federal income tax is withheld on it at the flat supplemental rate."]
+    state = work_state(profile, context["businessState"])
+    income = next((rule for rule in context.get("stateRules") or [] if rule["tax"] == "income"), None)
+    if state and income and income["method"] != "none":
+        notes.append(
+            f"{us_state_name(state)} has no separate bonus rate in the app's tax data, "
+            "so state income tax is worked out on the whole gross pay as usual."
+        )
+    return notes
 
 
 def is_tax_override(

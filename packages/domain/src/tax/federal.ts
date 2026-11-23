@@ -45,6 +45,18 @@ export function federalIncomeTax(input: {
   return Math.max(0, tentative - credit) + w4.extraWithholdingCents; // 3c + 4a
 }
 
+/**
+ * Federal income tax to withhold on supplemental wages (a bonus or commission)
+ * by the flat-rate method of Pub. 15, "Supplemental Wages": the flat rate on
+ * the whole amount, with no W-4 adjustments. An employee who claimed exempt
+ * has nothing withheld, as on regular pay.
+ */
+export function supplementalIncomeTax(input: { data: FederalTaxData; wagesCents: Cents; w4: W4 }): Cents {
+  assertCents(input.wagesCents);
+  if (input.w4.exempt || input.wagesCents <= 0) return 0;
+  return divRoundHalfUp(input.wagesCents * input.data.supplemental.rateBasisPoints, 10_000);
+}
+
 /** Lines 2b–2g: the row whose "at least" amount is the highest one not above the wage. */
 export function taxFromBrackets(table: readonly BracketRow[], amountCents: Cents): Cents {
   let row = table[0];

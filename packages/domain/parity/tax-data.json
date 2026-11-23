@@ -271,6 +271,9 @@
     "rateBasisPoints": 145,
     "additionalRateBasisPoints": 90,
     "additionalThresholdCents": 20000000
+   },
+   "supplemental": {
+    "rateBasisPoints": 2200
    }
   }
  },

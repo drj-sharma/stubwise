@@ -93,6 +93,8 @@ export interface FederalTaxData {
   /** Rates are in basis points: 620 = 6.2%. */
   socialSecurity: { rateBasisPoints: number; wageBaseCents: Cents };
   medicare: { rateBasisPoints: number; additionalRateBasisPoints: number; additionalThresholdCents: Cents };
+  /** Flat rate for supplemental wages (bonuses, commissions) paid separately from regular pay. */
+  supplemental: { rateBasisPoints: number };
 }
 
 /**

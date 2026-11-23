@@ -50,7 +50,7 @@ tr.total td { border-bottom: 1.5px solid #16171D; border-top: 1px solid #16171D;
 <div class="cell"><div class="cap">Pay rate</div><div class="val">${esc(doc.worker.rateLabel)}</div></div>
 </div>
 <table>
-<thead><tr><th>Earnings</th><th class="num">Hours</th><th class="num">Rate</th><th class="num">Current</th><th class="num">Year to date</th></tr></thead>
+<thead><tr><th>Earnings</th><th class="num">Hours or units</th><th class="num">Rate</th><th class="num">Current</th><th class="num">Year to date</th></tr></thead>
 <tbody>${earnings}
 <tr class="total"><td colspan="3">Gross pay</td><td class="num">${money(current.grossCents)}</td><td class="num">${money(ytd.grossCents)}</td></tr>
 ${

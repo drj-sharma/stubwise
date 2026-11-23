@@ -12,6 +12,7 @@ import {
   periodContaining,
   todayIso,
   usStateName,
+  payRateWords,
 } from '@stubwise/domain';
 import { DEFAULT_ACCENT, DEFAULT_TEMPLATE_ID, TEMPLATES, type TemplateId } from '@stubwise/templates';
 import * as Crypto from 'expo-crypto';
@@ -25,6 +26,7 @@ import { ApiError } from '@/api';
 import { createBusiness, createWorker } from '@/api/records';
 import type { NewWorker, Worker } from '@/db/types';
 import { Check, DetailsScene, DoneScene, NameScene, ProgressPills, ScenePanel, SecureScene, WorkerScene } from '@/features/OnboardingScenes';
+import { PayTypePicker } from '@/features/PayTypePicker';
 import { AccentSwatches, DesignPreview, TemplatePicker } from '@/features/TemplatePicker';
 import { useAuth } from '@/state/auth';
 import { useBusinessState } from '@/state/business';
@@ -146,7 +148,7 @@ export function Onboarding() {
   const finish = async (withWorker: boolean): Promise<void> => {
     const rateCents = parseDollars(rate);
     if (withWorker && (rateCents === null || rateCents === 0)) {
-      Alert.alert('Pay rate needed', payType === 'hourly' ? 'Enter the hourly rate, for example 24.00.' : 'Enter the salary per pay period.');
+      Alert.alert('Pay rate needed', payRateWords(payType).missing);
       return;
     }
     setSaving(true);
@@ -433,42 +435,30 @@ export function Onboarding() {
               { value: 'contractor', label: '1099 contractor' },
             ]}
           />
-          <View style={{ flexDirection: 'row', gap: 8 }}>
-            <View style={{ flex: 1 }}>
-              <Segmented
-                value={payType}
-                onChange={setPayType}
-                options={[
-                  { value: 'hourly', label: 'Hourly' },
-                  { value: 'salary', label: 'Salary' },
-                ]}
-              />
-            </View>
-            <View
-              style={{
-                flex: 1,
-                height: 44,
-                paddingHorizontal: 12,
-                borderWidth: 1,
-                borderColor: c.fieldBorder,
-                borderRadius: 12,
-                backgroundColor: c.sheet,
-                flexDirection: 'row',
-                alignItems: 'center',
-                gap: 4,
-              }}>
-              <Text style={{ fontSize: 14, color: c.muted }}>$</Text>
-              <SteadyInput
-                value={rate}
-                onChangeText={setRate}
-                keyboardType="decimal-pad"
-                placeholder="0.00"
-                placeholderTextColor={c.faint}
-                accessibilityLabel={payType === 'hourly' ? 'Hourly rate in dollars' : 'Salary per pay period in dollars'}
-                style={[{ flex: 1, padding: 0, fontSize: 15, fontWeight: '600', color: c.text }, TABULAR]}
-              />
-              <Text style={{ fontSize: 12, color: c.muted }}>{payType === 'hourly' ? 'per hour' : 'per period'}</Text>
-            </View>
+          <PayTypePicker value={payType} onChange={setPayType} />
+          <View
+            style={{
+              height: 44,
+              paddingHorizontal: 12,
+              borderWidth: 1,
+              borderColor: c.fieldBorder,
+              borderRadius: 12,
+              backgroundColor: c.sheet,
+              flexDirection: 'row',
+              alignItems: 'center',
+              gap: 4,
+            }}>
+            <Text style={{ fontSize: 14, color: c.muted }}>$</Text>
+            <SteadyInput
+              value={rate}
+              onChangeText={setRate}
+              keyboardType="decimal-pad"
+              placeholder="0.00"
+              placeholderTextColor={c.faint}
+              accessibilityLabel={payRateWords(payType).accessibility}
+              style={[{ flex: 1, padding: 0, fontSize: 15, fontWeight: '600', color: c.text }, TABULAR]}
+            />
+            <Text style={{ fontSize: 12, color: c.muted }}>{payRateWords(payType).suffix}</Text>
           </View>
         </View>
       );

@@ -1,4 +1,4 @@
-import { type StubLine, withComputedAmount } from './calcStub';
+import { type StubLine, isQuantityLine, withComputedAmount } from './calcStub';
 import { type Cents } from './money';
 import {
   type IsoDate,
@@ -9,11 +9,12 @@ import {
   nextPeriod,
   periodContaining,
 } from './payPeriod';
+import { type PayType, type QuantityPayType, QUANTITY_PAY_WORDS, isQuantityPayType, payTypeForUnit } from './payTypes';
 import { DEFAULT_OVERTIME_MULTIPLIER_PCT, overtimeRateCents } from './time';
 
 export interface WorkerPayProfile {
-  payType: 'hourly' | 'salary';
-  /** Hourly rate, or salary per pay period, in cents. */
+  payType: PayType;
+  /** Hourly rate, salary per pay period, or rate per mile, load, day or piece, in cents. */
   rateCents: Cents;
   /** Contractors (1099) carry no default deductions. */
   type: 'employee' | 'contractor';
@@ -58,7 +59,16 @@ export function draftNextStub(
     if (line.kind === 'earning') {
       if (line.minutes !== null && line.rateCents !== null) {
         const isOvertime = line.label.trim().toLowerCase() === OVERTIME_LABEL.toLowerCase();
-        const rateCents = isOvertime ? overtimeRateCents(worker.rateCents, overtimeMultiplierPct) : worker.rateCents;
+        // A per-unit worker's rate is not an hourly rate: hourly lines keep their own.
+        const rateCents = isQuantityPayType(worker.payType)
+          ? line.rateCents
+          : isOvertime
+            ? overtimeRateCents(worker.rateCents, overtimeMultiplierPct)
+            : worker.rateCents;
+        lines.push(withComputedAmount({ ...line, rateCents }));
+      } else if (isQuantityLine(line)) {
+        // Units carry over like hours. The worker's rate applies to their own unit; other units keep their rate.
+        const rateCents = isQuantityPayType(worker.payType) && payTypeForUnit(line.unit) === worker.payType ? worker.rateCents : (line.rateCents as number);
         lines.push(withComputedAmount({ ...line, rateCents }));
       } else if (line.label.trim().toLowerCase() === SALARY_LABEL.toLowerCase()) {
         lines.push({ ...line, amountCents: worker.rateCents });
@@ -82,8 +92,9 @@ export const OVERTIME_LABEL = 'Overtime';
 export const SALARY_LABEL = 'Salary';
 
 function firstLines(worker: WorkerPayProfile, overtimeMultiplierPct: number): StubLine[] {
-  const earnings: StubLine[] =
-    worker.payType === 'hourly'
+  const earnings: StubLine[] = isQuantityPayType(worker.payType)
+    ? [quantityLine(worker.payType, worker.rateCents)]
+    : worker.payType === 'hourly'
       ? [
           { kind: 'earning', label: REGULAR_LABEL, minutes: 0, rateCents: worker.rateCents, amountCents: 0, source: 'manual' },
           {
@@ -110,4 +121,10 @@ function firstLines(worker: WorkerPayProfile, overtimeMultiplierPct: number): St
         }));
 
   return [...earnings, ...deductions];
+}
+
+/** The earning line for a per-unit worker: the unit's name, zero units, the worker's rate. */
+function quantityLine(payType: QuantityPayType, rateCents: Cents): StubLine {
+  const { label, unit } = QUANTITY_PAY_WORDS[payType];
+  return { kind: 'earning', label, minutes: null, rateCents, quantityMilli: 0, unit, amountCents: 0, source: 'manual' };
 }

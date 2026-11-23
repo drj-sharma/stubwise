@@ -19,7 +19,7 @@ from sqlalchemy.orm import Session
 
 from ..domain.money import format_cents
 from ..domain.tax.types import normalize_tax_profile
-from ..domain.time import pay_for_minutes
+from ..domain.time import pay_for_minutes, pay_for_quantity
 from ..errors import ApiError
 from ..models import Business, Stub, StubLine, Worker, as_utc, iso_z, utcnow
 from ..schemas import Snapshot
@@ -50,12 +50,17 @@ def verify_snapshot(snapshot: Snapshot) -> None:
         if stub.periodEnd < stub.periodStart:
             problems.append({"stubId": stub.id, "message": "period ends before it starts"})
         for line in stub.lines:
-            if line.minutes is None or line.rateCents is None:
+            if line.rateCents is None:
                 continue
-            expected = pay_for_minutes(line.minutes, line.rateCents)
+            if line.minutes is not None:
+                expected, basis = pay_for_minutes(line.minutes, line.rateCents), "hours"
+            elif line.quantityMilli is not None:
+                expected, basis = pay_for_quantity(line.quantityMilli, line.rateCents), "quantity"
+            else:
+                continue
             if expected != line.amountCents:
                 message = (
-                    f'"{line.label}" should be {format_cents(expected)} for its hours and rate, '
+                    f'"{line.label}" should be {format_cents(expected)} for its {basis} and rate, '
                     f"but {format_cents(line.amountCents)} was sent"
                 )
                 problems.append({"stubId": stub.id, "message": message})
@@ -130,6 +135,9 @@ def import_snapshot(db: Session, user_id: str, snapshot: Snapshot) -> dict[str, 
                 amount_cents=line.amountCents,
                 source=line.source,
                 tax_code=line.taxCode,
+                quantity_milli=line.quantityMilli,
+                unit=line.unit,
+                supplemental=line.supplemental,
             )
             for position, line in enumerate(entry.lines)
         ]
@@ -198,6 +206,12 @@ def export_snapshot(db: Session, user_id: str) -> dict[str, Any] | None:
                         "source": line.source,
                         # Left out when unset, as the app writes it.
                         **({"taxCode": line.tax_code} if line.tax_code is not None else {}),
+                        **(
+                            {"quantityMilli": line.quantity_milli, "unit": line.unit}
+                            if line.quantity_milli is not None
+                            else {}
+                        ),
+                        **({"supplemental": line.supplemental} if line.supplemental is not None else {}),
                     }
                     for line in stub.lines
                 ],

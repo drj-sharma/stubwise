@@ -6,6 +6,7 @@ from typing import Annotated, Literal
 
 from pydantic import ConfigDict, Field
 
+from .domain.pay_types import PayType
 from .domain.tax.types import DEFAULT_TAX_PROFILE
 from .schemas import (
     Cents,
@@ -88,7 +89,7 @@ class CalcYtdRequest(Model):
 
 
 class WorkerPayProfile(Model):
-    payType: Literal["hourly", "salary"]
+    payType: PayType
     rateCents: Cents
     type: Literal["employee", "contractor"]
     defaultDeductions: Annotated[list[DefaultDeduction], Field(max_length=20)] = []

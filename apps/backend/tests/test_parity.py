@@ -32,7 +32,7 @@ from app.domain.tax.federal import federal_income_tax, federal_tax_data, medicar
 from app.domain.tax.state import state_taxes
 from app.domain.tax.states._common import StateInput
 from app.domain.tax.types import DEFAULT_STATE_W4
-from app.domain.time import overtime_rate_cents, pay_for_minutes
+from app.domain.time import overtime_rate_cents, pay_for_minutes, pay_for_quantity
 from app.domain.ytd import compute_ytd, prior_ytd_gross
 from app.tax_rules.store import seed_files
 
@@ -52,6 +52,9 @@ EXPECTED_MINIMUM = {
     "state": 204,
     "taxLines": 120,
     "nextStub": 60,
+    "quantityPay": 60,
+    "supplementalTax": 100,
+    "nextStubQuantity": 60,
 }
 
 
@@ -198,3 +201,23 @@ def test_next_stub(case: dict[str, Any]) -> None:
     schedule, today, pct = case["schedule"], case["today"], case["overtimePct"]
     assert draft_next_stub(case["worker"], schedule, None, today, pct) == case["first"]
     assert draft_next_stub(case["changedRate"], schedule, case["previous"], today, pct) == case["second"]
+
+
+@pytest.mark.parametrize("case", cases("quantityPay"))
+def test_quantity_pay(case: dict[str, Any]) -> None:
+    assert pay_for_quantity(case["quantityMilli"], case["rateCents"]) == case["expected"]
+
+
+@pytest.mark.parametrize("case", cases("supplementalTax"))
+def test_supplemental_tax(case: dict[str, Any]) -> None:
+    assert [line_amount(line) for line in case["input"]] == case["lineAmounts"]
+    assert calc_stub(case["input"]) == case["totals"]
+    context = {**case["context"], "stateRules": _rules(case["context"]["year"], case["context"]["businessState"])}
+    assert apply_taxes(case["input"], context) == case["expected"]  # type: ignore[arg-type]
+
+
+@pytest.mark.parametrize("case", cases("nextStubQuantity"))
+def test_next_stub_quantity(case: dict[str, Any]) -> None:
+    schedule, today = case["schedule"], case["today"]
+    assert draft_next_stub(case["worker"], schedule, None, today, 150) == case["first"]
+    assert draft_next_stub(case["changedRate"], schedule, case["previous"], today, 150) == case["second"]

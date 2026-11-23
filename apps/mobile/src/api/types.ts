@@ -3,7 +3,7 @@
  * app/routes/auth.py. Records are mapped onto the app's own types
  * (src/db/types.ts) in records.ts.
  */
-import type { IsoDate, LineKind, PaySchedule, StartingYtd } from '@stubwise/domain';
+import type { IsoDate, LineKind, PaySchedule, PayType, StartingYtd } from '@stubwise/domain';
 
 export interface User {
   id: string;
@@ -59,7 +59,7 @@ export interface WorkerOut {
   name: string;
   address: string;
   type: 'employee' | 'contractor';
-  payType: 'hourly' | 'salary';
+  payType: PayType;
   rateCents: number;
   defaultDeductions: { label: string; amountCents: number }[];
   startingYtd: StartingYtd | null;
@@ -78,6 +78,11 @@ export interface StubLineOut {
   amountCents: number;
   source: 'manual' | 'calculated';
   taxCode: string | null;
+  /** Units of work in thousandths, for per-mile, per-load, per-day and per-piece lines. */
+  quantityMilli?: number | null;
+  unit?: string | null;
+  /** Withheld on at the flat federal supplemental rate (a bonus or commission). */
+  supplemental?: boolean;
   taxOverride: boolean;
 }
 
@@ -106,6 +111,7 @@ export interface StubOut {
   totals: Totals;
   ytd: YtdOut;
   taxStatus: TaxStatus;
+  taxNotes?: string[];
   version: number;
   createdAt: string;
   updatedAt: string;
