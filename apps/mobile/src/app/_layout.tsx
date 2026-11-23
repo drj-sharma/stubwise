@@ -64,7 +64,12 @@ function Navigator() {
           <Stack.Screen name="home" options={{ animation: 'none' }} />
           <Stack.Screen name="workers" options={{ animation: 'none' }} />
           <Stack.Screen name="reports" options={{ animation: 'none' }} />
-          <Stack.Screen name="settings" options={{ animation: 'none' }} />
+          <Stack.Screen name="settings/index" options={{ animation: 'none' }} />
+          <Stack.Screen name="settings/account" />
+          <Stack.Screen name="settings/stubs" />
+          <Stack.Screen name="settings/taxes" />
+          <Stack.Screen name="settings/orders" />
+          <Stack.Screen name="settings/appearance" />
           <Stack.Screen name="report/[kind]" />
           <Stack.Screen name="stubs" />
           <Stack.Screen name="pick-worker" options={{ presentation: 'modal' }} />

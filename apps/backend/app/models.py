@@ -220,6 +220,36 @@ class StubLine(Base):
     tax_code: Mapped[str | None] = mapped_column(String(20))
 
 
+# ---- Orders -------------------------------------------------------------------
+
+
+class Order(Base):
+    """One purchase: a pay stub the user paid for.
+
+    Written when a payment is confirmed by its provider; never changed after,
+    except ``status`` (a refund). The worker's name and the stub's pay date are
+    copied in, so the receipt still reads right after the stub or worker is
+    deleted (``stub_id`` is then cleared).
+    """
+
+    __tablename__ = "orders"
+    __table_args__ = (UniqueConstraint("provider", "provider_ref"),)
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_id)
+    user_id: Mapped[str] = _owner()
+    stub_id: Mapped[str | None] = mapped_column(ForeignKey("stubs.id", ondelete="SET NULL"))
+    worker_name: Mapped[str] = mapped_column(String(120))
+    pay_date: Mapped[str] = mapped_column(String(10))
+    amount_cents: Mapped[int] = mapped_column(BigInteger)
+    currency: Mapped[str] = mapped_column(String(3), default="usd")
+    # paid, refunded
+    status: Mapped[str] = mapped_column(String(12), default="paid")
+    # Who took the payment (apple, google, stripe) and their reference for it.
+    provider: Mapped[str] = mapped_column(String(12))
+    provider_ref: Mapped[str] = mapped_column(String(120))
+    created_at: Mapped[datetime] = mapped_column(Timestamp, default=utcnow)
+
+
 # ---- Tax rules ----------------------------------------------------------------
 
 

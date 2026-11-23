@@ -21,7 +21,7 @@ from .errors import ErrorResponse, install_error_handlers
 from .logs import configure_logging
 from .middleware import BodyLimitMiddleware, install_request_middleware
 from .rate_limit import RateLimiter
-from .routes import auth, calc, filing, records, reports, system
+from .routes import auth, calc, filing, orders, records, reports, system
 from .tax_rules.store import RULES
 from .tax_rules.store import seed as seed_tax_rules
 from .taxbandits import TaxBanditsClient
@@ -117,6 +117,7 @@ def create_app(settings: Settings | None = None, *, outbound_transport: httpx.Ba
         records.backup_router,
         calc.router,
         reports.router,
+        orders.router,
     ):
         app.include_router(router)
     if settings.password_login_enabled:
