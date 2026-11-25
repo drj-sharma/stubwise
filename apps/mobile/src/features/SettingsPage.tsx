@@ -14,7 +14,7 @@ export function SettingsPage({ title, children, refreshing, onRefresh }: { title
     <Screen>
       <TopBar title={title} left={<CircleButton icon="arrow.left" label="Back" onPress={() => router.back()} />} />
       <ScrollView
-        contentContainerStyle={{ padding: 12, paddingTop: 8, gap: 12, width: '100%', maxWidth: wide ? 640 : undefined, alignSelf: 'center' }}
+        contentContainerStyle={{ padding: 12, paddingTop: 8, gap: 12, width: '100%', maxWidth: wide ? 1100 : undefined, alignSelf: 'center' }}
         refreshControl={onRefresh ? <Refresher refreshing={refreshing ?? false} onRefresh={onRefresh} /> : undefined}>
         {children}
       </ScrollView>

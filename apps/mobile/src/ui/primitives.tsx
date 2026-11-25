@@ -153,6 +153,7 @@ export function Button({
   onPress,
   variant = 'primary',
   icon,
+  leading,
   disabled,
   style,
 }: {
@@ -162,6 +163,8 @@ export function Button({
   onPress: () => void;
   variant?: 'primary' | 'secondary' | 'danger';
   icon?: IconName;
+  /** A ready-made mark in place of an icon, such as a brand logo that keeps its own colours. */
+  leading?: ReactNode;
   disabled?: boolean;
   style?: StyleProp<ViewStyle>;
 }) {
@@ -190,6 +193,7 @@ export function Button({
         },
         style,
       ]}>
+      {leading && !detail ? leading : null}
       {icon && !detail ? <Icon name={icon} color={fg} /> : null}
       <Text style={{ fontSize: 15, fontWeight: '600', color: fg }}>{title}</Text>
       {detail ? (

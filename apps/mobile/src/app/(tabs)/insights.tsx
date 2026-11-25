@@ -50,7 +50,7 @@ export default function Insights() {
 
   const body = (
     <ScrollView
-      contentContainerStyle={{ padding: 18, paddingTop: 12, paddingBottom: 28, gap: 14, width: '100%', maxWidth: wide ? 720 : undefined, alignSelf: 'center' }}
+      contentContainerStyle={{ padding: 18, paddingTop: 12, paddingBottom: 28, gap: 14, width: '100%', maxWidth: wide ? 1280 : undefined, alignSelf: 'center', paddingHorizontal: wide ? 28 : 18 }}
       refreshControl={<Refresher refreshing={refreshing} onRefresh={() => void refresh()} />}>
       <View style={{ flexDirection: 'row', alignItems: 'center' }}>
         <Text style={{ flex: 1, fontSize: 28, fontWeight: '800', letterSpacing: -0.9, color: c.text }}>Insights</Text>
@@ -86,6 +86,8 @@ export default function Insights() {
 
       {monthly.error && monthly.data ? <StaleBanner error={monthly.error} /> : null}
 
+      <View style={{ flexDirection: wide ? 'row' : 'column', gap: wide ? 24 : 14, alignItems: 'flex-start' }}>
+      <View style={{ flex: wide ? 1 : undefined, width: wide ? undefined : '100%', gap: 14 }}>
       {view === null ? (
         monthly.error ? (
           <ErrorState title="Could not load your insights" error={monthly.error} onRetry={() => void monthly.reload()} />
@@ -110,6 +112,8 @@ export default function Insights() {
         </View>
       )}
 
+      </View>
+      <View style={{ flex: wide ? 1 : undefined, width: wide ? undefined : '100%', gap: 14 }}>
       {totals.error && totals.data ? <StaleBanner error={totals.error} /> : null}
       {totals.data === undefined ? (
         totals.error ? (
@@ -158,6 +162,8 @@ export default function Insights() {
           </View>
         </>
       )}
+      </View>
+      </View>
     </ScrollView>
   );
 

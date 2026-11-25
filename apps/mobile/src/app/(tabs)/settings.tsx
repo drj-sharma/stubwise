@@ -98,7 +98,7 @@ export default function Settings() {
     return (
       <Screen padBottom={false}>
         <View style={{ flex: 1, flexDirection: 'row', gap: 12, paddingHorizontal: 16, paddingTop: 8 }}>
-          <ScrollView style={{ flex: 1 }} contentContainerStyle={{ maxWidth: 640 }} refreshControl={<Refresher refreshing={refreshing} onRefresh={() => void refresh()} />}>
+          <ScrollView style={{ flex: 1 }} contentContainerStyle={{ maxWidth: 900 }} refreshControl={<Refresher refreshing={refreshing} onRefresh={() => void refresh()} />}>
             {body}
           </ScrollView>
         </View>

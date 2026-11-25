@@ -1,3 +1,4 @@
+import { useIsWide } from '../ui/layout';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import {
   PAY_SCHEDULES,
@@ -109,6 +110,7 @@ export function Onboarding() {
 
   const fit = useFit();
   const { width: windowWidth } = useWindowDimensions();
+  const wide = useIsWide();
   const keyboard = useKeyboardShown();
   const [visualHeight, setVisualHeight] = useState(0);
   const usesAccent = TEMPLATES.find((template) => template.id === templateId)?.usesAccent ?? false;
@@ -528,14 +530,16 @@ export function Onboarding() {
             flex: 1,
             paddingHorizontal: 16,
             paddingTop: 8,
-            gap: fit === 'tight' ? 12 : 18,
+            gap: wide ? 40 : fit === 'tight' ? 12 : 18,
             alignSelf: 'center',
             width: '100%',
-            maxWidth: step === 'template' || step === 'accent' ? 760 : 560,
+            maxWidth: wide ? 1100 : step === 'template' || step === 'accent' ? 760 : 560,
+            flexDirection: wide ? 'row' : 'column',
           }}>
           <View style={{ flex: 1, minHeight: 0 }} onLayout={(event) => setVisualHeight(event.nativeEvent.layout.height)}>
             {visual}
           </View>
+          <View style={{ flex: wide ? 1 : undefined, justifyContent: wide ? 'center' : undefined, gap: 18 }}>
           <View style={{ gap: 6 }}>
             <Text
               accessibilityRole="header"
@@ -545,6 +549,7 @@ export function Onboarding() {
             {keyboard ? null : <Text style={{ fontSize: 15, lineHeight: 21, color: c.muted }}>{subtitle}</Text>}
           </View>
           {body}
+          </View>
         </Animated.View>
 
         <View
@@ -554,11 +559,13 @@ export function Onboarding() {
             paddingBottom: Math.max(insets.bottom, 14),
             alignSelf: 'center',
             width: '100%',
-            maxWidth: 560,
+            maxWidth: wide ? 1100 : 560,
             flexDirection: 'row',
             alignItems: 'center',
-            gap: 16,
+            gap: wide ? 40 : 16,
           }}>
+          {wide ? <View style={{ flex: 1 }} /> : null}
+          <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center', gap: 16 }}>
           {done ? (
             <Button title={primary.title} onPress={primary.onPress} style={{ flex: 1, borderRadius: 26 }} />
           ) : (
@@ -569,6 +576,7 @@ export function Onboarding() {
               <Button title={primary.title} onPress={primary.onPress} disabled={primary.disabled} style={{ minWidth: 132, paddingHorizontal: 28, borderRadius: 26 }} />
             </>
           )}
+          </View>
         </View>
       </KeyboardAvoidingView>
       <StateSheet

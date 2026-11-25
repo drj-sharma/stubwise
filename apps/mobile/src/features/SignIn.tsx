@@ -1,3 +1,5 @@
+import { GoogleG } from '../ui/GoogleG';
+import { useIsWide } from '../ui/layout';
 import * as AppleAuthentication from 'expo-apple-authentication';
 import * as Crypto from 'expo-crypto';
 import type { IconName } from '@/ui/icons';
@@ -33,12 +35,12 @@ const MIN_PASSWORD = 10;
 export function SignIn() {
   const c = useTheme();
   const insets = useSafeAreaInsets();
+  const wide = useIsWide();
   const { status, signIn } = useAuth();
   const busy = status === 'signing-in';
 
   const [meta, setMeta] = useState<Meta | null>(null);
   const [metaError, setMetaError] = useState<unknown>(null);
-  const [appleAvailable, setAppleAvailable] = useState(false);
   const [screen, setScreen] = useState<'welcome' | 'choose' | 'signin' | 'signup'>('welcome');
   const mode = screen === 'signup' ? 'signup' : 'signin';
   const fit = useFit();
@@ -59,7 +61,6 @@ export function SignIn() {
 
   useEffect(() => {
     getMeta().then(setMeta, setMetaError);
-    if (Platform.OS === 'ios') void AppleAuthentication.isAvailableAsync().then(setAppleAvailable);
   }, []);
 
   const withApple = async (): Promise<void> => {
@@ -133,8 +134,8 @@ export function SignIn() {
     }
   };
 
-  // Shown unless the server says Apple is off; if the server could not be reached, the attempt itself will say so.
-  const showApple = appleAvailable && meta?.signIn.apple !== false;
+  // Always shown on iPhone and iPad (App Review expects it beside Google) unless the server says Apple is off; if the server could not be reached, the attempt itself will say so.
+  const showApple = Platform.OS === 'ios' && meta?.signIn.apple !== false;
   // Shown only when the server has Google on and this build has a Google client to start it with.
   const showGoogle = meta?.signIn.google === true && googleSignInAvailable;
   const showPassword = meta?.signIn.password === true;
@@ -209,10 +210,10 @@ export function SignIn() {
     subtitle = signup ? 'Your workers and stubs are kept under this account, ready on any device.' : 'Sign in to see your workers and stubs.';
     // Signing in offers every way in up front; with the keyboard up only the form stays, so nothing is pushed off screen.
     const providers =
-      !signup && !keyboard ? (
+      !keyboard ? (
         <>
           {appleButton}
-          <Button title="Continue with Google" variant="secondary" icon="g.circle.fill" onPress={() => void withGoogle()} style={pill} />
+          {showGoogle ? <Button title="Continue with Google" variant="secondary" leading={<GoogleG />} onPress={() => void withGoogle()} style={pill} /> : null}
           {showPassword ? <OrDivider label="or with email" /> : null}
         </>
       ) : null;
@@ -260,7 +261,6 @@ export function SignIn() {
         {/* With the keyboard up only the form and its button are shown, so nothing is pushed off screen. */}
         {signup && !keyboard ? (
           <>
-            {appleButton}
             <View style={{ alignItems: 'center' }}>
               <TextButton title="Have an account? Sign in" onPress={() => setScreen('signin')} />
             </View>
@@ -278,8 +278,9 @@ export function SignIn() {
         <Animated.View
           key={screen}
           entering={FadeInRight.duration(220)}
-          style={{ flex: 1, paddingHorizontal: 16, paddingTop: 8, gap: fit === 'tight' ? 12 : 18, alignSelf: 'center', width: '100%', maxWidth: 560 }}>
-          {visual}
+          style={{ flex: 1, paddingHorizontal: 16, paddingTop: 8, gap: wide ? 40 : fit === 'tight' ? 12 : 18, alignSelf: 'center', width: '100%', maxWidth: wide ? 1100 : 560, flexDirection: wide ? 'row' : 'column' }}>
+          {wide ? <View style={{ flex: 1 }}>{visual}</View> : visual}
+          <View style={{ flex: wide ? 1 : undefined, justifyContent: wide ? 'center' : undefined, gap: 18 }}>
           <View style={{ gap: 6 }}>
             <Text
               accessibilityRole="header"
@@ -289,9 +290,13 @@ export function SignIn() {
             {subtitle && !keyboard ? <Text style={{ fontSize: 15, lineHeight: 21, color: c.muted }}>{subtitle}</Text> : null}
           </View>
           {body}
+          </View>
         </Animated.View>
 
-        <View style={{ paddingHorizontal: 16, paddingTop: 16, paddingBottom: Math.max(insets.bottom, 14), alignSelf: 'center', width: '100%', maxWidth: 560, gap: 10 }}>
+        <View style={{ paddingHorizontal: 16, paddingTop: 16, paddingBottom: Math.max(insets.bottom, 14), alignSelf: 'center', width: '100%', maxWidth: wide ? 1100 : 560, gap: 10 }}>
+          <View style={{ flexDirection: 'row', gap: 40 }}>
+            {wide ? <View style={{ flex: 1 }} /> : null}
+            <View style={{ flex: 1, gap: 10 }}>
           {busy ? (
             <View style={{ height: 52, alignItems: 'center', justifyContent: 'center', flexDirection: 'row', gap: 10 }}>
               <ActivityIndicator color={c.primary} />
@@ -308,6 +313,8 @@ export function SignIn() {
           {!showApple && !showGoogle && !showPassword && meta ? (
             <Text style={{ fontSize: 12, lineHeight: 17, color: c.warnText, textAlign: 'center' }}>Sign-in is not available on this device right now.</Text>
           ) : null}
+            </View>
+          </View>
         </View>
       </KeyboardAvoidingView>
     </Screen>

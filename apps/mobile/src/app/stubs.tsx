@@ -87,7 +87,7 @@ export default function Stubs() {
     <Screen padBottom={false}>
       <TopBar title="History" left={<CircleButton icon="arrow.left" label="Back" onPress={() => router.back()} />} />
       <ScrollView
-        contentContainerStyle={{ padding: 12, paddingTop: 8, width: '100%', maxWidth: wide ? 720 : undefined, alignSelf: 'center' }}
+        contentContainerStyle={{ padding: 12, paddingTop: 8, width: '100%', maxWidth: wide ? 1100 : undefined, alignSelf: 'center' }}
         keyboardShouldPersistTaps="handled"
         refreshControl={<Refresher refreshing={refreshing} onRefresh={() => void refresh()} />}>
         {body}

@@ -94,7 +94,7 @@ export default function ReportScreen() {
     <Screen padBottom={false}>
       <TopBar title={kind === 'earnings' ? 'Earnings report' : 'Deductions report'} left={<CircleButton icon="arrow.left" label="Back" onPress={() => router.back()} />} />
       <ScrollView
-        contentContainerStyle={{ padding: 12, paddingTop: 6, gap: 12, width: '100%', maxWidth: wide ? 720 : undefined, alignSelf: 'center' }}
+        contentContainerStyle={{ padding: 12, paddingTop: 6, gap: 12, width: '100%', maxWidth: wide ? 1100 : undefined, alignSelf: 'center' }}
         refreshControl={<Refresher refreshing={refreshing} onRefresh={() => void refresh()} />}>
         <Text style={{ fontSize: 13, marginHorizontal: 6, opacity: 0.7 }}>Pay dates {range.from && range.to ? formatRange(range) : ''}</Text>
         {error && data ? <StaleBanner error={error} /> : null}

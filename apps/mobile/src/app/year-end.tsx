@@ -39,7 +39,7 @@ export default function YearEnd() {
     <Screen padBottom={false}>
       <TopBar title="Year-end totals" left={<CircleButton icon="arrow.left" label="Back" onPress={() => router.back()} />} />
       <ScrollView
-        contentContainerStyle={{ padding: 12, paddingTop: 6, gap: 12, width: '100%', maxWidth: wide ? 720 : undefined, alignSelf: 'center' }}
+        contentContainerStyle={{ padding: 12, paddingTop: 6, gap: 12, width: '100%', maxWidth: wide ? 1100 : undefined, alignSelf: 'center' }}
         refreshControl={<Refresher refreshing={refreshing} onRefresh={() => void refresh()} />}>
         <View style={{ flexDirection: 'row', gap: 8 }}>
           {[thisYear, thisYear - 1].map((choice) => (

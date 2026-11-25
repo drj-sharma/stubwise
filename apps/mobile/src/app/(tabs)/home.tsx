@@ -215,10 +215,19 @@ export default function Home() {
         <ErrorState title="Could not load your workers" error={error} onRetry={() => void reload()} />
       </View>
     ) : (
-      <ScrollView contentContainerStyle={{ padding: 18, paddingTop: 20, paddingBottom: 28, gap: 28, width: '100%', maxWidth: wide ? 720 : undefined, alignSelf: 'center' }}>
+      <ScrollView contentContainerStyle={{ padding: 18, paddingTop: 20, paddingBottom: 28, gap: 28, width: '100%', maxWidth: wide ? 1280 : undefined, alignSelf: 'center', paddingHorizontal: wide ? 28 : 18 }}>
         {error ? <StaleBanner error={error} /> : null}
-        {next}
-        {recentList}
+        {wide ? (
+          <View style={{ flexDirection: 'row', gap: 40, alignItems: 'flex-start' }}>
+            <View style={{ flex: 5 }}>{next}</View>
+            <View style={{ flex: 6 }}>{recentList}</View>
+          </View>
+        ) : (
+          <>
+            {next}
+            {recentList}
+          </>
+        )}
       </ScrollView>
     );
 

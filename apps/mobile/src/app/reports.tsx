@@ -102,7 +102,7 @@ export default function Reports() {
     <Screen padBottom={false}>
       <TopBar left={<CircleButton icon="arrow.left" label="Back" onPress={() => router.back()} />} />
       <ScrollView
-        contentContainerStyle={{ padding: 12, paddingTop: 8, width: '100%', maxWidth: wide ? 720 : undefined, alignSelf: 'center' }}
+        contentContainerStyle={{ padding: 12, paddingTop: 8, width: '100%', maxWidth: wide ? 1100 : undefined, alignSelf: 'center' }}
         refreshControl={<Refresher refreshing={refreshing} onRefresh={() => void refresh()} />}>
         {body}
       </ScrollView>
