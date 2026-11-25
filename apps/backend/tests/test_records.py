@@ -241,6 +241,10 @@ def test_a_tax_profile_saved_before_state_certificates_gets_the_default(
         {"taxProfile": {"w4": {"filingStatus": "widowed"}}},
         {"taxProfile": {"stateW4": {"allowances": 100}}},
         {"taxProfile": {"stateW4": {"allowances": 1.5}}},
+        {"ssnLast4": "123"},
+        {"ssnLast4": "12345"},
+        {"ssnLast4": "123-45-7483"},
+        {"ssnLast4": "74a3"},
     ],
 )
 def test_worker_fields_are_validated(client: TestClient, auth: dict[str, str], change: dict) -> None:
@@ -248,6 +252,25 @@ def test_worker_fields_are_validated(client: TestClient, auth: dict[str, str], c
     response = client.post("/v1/workers", headers=auth, json={**WORKER, **change})
     assert response.status_code == 400, response.text
     assert response.json()["error"]["code"] == "invalid_request"
+
+
+def test_only_the_last_four_digits_of_an_ssn_are_kept(client: TestClient, auth: dict[str, str]) -> None:
+    client.post("/v1/business", headers=auth, json=BUSINESS)
+    created = client.post("/v1/workers", headers=auth, json={**WORKER, "ssnLast4": "7483"})
+    assert created.status_code == 201
+    assert created.json()["ssnLast4"] == "7483"
+    worker_id = created.json()["id"]
+    assert client.get(f"/v1/workers/{worker_id}", headers=auth).json()["ssnLast4"] == "7483"
+
+    changed = client.patch(f"/v1/workers/{worker_id}", headers=auth, json={"ssnLast4": "0021"})
+    assert changed.json()["ssnLast4"] == "0021"
+    cleared = client.patch(f"/v1/workers/{worker_id}", headers=auth, json={"ssnLast4": ""})
+    assert cleared.json()["ssnLast4"] == ""
+    refused = client.patch(f"/v1/workers/{worker_id}", headers=auth, json={"ssnLast4": "123456789"})
+    assert refused.status_code == 400
+
+    without = client.post("/v1/workers", headers=auth, json=WORKER)
+    assert without.json()["ssnLast4"] == ""
 
 
 def test_lists_are_paginated(client: TestClient, auth: dict[str, str]) -> None:

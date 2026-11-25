@@ -19,7 +19,7 @@ export interface TemplateSampleBusiness {
 export function sample(business: TemplateSampleBusiness): StubDocument {
   return {
     business: { ...business, name: business.name || 'Your business', logoDataUri: null },
-    worker: { name: 'Sample Worker', address: '100 Main St', typeLabel: 'Hourly employee', rateLabel: '$24.00 per hour' },
+    worker: { name: 'Sample Worker', address: '100 Main St', ssnLabel: 'XXX-XX-7483', typeLabel: 'Hourly employee', rateLabel: '$24.00 per hour' },
     period: { start: '2026-11-09', end: '2026-11-22' },
     payDate: '2026-11-27',
     scheduleLabel: 'Every two weeks',

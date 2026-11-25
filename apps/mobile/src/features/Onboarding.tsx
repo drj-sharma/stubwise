@@ -179,6 +179,7 @@ export function Onboarding() {
           name: workerName.trim(),
           address: '',
           email: '',
+          ssnLast4: '',
           type: workerType,
           payType,
           rateCents,

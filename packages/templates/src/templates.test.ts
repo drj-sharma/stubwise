@@ -98,6 +98,28 @@ describe('stub document', () => {
     expect(buildStubDocument(input({ showEmployerId: false })).business.employerId).toBeNull();
   });
 
+  it('masks the Social Security number down to its last four digits', () => {
+    const base = input();
+    const withSsn = (ssnLast4: string | undefined): ReturnType<typeof buildStubDocument> =>
+      buildStubDocument({ ...base, worker: { ...base.worker, ssnLast4 } });
+    expect(withSsn('7483').worker.ssnLabel).toBe('XXX-XX-7483');
+    expect(withSsn('').worker.ssnLabel).toBeNull();
+    expect(withSsn(undefined).worker.ssnLabel).toBeNull();
+    // Anything that is not exactly four digits is never printed, so a full number cannot reach a stub.
+    expect(withSsn('123456789').worker.ssnLabel).toBeNull();
+    expect(withSsn('12ab').worker.ssnLabel).toBeNull();
+  });
+
+  it('prints the masked number on every template, and nothing when there is none', () => {
+    const base = input();
+    const masked = buildStubDocument({ ...base, worker: { ...base.worker, ssnLast4: '7483' } });
+    const plain = buildStubDocument(base);
+    for (const { id } of TEMPLATES) {
+      expect(renderStubHtml(masked, id)).toContain('XXX-XX-7483');
+      expect(renderStubHtml(plain, id)).not.toContain('XXX-XX');
+    }
+  });
+
   it('names the PDF file after the worker and pay date', () => {
     expect(stubFileName('Marcus Bell', '2026-11-27')).toBe('Marcus-Bell-2026-11-27.pdf');
     expect(stubFileName('../../etc', '2026-11-27')).toBe('etc-2026-11-27.pdf');

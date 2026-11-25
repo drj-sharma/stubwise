@@ -41,6 +41,8 @@ export interface Worker {
   address: string;
   /** Where "Send to worker" addresses the stub; empty when not given. */
   email: string;
+  /** The last four digits of the Social Security number, or empty. Printed as XXX-XX-1234; the app never holds more. */
+  ssnLast4: string;
   type: 'employee' | 'contractor';
   payType: PayType;
   /** Hourly rate, salary per pay period, or rate per mile, load, day or piece, in cents. */

@@ -54,6 +54,7 @@ export function toWorker(row: WorkerOut): Worker {
     name: row.name,
     address: row.address,
     email: row.email ?? '',
+    ssnLast4: row.ssnLast4 ?? '',
     type: row.type,
     payType: row.payType,
     rateCents: row.rateCents,

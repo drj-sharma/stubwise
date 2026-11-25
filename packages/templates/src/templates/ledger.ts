@@ -44,7 +44,7 @@ tr.total td { border-bottom: 1.5px solid #16171D; border-top: 1px solid #16171D;
 <div class="cell" style="text-align:right"><h1>Pay stub</h1><div>Pay date ${esc(payDateText(doc))}</div></div>
 </div>
 <div class="row four">
-<div class="cell"><div class="cap">Paid to</div><div class="val">${esc(doc.worker.name)}</div><div>${esc(doc.worker.address)}</div></div>
+<div class="cell"><div class="cap">Paid to</div><div class="val">${esc(doc.worker.name)}</div><div>${esc(doc.worker.address)}</div>${doc.worker.ssnLabel ? `<div>SSN ${esc(doc.worker.ssnLabel)}</div>` : ''}</div>
 <div class="cell"><div class="cap">Pay period</div><div class="val">${esc(periodText(doc))}</div></div>
 <div class="cell"><div class="cap">Schedule</div><div class="val">${esc(doc.scheduleLabel)}</div></div>
 <div class="cell"><div class="cap">Pay rate</div><div class="val">${esc(doc.worker.rateLabel)}</div></div>

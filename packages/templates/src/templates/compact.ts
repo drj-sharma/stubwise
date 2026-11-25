@@ -40,7 +40,7 @@ tr.total td { border-bottom: 0; font-weight: 700; }
 <div style="text-align:right"><h1>Pay stub</h1><div class="muted">Pay date ${esc(payDateText(doc))}</div></div>
 </div>
 <div class="meta">
-<div><div class="cap">Paid to</div><div style="font-weight:600">${esc(doc.worker.name)}</div></div>
+<div><div class="cap">Paid to</div><div style="font-weight:600">${esc(doc.worker.name)}</div>${doc.worker.ssnLabel ? `<div>SSN ${esc(doc.worker.ssnLabel)}</div>` : ''}</div>
 <div><div class="cap">Pay period</div><div style="font-weight:600">${esc(periodText(doc))}</div></div>
 <div><div class="cap">Pay rate</div><div style="font-weight:600">${esc(doc.worker.rateLabel)}</div></div>
 <div><div class="cap">Type</div><div style="font-weight:600">${esc(doc.worker.typeLabel)}</div></div>

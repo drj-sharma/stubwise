@@ -38,6 +38,8 @@ export interface StubDocument {
   worker: {
     name: string;
     address: string;
+    /** "XXX-XX-7483" from the last four digits, or null when none were given. */
+    ssnLabel: string | null;
     typeLabel: string;
     rateLabel: string;
   };
@@ -122,6 +124,8 @@ export interface BuildStubDocumentInput {
   worker: {
     name: string;
     address: string;
+    /** The last four digits of the Social Security number, or empty. Nothing longer is ever printed. */
+    ssnLast4?: string;
     type: 'employee' | 'contractor';
     payType: PayType;
     rateCents: Cents;
@@ -174,6 +178,7 @@ export function buildStubDocument(input: BuildStubDocumentInput): StubDocument {
     worker: {
       name: worker.name,
       address: worker.address,
+      ssnLabel: /^[0-9]{4}$/.test(worker.ssnLast4 ?? '') ? `XXX-XX-${worker.ssnLast4}` : null,
       typeLabel: worker.type === 'contractor' ? '1099 contractor' : employeeLabel,
       rateLabel,
     },

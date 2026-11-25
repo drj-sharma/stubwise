@@ -87,6 +87,7 @@ export function WorkerForm({ existing, onConflict }: { existing: Worker | null; 
   const [name, setName] = useState(existing?.name ?? '');
   const [address, setAddress] = useState(existing?.address ?? '');
   const [email, setEmail] = useState(existing?.email ?? '');
+  const [ssnLast4, setSsnLast4] = useState(existing?.ssnLast4 ?? '');
   const [type, setType] = useState<Worker['type']>(existing?.type ?? 'employee');
   const [payType, setPayType] = useState<Worker['payType']>(existing?.payType ?? 'hourly');
   const [rate, setRate] = useState(existing ? (existing.rateCents / 100).toFixed(2) : '');
@@ -120,10 +121,14 @@ export function WorkerForm({ existing, onConflict }: { existing: Worker | null; 
     if (cleanEmail !== '' && !/^[^@\s]+@[^@\s.]+(\.[^@\s.]+)+$/.test(cleanEmail)) {
       return Alert.alert('Check the email', 'Enter it like name@example.com, or leave it empty.');
     }
+    if (ssnLast4 !== '' && !/^[0-9]{4}$/.test(ssnLast4)) {
+      return Alert.alert('Check the last four digits', 'Enter exactly four digits of the Social Security number, or leave it empty.');
+    }
     const worker: NewWorker = {
       name: name.trim(),
       address: address.trim(),
       email: cleanEmail,
+      ssnLast4,
       type,
       payType,
       rateCents,
@@ -181,9 +186,24 @@ export function WorkerForm({ existing, onConflict }: { existing: Worker | null; 
               autoCorrect={false}
               textContentType="emailAddress"
               placeholder="Optional"
+            />
+            <Field
+              label="Social Security number, last 4 digits"
+              value={ssnLast4}
+              onChangeText={(text) => setSsnLast4(text.replace(/[^0-9]/g, '').slice(0, 4))}
+              keyboardType="number-pad"
+              maxLength={4}
+              autoCorrect={false}
+              autoComplete="off"
+              placeholder="Optional, like 7483"
               last
             />
           </SubCard>
+          {ssnLast4.length === 4 ? (
+            <Text style={{ fontSize: 12, color: c.muted, marginHorizontal: 4 }}>Printed on the stub as XXX-XX-{ssnLast4}. Only these four digits are kept.</Text>
+          ) : (
+            <Text style={{ fontSize: 12, color: c.muted, marginHorizontal: 4 }}>Optional. Enter only the last four digits. They print on the stub as XXX-XX-1234, and the full number is never asked for.</Text>
+          )}
 
           <View style={{ gap: 6 }}>
             <SectionLabel>Worker type</SectionLabel>

@@ -63,6 +63,7 @@ export interface WorkerOut {
   name: string;
   address: string;
   email: string;
+  ssnLast4?: string;
   type: 'employee' | 'contractor';
   payType: PayType;
   rateCents: number;

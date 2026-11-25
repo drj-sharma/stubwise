@@ -48,7 +48,7 @@ ${logoHtml(doc, 'logo')}
 </div>
 <div class="body">
 <div class="cards">
-<div class="card"><div class="cap">${doc.worker.typeLabel === '1099 contractor' ? 'Contractor' : 'Employee'}</div><div class="strong">${esc(doc.worker.name)}</div><div class="muted">${esc(doc.worker.address)}</div></div>
+<div class="card"><div class="cap">${doc.worker.typeLabel === '1099 contractor' ? 'Contractor' : 'Employee'}</div><div class="strong">${esc(doc.worker.name)}</div><div class="muted">${esc(doc.worker.address)}</div>${doc.worker.ssnLabel ? `<div class="muted">SSN ${esc(doc.worker.ssnLabel)}</div>` : ''}</div>
 <div class="card"><div class="cap">Pay period</div><div class="strong">${esc(periodText(doc))}</div><div class="muted">Paid ${esc(doc.scheduleLabel.toLowerCase())}</div></div>
 <div class="card"><div class="cap">Pay rate</div><div class="strong">${esc(doc.worker.rateLabel)}</div><div class="muted">${esc(doc.worker.typeLabel)}</div></div>
 </div>

@@ -96,6 +96,16 @@ def _email(value: str) -> str:
 Email = Annotated[str, _text(254), AfterValidator(_email)]
 
 
+def _last4(value: str) -> str:
+    """Empty, or exactly four digits. Anything longer is refused so a full number is never stored."""
+    if value and not re.fullmatch(r"[0-9]{4}", value):
+        raise ValueError("must be the last four digits of the Social Security number, like 7483")
+    return value
+
+
+SsnLast4 = Annotated[str, AfterValidator(_last4)]
+
+
 def _us_phone(value: str) -> str:
     normalized = normalize_us_phone(value)
     if normalized is None:
@@ -382,6 +392,7 @@ class WorkerCreate(Model):
     name: Name
     address: Address = ""
     email: Email = ""
+    ssnLast4: SsnLast4 = ""
     type: Literal["employee", "contractor"]
     payType: PayType
     rateCents: Cents
@@ -399,6 +410,7 @@ class WorkerPatch(Model):
     name: Name | None = None
     address: Address | None = None
     email: Email | None = None
+    ssnLast4: SsnLast4 | None = None
     type: Literal["employee", "contractor"] | None = None
     payType: PayType | None = None
     rateCents: Cents | None = None
@@ -413,6 +425,7 @@ class WorkerOut(Out):
     name: str
     address: str
     email: str
+    ssnLast4: str
     type: str
     payType: str
     rateCents: int
@@ -591,6 +604,7 @@ class BackupWorker(Model):
     name: Name
     address: Address
     email: Email = ""
+    ssnLast4: SsnLast4 = ""
     type: Literal["employee", "contractor"]
     payType: PayType
     rateCents: Cents

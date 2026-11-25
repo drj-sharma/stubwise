@@ -180,6 +180,8 @@ class Worker(Base):
     address: Mapped[str] = mapped_column(String(240), default="")
     # Where "Send to worker" addresses the stub. Empty when not given.
     email: Mapped[str] = mapped_column(String(254), default="")
+    # Only the last four digits of a Social Security number, or empty. The app never asks for or stores more.
+    ssn_last4: Mapped[str] = mapped_column(String(4), default="")
     type: Mapped[str] = mapped_column(String(10))
     pay_type: Mapped[str] = mapped_column(String(6))
     rate_cents: Mapped[int] = mapped_column(BigInteger)
