@@ -11,7 +11,7 @@
       "icon": "./assets/expo.icon",
       "bundleIdentifier": "com.crewstub.app",
       "supportsTablet": true,
-      "buildNumber": "3",
+      "buildNumber": "4",
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false,
         "NSPhotoLibraryUsageDescription": "CrewStub uses a photo you choose as your business logo on pay stubs."
@@ -60,13 +60,20 @@
         }
       ],
       "expo-secure-store",
-      "expo-mail-composer"
+      "expo-mail-composer",
+      [
+        "@react-native-google-signin/google-signin",
+        {
+          "iosUrlScheme": "com.googleusercontent.apps.825852853732-sb6ouggo07f358njodnn0qdl1o9lr493"
+        }
+      ]
     ],
     "experiments": {
       "reactCompiler": true
     },
     "extra": {
-      "apiUrl": "https://jnmxfbddllmxvwcljkrdxc6r.187.127.166.249.sslip.io"
+      "apiUrl": "https://jnmxfbddllmxvwcljkrdxc6r.187.127.166.249.sslip.io",
+      "googleIosClientId": "825852853732-sb6ouggo07f358njodnn0qdl1o9lr493.apps.googleusercontent.com"
     }
   }
 }

@@ -6,9 +6,10 @@ import { ActivityIndicator, Alert, Image, KeyboardAvoidingView, Platform, Pressa
 import Animated, { FadeInRight } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { errorMessage } from '@/api';
-import { getMeta, signInWithApple, signInWithPassword, signUpWithPassword } from '@/api/auth';
+import { getMeta, signInWithApple, signInWithGoogle, signInWithPassword, signUpWithPassword } from '@/api/auth';
 import type { Meta } from '@/api/types';
 import { AccountScene, Check, ScenePanel, WelcomeScene } from '@/features/OnboardingScenes';
+import { getGoogleIdToken, googleSignInAvailable } from '@/services/googleSignIn';
 import { useAuth } from '@/state/auth';
 import { Button, CircleButton, Icon, Screen, SteadyField, SubCard, TextButton } from '@/ui/primitives';
 import { useFit, useKeyboardShown } from '@/ui/fit';
@@ -92,9 +93,20 @@ export function SignIn() {
     }
   };
 
-  const withGoogle = (): void => {
-    // The server has Google switched on, but this build has no Google OAuth client IDs to start the flow with.
-    Alert.alert('Google sign-in is not ready yet', 'This version of CrewStub cannot sign in with Google. Please use Continue with Apple.');
+  const withGoogle = async (): Promise<void> => {
+    let idToken: string | null;
+    try {
+      idToken = await getGoogleIdToken();
+    } catch (error) {
+      alertError('Could not sign in with Google', error);
+      return;
+    }
+    if (idToken === null) return; // the person closed Google's sheet
+    try {
+      await signIn(() => signInWithGoogle(idToken));
+    } catch (error) {
+      alertError('Could not sign in', error);
+    }
   };
 
   const withPassword = async (typedPassword?: string): Promise<void> => {
@@ -123,7 +135,8 @@ export function SignIn() {
 
   // Shown unless the server says Apple is off; if the server could not be reached, the attempt itself will say so.
   const showApple = appleAvailable && meta?.signIn.apple !== false;
-  const showGoogle = meta?.signIn.google === true;
+  // Shown only when the server has Google on and this build has a Google client to start it with.
+  const showGoogle = meta?.signIn.google === true && googleSignInAvailable;
   const showPassword = meta?.signIn.password === true;
   const onForm = screen !== 'welcome';
 
@@ -199,7 +212,7 @@ export function SignIn() {
       !signup && !keyboard ? (
         <>
           {appleButton}
-          <Button title="Continue with Google" variant="secondary" icon="g.circle.fill" onPress={withGoogle} style={pill} />
+          <Button title="Continue with Google" variant="secondary" icon="g.circle.fill" onPress={() => void withGoogle()} style={pill} />
           {showPassword ? <OrDivider label="or with email" /> : null}
         </>
       ) : null;
