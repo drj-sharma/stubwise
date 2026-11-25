@@ -33,6 +33,8 @@ export function StubPreview({ stubId, version = 0 }: { stubId: string; version?:
           // The page is static HTML built on the device; scripts are never needed.
           javaScriptEnabled={false}
           scalesPageToFit
+          // iPad opens web pages in desktop mode, which ignores the width above and crops the page.
+          contentMode="mobile"
           style={{ flex: 1, backgroundColor: '#FFFFFF', borderRadius: 3 }}
         />
       ) : (
