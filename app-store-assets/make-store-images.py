@@ -81,16 +81,16 @@ def search(W=3840,H=2560):
     body=f'''
 <div class="blob" style="left:-400px;bottom:-600px;width:1800px;height:1800px;background:radial-gradient(circle,rgba(214,51,108,.20),transparent 70%)"></div>
 <div class="blob" style="right:-300px;top:-400px;width:1600px;height:1600px;background:radial-gradient(circle,rgba(15,143,191,.20),transparent 70%)"></div>
-<div style="position:absolute;left:260px;top:560px;width:1900px">
- <img src="{HERE}/icon.png" style="width:240px;height:240px;border-radius:56px;box-shadow:0 30px 70px rgba(120,30,70,.28)">
- <h1 style="font-size:230px;margin-top:70px">Pay stubs, <em>done in a minute</em></h1>
- <p class="sub" style="font-size:78px;margin-top:56px;line-height:1.25">Taxes worked out, year-to-date totals kept, a clean PDF for every worker.</p>
+<div style="position:absolute;left:240px;top:520px;width:1640px">
+ <img src="{HERE}/icon.png" style="width:230px;height:230px;border-radius:54px;box-shadow:0 30px 70px rgba(120,30,70,.28)">
+ <h1 style="font-size:206px;margin-top:66px">Pay stubs,<br><em>done in a minute</em></h1>
+ <p class="sub" style="font-size:72px;margin-top:52px;line-height:1.25">Taxes worked out, year-to-date totals kept, a clean PDF for every worker.</p>
 </div>
-<div class="dev" style="left:2420px;top:320px;width:1080px;height:2400px;border-radius:150px;padding:22px">
- <div style="border-radius:128px;overflow:hidden"><img src="{R}iphone-stub.png"></div>
+<div class="dev" style="left:2290px;top:300px;width:1480px;border-radius:100px;padding:26px">
+ <div style="border-radius:76px;overflow:hidden"><img src="{R}ipad-stub.png"></div>
 </div>
-<div class="dev" style="left:2850px;top:880px;width:760px;height:1700px;border-radius:112px;padding:16px;opacity:1">
- <div style="border-radius:96px;overflow:hidden"><img src="{R}iphone-insights.png"></div>
+<div class="dev" style="left:1990px;top:740px;width:760px;border-radius:112px;padding:16px">
+ <div style="border-radius:96px;overflow:hidden"><img src="{R}iphone-home.png"></div>
 </div>'''
     return page('search-3840x2560',W,H,'blush',body)
 
