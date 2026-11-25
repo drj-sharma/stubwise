@@ -2,7 +2,7 @@
   "expo": {
     "name": "CrewStub",
     "slug": "crewstub",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "orientation": "default",
     "icon": "./assets/images/icon.png",
     "scheme": "crewstub",
@@ -11,6 +11,7 @@
       "icon": "./assets/expo.icon",
       "bundleIdentifier": "com.crewstub.app",
       "supportsTablet": true,
+      "buildNumber": "3",
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false,
         "NSPhotoLibraryUsageDescription": "CrewStub uses a photo you choose as your business logo on pay stubs."
